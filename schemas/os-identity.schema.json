@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://windowslab.local/schemas/os-identity.json",
+  "title": "OsIdentity",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "major",
+    "minor",
+    "build",
+    "ubr",
+    "displayVersion",
+    "editionId",
+    "productName",
+    "isWindows11",
+    "familyLabel"
+  ],
+  "properties": {
+    "major": { "type": "integer", "minimum": 0 },
+    "minor": { "type": "integer", "minimum": 0 },
+    "build": { "type": "integer", "minimum": 0 },
+    "ubr": { "type": "integer", "minimum": 0 },
+    "displayVersion": { "type": "string" },
+    "editionId": { "type": "string" },
+    "productName": {
+      "type": "string",
+      "description": "Captured for diagnostics. Must not decide OS family."
+    },
+    "compositionEditionId": { "type": ["string", "null"] },
+    "isWindows11": { "type": "boolean" },
+    "familyLabel": { "type": "string" },
+    "productNameWarning": { "type": ["string", "null"] }
+  }
+}

@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>WindowsLab.Core</RootNamespace>
+    <Description>WindowsLab shared models and policies.</Description>
+  </PropertyGroup>
+</Project>

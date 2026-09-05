@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "fixtureId": "no-d-volume",
+  "note": "Single-disk PC (no D:). Runtime data is still ProgramData on C:. This lab's source would not live on D:.",
+  "os": {
+    "build": 26100,
+    "displayVersion": "24H2",
+    "editionId": "Core",
+    "productName": "Windows 10 Home",
+    "isWindows11": true
+  },
+  "hardware": {
+    "cpuName": "unknown",
+    "logicalProcessors": 8,
+    "ramGb": 8,
+    "gpus": ["iGPU"]
+  },
+  "volumes": {
+    "cFreeGb": 80,
+    "dFreeGb": null
+  }
+}

@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>windowslab</AssemblyName>
+    <RootNamespace>WindowsLab.Cli</RootNamespace>
+    <Description>WindowsLab command-line client.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WindowsLab.Core\WindowsLab.Core.csproj" />
+  </ItemGroup>
+</Project>

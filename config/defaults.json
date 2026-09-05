@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "sourceRoot": "D:\\WindowsLab",
+  "installVolume": "C:",
+  "dataRoot": "%ProgramData%\\WindowsLab",
+  "warnings": {
+    "cDriveFreeGb": 20
+  },
+  "vss": {
+    "recommendShadowStorageOnD": true,
+    "neverApplyWithoutApproval": true
+  }
+}

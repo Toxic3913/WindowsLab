@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "fixtureId": "host-pchugo",
+  "note": "Example inventory from Phase 0 audit. Not production defaults. Do not hardcode these facts in engine code.",
+  "os": {
+    "build": 26200,
+    "displayVersion": "25H2",
+    "editionId": "Professional",
+    "productName": "Windows 10 Pro",
+    "isWindows11": true
+  },
+  "hardware": {
+    "cpuName": "i5-12600K",
+    "logicalProcessors": 16,
+    "ramGb": 16,
+    "gpus": ["NVIDIA RTX 3060", "Intel UHD 770"]
+  },
+  "volumes": {
+    "cFreeGb": 67,
+    "dFreeGb": 339
+  }
+}

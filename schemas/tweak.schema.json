@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://windowslab.local/schemas/tweak.json",
+  "title": "TweakDefinition",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "risk", "evidence", "minBuild", "editions", "ops"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(\\.[a-z0-9-]+)+$" },
+    "title": { "type": "string" },
+    "risk": { "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"] },
+    "evidence": { "enum": ["OFFICIAL", "STRONG", "WEAK", "UNKNOWN"] },
+    "minBuild": { "type": "integer", "minimum": 10240 },
+    "maxBuild": { "type": ["integer", "null"] },
+    "editions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "requires": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "conflicts": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "reboot": { "type": "boolean", "default": false },
+    "ops": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["kind"],
+        "properties": {
+          "kind": {
+            "enum": ["registry", "service", "task", "power", "handler"]
+          }
+        }
+      }
+    }
+  }
+}

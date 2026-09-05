@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "fixtureId": "vm-lab-25h2",
+  "note": "Target fabric for mutating tests. Virtual GPU. 8 GB RAM. See docs/testing/vm-lab.md.",
+  "os": {
+    "build": 26200,
+    "displayVersion": "25H2",
+    "editionId": "Professional",
+    "productName": "Windows 10 Pro",
+    "isWindows11": true
+  },
+  "hardware": {
+    "cpuName": "virtual",
+    "logicalProcessors": 4,
+    "ramGb": 8,
+    "gpus": ["VMware SVGA"]
+  },
+  "volumes": {
+    "cFreeGb": 40,
+    "dFreeGb": null
+  }
+}

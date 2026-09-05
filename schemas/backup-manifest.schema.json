@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://windowslab.local/schemas/backup-manifest.json",
+  "title": "BackupManifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["backupId", "createdUtc", "hostBuild", "reason", "layers"],
+  "properties": {
+    "backupId": { "type": "string" },
+    "createdUtc": { "type": "string", "format": "date-time" },
+    "hostBuild": { "type": "integer" },
+    "reason": { "type": "string" },
+    "dataRoot": { "type": "string" },
+    "layers": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "logical",
+          "registry",
+          "service",
+          "task",
+          "firewall",
+          "power",
+          "restorePoint"
+        ]
+      }
+    }
+  }
+}
