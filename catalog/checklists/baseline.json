@@ -1,0 +1,593 @@
+[
+  {
+    "id": "account.local",
+    "order": 10,
+    "section": "Cuenta",
+    "title": "Sesión con cuenta local",
+    "policy": "recommend",
+    "description": "Cuenta Microsoft/Entra envía identidad a la nube y bloquea un baseline sin red. Pasa a cuenta local; no hace falta bypass de OOBE.",
+    "howTo": "Configuración > Cuentas > Tu información > Iniciar sesión con una cuenta local en su lugar. Crea PIN/contraseña local. No uses scripts de bypass de TPM/OOBE.",
+    "detect": { "kind": "localaccount" }
+  },
+  {
+    "id": "account.no-msa-sync",
+    "order": 11,
+    "section": "Cuenta",
+    "title": "No sincronizar tema/contraseñas con MSA",
+    "policy": "info",
+    "description": "Si ya eres local, no vuelvas a vincular Microsoft para 'sincronizar configuración'.",
+    "howTo": "Configuración > Cuentas > Cuentas de correo y aplicaciones. Quita la cuenta Microsoft si no la necesitas para Store.",
+    "detect": { "kind": "manual" }
+  },
+  {
+    "id": "telemetry.allow-required",
+    "order": 20,
+    "section": "Telemetría",
+    "title": "Diagnóstico al mínimo oficial (Required = 1)",
+    "policy": "recommend",
+    "description": "En Windows 11 Home/Pro no existe 'telemetría cero'. AllowTelemetry=0 solo aplica a Enterprise/Education/IoT. El suelo es Required.",
+    "howTo": "Configuración > Privacidad y seguridad > Diagnósticos y comentarios > Datos de diagnóstico = Obligatorio. Opcional: desactiva 'Experiencias a medida' y 'Mejorar el lápiz y el teclado'.",
+    "detect": { "kind": "telemetry" }
+  },
+  {
+    "id": "telemetry.tailored-off",
+    "order": 21,
+    "section": "Telemetría",
+    "title": "Experiencias a medida desactivadas",
+    "policy": "recommend",
+    "description": "TailoredExperiencesWithDiagnosticDataEnabled=0.",
+    "howTo": "Privacidad > Diagnósticos > Experiencias a medida = Off. Catálogo: privacy.tailored-experiences-off",
+    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Privacy", "name": "TailoredExperiencesWithDiagnosticDataEnabled" },
+    "desired": { "equals": 0 }
+  },
+  {
+    "id": "telemetry.advertising-id-off",
+    "order": 22,
+    "section": "Telemetría",
+    "title": "Identificador de publicidad off",
+    "policy": "recommend",
+    "description": "AdvertisingInfo Enabled=0.",
+    "howTo": "Privacidad > General > Identificador de publicidad = Off.",
+    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo", "name": "Enabled" },
+    "desired": { "equals": 0 }
+  },
+  {
+    "id": "telemetry.ink-off",
+    "order": 23,
+    "section": "Telemetría",
+    "title": "Sin recopilación implícita de lápiz",
+    "policy": "recommend",
+    "description": "RestrictImplicitInkCollection=1.",
+    "howTo": "Privacidad > Personalización de entrada manuscrita y escritura.",
+    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\InputPersonalization", "name": "RestrictImplicitInkCollection" },
+    "desired": { "equals": 1 }
+  },
+  {
+    "id": "telemetry.text-off",
+    "order": 24,
+    "section": "Telemetría",
+    "title": "Sin recopilación implícita de texto",
+    "policy": "recommend",
+    "description": "RestrictImplicitTextCollection=1.",
+    "howTo": "Privacidad > Personalización de entrada manuscrita y escritura.",
+    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\InputPersonalization", "name": "RestrictImplicitTextCollection" },
+    "desired": { "equals": 1 }
+  },
+  {
+    "id": "telemetry.content-delivery-off",
+    "order": 25,
+    "section": "Telemetría",
+    "title": "Menos sugerencias de bloqueo / contenido",
+    "policy": "recommend",
+    "description": "SubscribedContent-338387Enabled=0.",
+    "howTo": "Personalización > Pantalla de bloqueo > Consejos. Catálogo privacy.content-delivery-off.",
+    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SubscribedContent-338387Enabled" },
+    "desired": { "equals": 0 }
+  },
+  {
+    "id": "telemetry.silent-apps-off",
+    "order": 26,
+    "section": "Telemetría",
+    "title": "Sin apps instaladas en silencio",
+    "policy": "recommend",
+    "description": "SilentInstalledAppsEnabled=0 evita sugerencias promocionales de Store.",
+    "howTo": "Catálogo privacy.silent-installed-apps-off.",
+    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SilentInstalledAppsEnabled" },
+    "desired": { "equals": 0 }
+  },
+  {
+    "id": "telemetry.start-suggestions-off",
+    "order": 27,
+    "section": "Telemetría",
+    "title": "Sin sugerencias en Inicio",
+    "policy": "recommend",
+    "description": "SystemPaneSuggestionsEnabled=0.",
+    "howTo": "Configuración > Personalización > Inicio > Mostrar sugerencias = Off.",
+    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SystemPaneSuggestionsEnabled" },
+    "desired": { "equals": 0 }
+  },
+  {
+    "id": "telemetry.search-highlights-off",
+    "order": 28,
+    "section": "Telemetría",
+    "title": "Destacados de búsqueda off",
+    "policy": "recommend",
+    "description": "IsDynamicSearchBoxEnabled=0.",
+    "howTo": "Privacidad / Buscar > Destacados de búsqueda = Off.",
+    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\SearchSettings", "name": "IsDynamicSearchBoxEnabled" },
+    "desired": { "equals": 0 }
+  },
+  {
+    "id": "telemetry.no-kill-diagtrack",
+    "order": 29,
+    "section": "Telemetría",
+    "title": "No deshabilitar DiagTrack / CompatTelRunner",
+    "policy": "never",
+    "description": "Matar Connected User Experiences and Telemetry no elimina la telemetría Required y suele relanzarse en actualizaciones.",
+    "howTo": "Déjalo. Reduce datos opcionales; no borres el servicio.",
+    "detect": { "kind": "service", "service": "DiagTrack" }
+  },
+  {
+    "id": "network.offline-setup",
+    "order": 30,
+    "section": "Red y sin conexión",
+    "title": "Configurar el PC primero sin red",
+    "policy": "info",
+    "description": "OOBE y la primera sesión sin Ethernet/Wi‑Fi evitan forzar MSA. No desactives la pila TCP/IP ni el adaptador de forma permanente.",
+    "howTo": "Modo avión o desenchufa el cable. Termina cuenta local, zona horaria, nombre del PC. Luego conecta para Windows Update.",
+    "detect": { "kind": "manual" }
+  },
+  {
+    "id": "network.delivery-opt-lan",
+    "order": 31,
+    "section": "Red y sin conexión",
+    "title": "Delivery Optimization solo LAN (o HTTP)",
+    "policy": "recommend",
+    "description": "DODownloadMode=1 (LAN) o 0 (solo HTTP). Evita peering a Internet. No apagues Windows Update.",
+    "howTo": "Configuración > Windows Update > Opciones avanzadas > Optimización de distribución = PCs en la red local. Política: DODownloadMode=1.",
+    "detect": { "kind": "registry", "hive": "HKLM", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization", "name": "DODownloadMode" },
+    "desired": { "equals": 1 }
+  },
+  {
+    "id": "network.metered",
+    "order": 32,
+    "section": "Red y sin conexión",
+    "title": "Wi‑Fi como conexión de uso medido (opcional)",
+    "policy": "info",
+    "description": "Reduce descargas automáticas de Store y algunos updates grandes en redes lentas. No sustituye a 'sin red'.",
+    "howTo": "Configuración > Red e Internet > Wi‑Fi > propiedades > Conexión de uso medido = On.",
+    "detect": { "kind": "manual" }
+  },
+  {
+    "id": "network.firewall-on",
+    "order": 33,
+    "section": "Red y sin conexión",
+    "title": "Firewall del perfil estándar ON",
+    "policy": "recommend",
+    "description": "Apagar el firewall no es un baseline. Perfil público especialmente.",
+    "howTo": "Seguridad de Windows > Firewall y protección de red. Los tres perfiles On.",
+    "detect": { "kind": "firewall" }
+  },
+  {
+    "id": "network.no-disable-stack",
+    "order": 34,
+    "section": "Red y sin conexión",
+    "title": "No deshabilitar DHCP, DNS, NetBT ni IPv6 'por privacidad'",
+    "policy": "never",
+    "description": "Rompe Store, Update, VPN y VMware. IPv6 off no es un boost.",
+    "howTo": "Deja IPv4+IPv6. Si no quieres red: modo avión, no cirugías de adaptador.",
+    "detect": { "kind": "manual" }
+  },
+  {
+    "id": "security.defender-on",
+    "order": 40,
+    "section": "Seguridad (mantener)",
+    "title": "Microsoft Defender activo",
+    "policy": "recommend",
+    "description": "WindowsLab no recomienda desactivar Defender, RTP, HVCI ni Secure Boot.",
+    "howTo": "Seguridad de Windows > Protección contra virus. Si un 'optimizer' lo apagó, reactívalo.",
+    "detect": { "kind": "defender" }
+  },
+  {
+    "id": "security.windefend-service",
+    "order": 41,
+    "section": "Seguridad (mantener)",
+    "title": "Servicio WinDefend no deshabilitado",
+    "policy": "never",
+    "description": "Start=4 aquí es un hueco de seguridad, no una optimización.",
+    "howTo": "No uses sc config WinDefend start= disabled.",
+    "detect": { "kind": "service", "service": "WinDefend" }
+  },
+  {
+    "id": "security.uac-keep",
+    "order": 42,
+    "section": "Seguridad (mantener)",
+    "title": "UAC en el nivel por defecto o superior",
+    "policy": "never",
+    "description": "EnableLUA=0 es un anti-patrón. Beta 0 no lo recomienda.",
+    "howTo": "Configuración > Sistema > Información > Configuración de Control de cuentas de usuario = predeterminado.",
+    "detect": { "kind": "registry", "hive": "HKLM", "path": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System", "name": "EnableLUA" },
+    "desired": { "equals": 1 }
+  },
+  {
+    "id": "security.smartscreen-keep",
+    "order": 43,
+    "section": "Seguridad (mantener)",
+    "title": "SmartScreen del sistema: no forzar Off",
+    "policy": "never",
+    "description": "SmartScreen avisa de setup.exe sin firma (WindowsLab inclusive). No lo apagues para 'ir más rápido'.",
+    "howTo": "Seguridad de Windows > Control de aplicaciones y navegador.",
+    "detect": { "kind": "manual" }
+  },
+  {
+    "id": "security.bitlocker-recovery",
+    "order": 44,
+    "section": "Seguridad (mantener)",
+    "title": "Clave de recuperación BitLocker fuera del PC",
+    "policy": "info",
+    "description": "Si el volumen está cifrado, imprime o guarda la clave fuera del disco. WindowsLab no la almacena.",
+    "howTo": "manage-bde -protectors -get C:  (admin, solo lectura) o cuenta Microsoft/imprimir. No la pongas en el repo.",
+    "detect": { "kind": "manual" }
+  },
+  {
+    "id": "explorer.file-extensions",
+    "order": 50,
+    "section": "Explorador y accesos",
+    "title": "Mostrar extensiones de archivo",
+    "policy": "recommend",
+    "description": "HideFileExt=0. Baseline de seguridad (ver .exe disfrazado).",
+    "howTo": "Explorador > Ver > Mostrar > Extensiones de nombre de archivo.",
+    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "HideFileExt" },
+    "desired": { "equals": 0 }
+  },
+  {
+    "id": "explorer.hidden-files",
+    "order": 51,
+    "section": "Explorador y accesos",
+    "title": "Mostrar archivos ocultos (dev)",
+    "policy": "recommend",
+    "description": "Hidden=1. No actives archivos de sistema protegidos.",
+    "howTo": "Ver > Mostrar > Elementos ocultos.",
+    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "Hidden" },
+    "desired": { "equals": 1 }
+  },
+  {
+    "id": "explorer.superhidden-off",
+    "order": 52,
+    "section": "Explorador y accesos",
+    "title": "Ocultar archivos protegidos del SO",
+    "policy": "recommend",
+    "description": "ShowSuperHidden=0. Ver pagefile/hiberfil es peligroso, no útil.",
+    "howTo": "Opciones de carpeta > no marcar 'Mostrar archivos de sistema protegidos'.",
+    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "ShowSuperHidden" },
+    "desired": { "equals": 0 }
+  },
+  {
+    "id": "explorer.launch-this-pc",
+    "order": 53,
+    "section": "Explorador y accesos",
+    "title": "Explorador abre 'Este equipo'",
+    "policy": "recommend",
+    "description": "LaunchTo=1. Acceso rápido al árbol de discos, no a Inicio/Home.",
+    "howTo": "Opciones de carpeta > Abrir el Explorador de archivos en = Este equipo.",
+    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "LaunchTo" },
+    "desired": { "equals": 1 }
+  },
+  {
+    "id": "explorer.quickaccess-frequent-off",
+    "order": 54,
+    "section": "Explorador y accesos",
+    "title": "Acceso rápido: no mostrar frecuentes",
+    "policy": "recommend",
+    "description": "ShowFrequent=0. Privacidad local (historial de carpetas).",
+    "howTo": "Opciones de carpeta > Privacidad > desmarca 'Mostrar los archivos de uso frecuente'.",
+    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer", "name": "ShowFrequent" },
+    "desired": { "equals": 0 }
+  },
+  {
+    "id": "explorer.quickaccess-recent-off",
+    "order": 55,
+    "section": "Explorador y accesos",
+    "title": "Acceso rápido: no mostrar recientes",
+    "policy": "recommend",
+    "description": "ShowRecent=0.",
+    "howTo": "Opciones de carpeta > Privacidad > desmarca recientes. Fija a mano D:\\ y proyectos.",
+    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer", "name": "ShowRecent" },
+    "desired": { "equals": 0 }
+  },
+  {
+    "id": "explorer.pin-folders",
+    "order": 56,
+    "section": "Explorador y accesos",
+    "title": "Fijar carpetas de trabajo en Acceso rápido",
+    "policy": "info",
+    "description": "Sustituye el historial automático por pines explícitos (D:\\WindowsLab, repos).",
+    "howTo": "Clic derecho en la carpeta > Anclar a Acceso rápido. Barra de tareas: anclar Explorador, Terminal, Cursor.",
+    "detect": { "kind": "manual" }
+  },
+  {
+    "id": "explorer.shortcuts-keyboard",
+    "order": 57,
+    "section": "Explorador y accesos",
+    "title": "Atajos de teclado de Windows (no los cambies)",
+    "policy": "info",
+    "description": "Win+E Explorador, Win+I Configuración, Win+X menú admin, Win+V portapapeles, Win+Shift+S recorte, Win+L bloquear, Alt+Tab, Win+Tab, Ctrl+Shift+Esc Administrador de tareas.",
+    "howTo": "PowerToys (opcional) para remap; no instales 'hotkey managers' con irm|iex.",
+    "detect": { "kind": "manual" }
+  },
+  {
+    "id": "taskbar.widgets-off",
+    "order": 60,
+    "section": "Barra y teclado",
+    "title": "Widgets de la barra off",
+    "policy": "recommend",
+    "description": "TaskbarDa=0. Menos noticias/MSA en la barra.",
+    "howTo": "Clic derecho barra > Widgets = Off.",
+    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "TaskbarDa" },
+    "desired": { "equals": 0 }
+  },
+  {
+    "id": "taskbar.search-icon",
+    "order": 61,
+    "section": "Barra y teclado",
+    "title": "Buscar de la barra: icono u oculto",
+    "policy": "recommend",
+    "description": "SearchboxTaskbarMode 0=oculto, 1=icono. El cuadro de búsqueda (2) mete destacados.",
+    "howTo": "Personalización > Barra de tareas > Buscar = Solo icono u oculto (no el cuadro).",
+    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Search", "name": "SearchboxTaskbarMode" },
+    "desired": { "equals": "0|1" }
+  },
+  {
+    "id": "taskbar.chat-off",
+    "order": 62,
+    "section": "Barra y teclado",
+    "title": "Chat/Teams de la barra off",
+    "policy": "recommend",
+    "description": "TaskbarMn=0 si existe en tu build.",
+    "howTo": "Personalización > Barra de tareas > Chat = Off.",
+    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "TaskbarMn" },
+    "desired": { "equals": 0 }
+  },
+  {
+    "id": "keyboard.sticky-hotkey-off",
+    "order": 63,
+    "section": "Barra y teclado",
+    "title": "Sticky Keys: sin atajo Shift×5",
+    "policy": "recommend",
+    "description": "Flags típicos 510 → 498 quita HOTKEYACTIVE+CONFIRMHOTKEY. Accesibilidad se mantiene disponible.",
+    "howTo": "Configuración > Accesibilidad > Teclado > Teclas persistentes > atajo de teclado = Off.",
+    "detect": { "kind": "registry", "hive": "HKCU", "path": "Control Panel\\Accessibility\\StickyKeys", "name": "Flags" },
+    "desired": { "equals": "498" }
+  },
+  {
+    "id": "system.disk-free",
+    "order": 70,
+    "section": "Sistema",
+    "title": "C: con ≥ 20 GB libres",
+    "policy": "recommend",
+    "description": "Puntos de restauración y actualizaciones fallan con C: justo. WindowsLab no mueve VSS solo.",
+    "howTo": "Mueve repos/ISOs a D:. No llenes C: con Steam si D: existe.",
+    "detect": { "kind": "diskfree" }
+  },
+  {
+    "id": "system.timezone-locale",
+    "order": 71,
+    "section": "Sistema",
+    "title": "Zona horaria, idioma y teclado",
+    "policy": "info",
+    "description": "Hazlo en la sesión sin red: es-ES, teclado, hora. Evita que MSA te pise el idioma.",
+    "howTo": "Configuración > Hora e idioma. Añade teclado; quita layouts extra.",
+    "detect": { "kind": "manual" }
+  },
+  {
+    "id": "system.power-balanced",
+    "order": 72,
+    "section": "Sistema",
+    "title": "Plan de energía: no 'Ultimate' de foros",
+    "policy": "info",
+    "description": "Equilibrado o Alto rendimiento de Windows. No importes .pow desconocidos ni desactives CPU parking con scripts.",
+    "howTo": "powercfg /list (lectura). Cambios de plan: el operador, no el catálogo Beta 0.",
+    "detect": { "kind": "manual" }
+  },
+  {
+    "id": "system.restore-point-later",
+    "order": 73,
+    "section": "Sistema",
+    "title": "Punto de restauración antes de apply (fases 3–4)",
+    "policy": "info",
+    "description": "Beta 0 no escribe. Cuando haya apply, backup primero. No ejecutes vssadmin en el host salvo que lo pidas.",
+    "howTo": "Protección del sistema > Crear. Preferir sombras de C: en D: si C: está justo (admin, documentado).",
+    "detect": { "kind": "manual" }
+  },
+  {
+    "id": "system.long-paths",
+    "order": 74,
+    "section": "Sistema",
+    "title": "Rutas largas (dev)",
+    "policy": "recommend",
+    "description": "LongPathsEnabled=1. HKLM: detect-only en Beta 0.",
+    "howTo": "Catálogo developer.long-paths. Requiere admin para aplicar más adelante.",
+    "detect": { "kind": "registry", "hive": "HKLM", "path": "SYSTEM\\CurrentControlSet\\Control\\FileSystem", "name": "LongPathsEnabled" },
+    "desired": { "equals": 1 }
+  },
+  {
+    "id": "never.proc.msmpeng",
+    "order": 80,
+    "section": "Procesos y servicios (no matar)",
+    "title": "MsMpEng (Defender) — no terminar",
+    "policy": "never",
+    "description": "El Administrador de tareas no es un debloater. Windows relanza el antivirus.",
+    "howTo": "Si está running, correcto. Si no, revisa Seguridad de Windows.",
+    "detect": { "kind": "process", "process": "MsMpEng" }
+  },
+  {
+    "id": "never.svc.sysmain",
+    "order": 81,
+    "section": "Procesos y servicios (no matar)",
+    "title": "SysMain (Superfetch) — no deshabilitar por defecto",
+    "policy": "never",
+    "description": "En SSD modernos el impacto es bajo. Deshabilitarlo no es un boost medido.",
+    "howTo": "Déjalo Auto/Manual. No sc config SysMain start= disabled.",
+    "detect": { "kind": "service", "service": "SysMain" }
+  },
+  {
+    "id": "never.svc.wsearch",
+    "order": 82,
+    "section": "Procesos y servicios (no matar)",
+    "title": "WSearch — no deshabilitar por defecto",
+    "policy": "never",
+    "description": "Indexación usa CPU al principio; apagarla rompe Buscar. No es telemetría.",
+    "howTo": "Si molesta: pausa indexación en Opciones de indización, no mates SearchHost.",
+    "detect": { "kind": "service", "service": "WSearch" }
+  },
+  {
+    "id": "never.proc.dwm",
+    "order": 83,
+    "section": "Procesos y servicios (no matar)",
+    "title": "dwm / csrss / lsass / winlogon — jamás",
+    "policy": "never",
+    "description": "Matarlos cuelga o corrompe la sesión. Ningún 'FPS pack' debe tocarlos.",
+    "howTo": "Ni Task Manager ni scripts. Si un pack lo propone, descártalo.",
+    "detect": { "kind": "process", "process": "dwm" }
+  },
+  {
+    "id": "never.proc.searchhost",
+    "order": 84,
+    "section": "Procesos y servicios (no matar)",
+    "title": "SearchHost / StartMenuExperienceHost / RuntimeBroker",
+    "policy": "never",
+    "description": "Shell de Windows 11. 'Eliminar procesos' aquí es folklore, no laboratorio.",
+    "howTo": "Detectamos estado. No hay acción.",
+    "detect": { "kind": "process", "process": "SearchHost" }
+  },
+  {
+    "id": "apps.git",
+    "order": 90,
+    "section": "Programas externos",
+    "title": "Git en PATH",
+    "policy": "info",
+    "description": "Instala el paquete oficial. No irm|iex.",
+    "howTo": "https://git-scm.com/download/win o winget install Git.Git",
+    "detect": { "kind": "toolchain", "tool": "git" }
+  },
+  {
+    "id": "apps.dotnet",
+    "order": 91,
+    "section": "Programas externos",
+    "title": "SDK .NET en PATH",
+    "policy": "info",
+    "description": "Este repo usa .NET 10. El runtime del producto va self-contained.",
+    "howTo": "winget install Microsoft.DotNet.SDK.10 — o el instalador de Microsoft.",
+    "detect": { "kind": "toolchain", "tool": "dotnet" }
+  },
+  {
+    "id": "apps.cursor",
+    "order": 92,
+    "section": "Programas externos",
+    "title": "Cursor / VS Code",
+    "policy": "info",
+    "description": "Editor. Ancla a la barra. No hace falta 'optimizer' aparte.",
+    "howTo": "Instalador oficial Cursor. Opcional: code en PATH.",
+    "detect": { "kind": "toolchain", "tool": "cursor" }
+  },
+  {
+    "id": "apps.pwsh",
+    "order": 93,
+    "section": "Programas externos",
+    "title": "PowerShell 7 (pwsh)",
+    "policy": "info",
+    "description": "Mejor que Windows PowerShell 5.1 para scripts de lab. No sustituye la política de ejecución a Unrestricted global.",
+    "howTo": "winget install Microsoft.PowerShell",
+    "detect": { "kind": "toolchain", "tool": "pwsh" }
+  },
+  {
+    "id": "apps.winget",
+    "order": 94,
+    "section": "Programas externos",
+    "title": "winget (App Installer)",
+    "policy": "info",
+    "description": "Canal oficial de paquetes. Prefiérelo a scripts de GitHub crudos.",
+    "howTo": "Microsoft Store > Instalador de aplicación.",
+    "detect": { "kind": "toolchain", "tool": "winget" }
+  },
+  {
+    "id": "apps.docker-wsl",
+    "order": 95,
+    "section": "Programas externos",
+    "title": "Docker / WSL (si los usas)",
+    "policy": "info",
+    "description": "Conviven con Hyper-V/VMware con fricción. No es un tweak de WindowsLab.",
+    "howTo": "Documenta qué hipervisor es primario. No desactives Hyper-V 'para FPS' si usas WSL2.",
+    "detect": { "kind": "toolchain", "tool": "docker" }
+  },
+  {
+    "id": "apps.vmware",
+    "order": 96,
+    "section": "Programas externos",
+    "title": "VMware Workstation (lab)",
+    "policy": "info",
+    "description": "Mutating tests van en WindowsLab-Test-25H2, no en el host. VMware Tools solo dentro de la VM.",
+    "howTo": "No apliques tweaks al host. ISO 25H2 limpia para el clone.",
+    "detect": { "kind": "toolchain", "tool": "vmware" }
+  },
+  {
+    "id": "apps.gpu",
+    "order": 97,
+    "section": "Programas externos",
+    "title": "Panel GPU (NVIDIA App / AMD Adrenalin)",
+    "policy": "info",
+    "description": "Instala el paquete del fabricante. Overlay/ShadowPlay: apágalo in-game si mides. No uses DDU salvo driver roto.",
+    "howTo": "nvidia.com o amd.com. En juegos: overlay off si te molesta. No 'NVIDIA stealth' de foros.",
+    "detect": { "kind": "process", "process": "NVIDIA Overlay" }
+  },
+  {
+    "id": "apps.steam",
+    "order": 98,
+    "section": "Programas externos",
+    "title": "Steam overlay (opcional)",
+    "policy": "info",
+    "description": "No es telemetría de Windows. Overlay puede añadir overhead. Biblioteca en D: si C: está justo.",
+    "howTo": "Steam > Configuración > En el juego > overlay. Biblioteca: D:\\SteamLibrary.",
+    "detect": { "kind": "process", "process": "steam" }
+  },
+  {
+    "id": "apps.no-irm-iex",
+    "order": 99,
+    "section": "Programas externos",
+    "title": "Prohibido irm | iex y 'Windows utility' genéricos",
+    "policy": "never",
+    "description": "ChrisTitus winutil, debloaters y .bat de GitHub no son el catálogo de WindowsLab.",
+    "howTo": "Instala con winget/MSI firmado. Tweaks: detect/simulate aquí; apply solo en la VM.",
+    "detect": { "kind": "manual" }
+  },
+  {
+    "id": "never.disable-updates",
+    "order": 110,
+    "section": "No hacer nunca",
+    "title": "No pausar Windows Update para siempre",
+    "policy": "never",
+    "description": "Un baseline offline es para OOBE/cuenta local, no para dejar el PC sin parches.",
+    "howTo": "Tras la cuenta local, conecta y actualiza. Pausa corta si estás midiendo, no política permanente.",
+    "detect": { "kind": "manual" }
+  },
+  {
+    "id": "never.iso-bypass",
+    "order": 111,
+    "section": "No hacer nunca",
+    "title": "No bypass TPM / ISO custom / Rufus 'remove requirements'",
+    "policy": "never",
+    "description": "Fuera de alcance (D008). No es parte del lab.",
+    "howTo": "Instala Windows 11 soportado. Lab VM con TPM virtual.",
+    "detect": { "kind": "manual" }
+  },
+  {
+    "id": "never.host-mutation",
+    "order": 112,
+    "section": "No hacer nunca",
+    "title": "No aplicar tweaks mutantes en el PC diario",
+    "policy": "never",
+    "description": "Beta 0 bloquea apply (exit 13). El host no es el banco de pruebas.",
+    "howTo": "windowslab tweak simulate. Apply en WindowsLab-Test-25H2.",
+    "detect": { "kind": "manual" }
+  }
+]

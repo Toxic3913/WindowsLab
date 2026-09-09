@@ -1,0 +1,23 @@
+[
+  {
+    "id": "network.delivery-opt-lan",
+    "title": "Optimización de distribución: solo LAN",
+    "description": "DODownloadMode=1. No desactiva Windows Update. HKLM política: detect-only en Beta 0.",
+    "category": "network",
+    "risk": "LOW",
+    "evidence": "OFFICIAL",
+    "evidenceRefs": ["https://learn.microsoft.com/windows/deployment/do/waas-delivery-optimization-reference"],
+    "minBuild": 22000,
+    "editions": ["*"],
+    "profiles": ["balanced", "developer", "gaming"],
+    "requires": [],
+    "conflicts": [],
+    "requiresReboot": false,
+    "affectsSecurity": false,
+    "affectsUpdates": true,
+    "affectsCompatibility": false,
+    "detect": { "kind": "registry", "hive": "HKLM", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization", "name": "DODownloadMode", "valueKind": "DWord" },
+    "desired": { "equals": 1 },
+    "ops": [{ "kind": "registry", "hive": "HKLM", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization", "name": "DODownloadMode", "valueKind": "DWord", "value": "1" }]
+  }
+]

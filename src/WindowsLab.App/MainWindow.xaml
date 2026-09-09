@@ -1,0 +1,110 @@
+<Window x:Class="WindowsLab.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="WindowsLab Beta 0"
+        Height="720" Width="1100"
+        WindowStartupLocation="CenterScreen"
+        Background="#FF121212">
+  <DockPanel>
+    <Border DockPanel.Dock="Top" Background="#FF1A1A1A" Padding="16,10">
+      <DockPanel>
+        <TextBlock Text="WindowsLab" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
+        <TextBlock x:Name="SubtitleText" Margin="16,0,0,0" Foreground="#FF9A9A9A" VerticalAlignment="Center"
+                   Text="Beta 0 — solo lectura"/>
+        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+          <TextBlock Text="Perfil" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="#FF9A9A9A"/>
+          <ComboBox x:Name="ProfileBox" Width="160" SelectionChanged="ProfileBox_OnSelectionChanged">
+            <ComboBoxItem Content="balanced" IsSelected="True"/>
+            <ComboBoxItem Content="developer"/>
+            <ComboBoxItem Content="gaming"/>
+            <ComboBoxItem Content="virtualization"/>
+          </ComboBox>
+        </StackPanel>
+      </DockPanel>
+    </Border>
+    <ListBox x:Name="Nav" DockPanel.Dock="Left" Width="180" SelectionChanged="Nav_OnSelectionChanged">
+      <ListBoxItem Content="Inicio" IsSelected="True"/>
+      <ListBoxItem Content="Configurar"/>
+      <ListBoxItem Content="Sistema"/>
+      <ListBoxItem Content="Seguridad"/>
+      <ListBoxItem Content="Tweaks"/>
+      <ListBoxItem Content="Consejos"/>
+      <ListBoxItem Content="Checklist"/>
+      <ListBoxItem Content="Ajustes"/>
+    </ListBox>
+    <Grid Margin="16">
+      <ScrollViewer x:Name="PageHome" VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+          <TextBlock x:Name="HomeSummary" FontSize="16" TextWrapping="Wrap"/>
+          <TextBlock x:Name="HomeWarn" Margin="0,12,0,0" Foreground="#FFFFB347" TextWrapping="Wrap"/>
+          <TextBlock Margin="0,16,0,8" FontWeight="SemiBold" Text="Packs de configuración"/>
+          <ItemsControl x:Name="HomePresetList"/>
+          <TextBlock Margin="0,16,0,8" FontWeight="SemiBold" Text="Sondas"/>
+          <ItemsControl x:Name="ProbeList"/>
+        </StackPanel>
+      </ScrollViewer>
+      <DockPanel x:Name="PageConfig" Visibility="Collapsed">
+        <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,0,0,8"
+                   Text="Elige un pack. Cada fila abre la página de Windows correspondiente. WindowsLab no escribe el registro en Beta 0: tú confirmas el cambio en Configuración."/>
+        <ListBox x:Name="PresetList" DockPanel.Dock="Left" Width="240" DisplayMemberPath="Label"
+                 SelectionChanged="PresetList_OnSelectionChanged" Margin="0,0,12,0"/>
+        <DockPanel>
+          <StackPanel DockPanel.Dock="Top">
+            <TextBlock x:Name="PresetTitle" FontSize="18" FontWeight="SemiBold"/>
+            <TextBlock x:Name="PresetSummary" TextWrapping="Wrap" Margin="0,6,0,8" Foreground="#FFB0B0B0"/>
+            <TextBlock x:Name="PresetProgress" FontWeight="SemiBold" Margin="0,0,0,8"/>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+              <Button Content="Abrir Configuración de Windows" Click="OpenPresetSettings_OnClick" Margin="0,0,8,0" Padding="10,4"/>
+              <Button Content="Simular pack" Click="SimulatePreset_OnClick" Margin="0,0,8,0" Padding="10,4"/>
+              <Button Content="Abrir ajuste seleccionado" Click="OpenSelectedSetting_OnClick" Margin="0,0,8,0" Padding="10,4"/>
+              <Button Content="Aplicar pack" IsEnabled="False" ToolTip="Beta 0: bloqueado (exit 13). Apply solo en la VM." Padding="10,4"/>
+            </StackPanel>
+            <TextBlock x:Name="PresetSimulateText" TextWrapping="Wrap" Margin="0,0,0,8"/>
+          </StackPanel>
+          <DataGrid x:Name="PresetGrid" AutoGenerateColumns="False" IsReadOnly="False" SelectionMode="Single">
+            <DataGrid.Columns>
+              <DataGridCheckBoxColumn Header="Incluir" Binding="{Binding Include, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="70"/>
+              <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" IsReadOnly="True" Width="80"/>
+              <DataGridTextColumn Header="Ajuste" Binding="{Binding Title}" IsReadOnly="True" Width="280"/>
+              <DataGridTextColumn Header="Actual" Binding="{Binding Actual}" IsReadOnly="True" Width="140"/>
+              <DataGridTextColumn Header="Objetivo" Binding="{Binding Desired}" IsReadOnly="True" Width="140"/>
+              <DataGridTextColumn Header="Cómo" Binding="{Binding HowTo}" IsReadOnly="True" Width="*"/>
+            </DataGrid.Columns>
+          </DataGrid>
+        </DockPanel>
+      </DockPanel>
+      <ScrollViewer x:Name="PageSystem" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+        <StackPanel x:Name="SystemPanel"/>
+      </ScrollViewer>
+      <ScrollViewer x:Name="PageSecurity" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+        <StackPanel x:Name="SecurityPanel"/>
+      </ScrollViewer>
+      <DockPanel x:Name="PageTweaks" Visibility="Collapsed">
+        <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,0,0,8"
+                   Text="Catálogo curado. Aplicar está deshabilitado. Simular muestra actual vs desired sin escribir."/>
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,8,0,0">
+          <Button Content="Simular selección" Click="Simulate_OnClick"/>
+          <Button Content="Aplicar" IsEnabled="False" ToolTip="Beta 0: bloqueado"/>
+          <TextBlock x:Name="SimulateText" VerticalAlignment="Center" TextWrapping="Wrap"/>
+        </StackPanel>
+        <DataGrid x:Name="TweakGrid" SelectionMode="Single" AutoGenerateColumns="True"/>
+      </DockPanel>
+      <DockPanel x:Name="PageAdvice" Visibility="Collapsed">
+        <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,0,0,8"
+                   Text="Consejos según perfil. EXPERIMENTAL y UNKNOWN no aparecen. No hay 'aplicar todo'."/>
+        <DataGrid x:Name="AdviceGrid" AutoGenerateColumns="True"/>
+      </DockPanel>
+      <DockPanel x:Name="PageChecklist" Visibility="Collapsed">
+        <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,0,0,8"
+                   Text="Baseline de laboratorio: cuenta local, privacidad realista, red, accesos, programas. No se matan procesos ni se promete telemetría cero. Beta 0 no aplica nada."/>
+        <TextBlock x:Name="ChecklistSummary" DockPanel.Dock="Top" FontWeight="SemiBold" Margin="0,0,0,8"/>
+        <DataGrid x:Name="ChecklistGrid" AutoGenerateColumns="True" IsReadOnly="True"/>
+      </DockPanel>
+      <StackPanel x:Name="PageSettings" Visibility="Collapsed">
+        <TextBlock TextWrapping="Wrap" Text="Instalación: C:\Program Files\WindowsLab o zip portable. Datos: %ProgramData%\WindowsLab. Código: D:\WindowsLab."/>
+        <TextBlock Margin="0,12,0,0" TextWrapping="Wrap" Text="Sin firma Authenticode, SmartScreen puede avisar. No usa irm|iex. Apply/backup llegan con la VM (fases 3–4)."/>
+        <TextBlock Margin="0,12,0,0" x:Name="SettingsCatalogPath"/>
+      </StackPanel>
+    </Grid>
+  </DockPanel>
+</Window>

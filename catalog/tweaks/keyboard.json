@@ -1,0 +1,23 @@
+[
+  {
+    "id": "keyboard.stickykeys-hotkey-off",
+    "title": "Sticky Keys: desactivar atajo Shift×5",
+    "description": "Flags=498 (sin HOTKEYACTIVE/CONFIRMHOTKEY). Accesibilidad sigue disponible en Configuración. A menudo REG_SZ.",
+    "category": "keyboard",
+    "risk": "LOW",
+    "evidence": "STRONG",
+    "evidenceRefs": [],
+    "minBuild": 22000,
+    "editions": ["*"],
+    "profiles": ["gaming", "developer", "balanced"],
+    "requires": [],
+    "conflicts": [],
+    "requiresReboot": false,
+    "affectsSecurity": false,
+    "affectsUpdates": false,
+    "affectsCompatibility": false,
+    "detect": { "kind": "registry", "hive": "HKCU", "path": "Control Panel\\Accessibility\\StickyKeys", "name": "Flags", "valueKind": "String" },
+    "desired": { "equals": "498" },
+    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Control Panel\\Accessibility\\StickyKeys", "name": "Flags", "valueKind": "String", "value": "498" }]
+  }
+]

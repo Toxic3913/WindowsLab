@@ -19,7 +19,10 @@ D:\WindowsLab\                              # git repo / source / docs / tests
   docs/                                     # Phase 0 + living design
   schemas/                                  # JSON Schema for catalog + audit
   catalog/
-    tweaks/                                 # data-driven ops (empty until Phase 4)
+    tweaks/                                 # Beta 0 catalog (detect-only)
+    checklists/                             # baseline checklist (detect-only; no apply)
+    presets/                                # named packs: perf.max, privacy, desktop, custom
+
     checks/                                 # audit check defs (empty until Phase 2)
     profiles/                               # gaming / developer / balanced
   config/
@@ -29,15 +32,16 @@ D:\WindowsLab\                              # git repo / source / docs / tests
     vm-lab-25h2.json
   eng/                                      # scripts, not the product
   src/
-    WindowsLab.Core/                        # Phase 1 — models, OS identity, data root
-    WindowsLab.Cli/                         # Phase 1 — windowslab.exe
-    WindowsLab.Audit/                       # Phase 2 — placeholder
-    WindowsLab.Tweaks/                      # Phase 4 — placeholder
+    WindowsLab.Core/                        # models, OS identity, data root
+    WindowsLab.Cli/                         # windowslab.exe
+    WindowsLab.Audit/                       # Beta 0 probes
+    WindowsLab.Tweaks/                      # catalog + detect
+    WindowsLab.Recommendations/             # ranking
+    WindowsLab.App/                         # WPF Beta 0
+    WindowsLab.Setup/                       # setup.exe bootstrapper
     WindowsLab.Backup/                      # Phase 3 — placeholder
     WindowsLab.Benchmarks/                  # Phase 6 — placeholder
-    WindowsLab.Recommendations/             # Phase 4–6 — placeholder
     WindowsLab.Worker/                      # Phase 3–4 — placeholder
-    WindowsLab.App/                         # Phase 5 — placeholder
     WindowsLab.Plugins.Abstractions/        # Phase 10 — placeholder
   tests/
     WindowsLab.Core.Tests/                  # Phase 1

@@ -1,20 +1,20 @@
 # AGENTS.md
 
-WindowsLab is in **Phase 1 (foundation)**. Source lives in `D:\WindowsLab`. The installed program and runtime data live on **C:** (`%ProgramData%\WindowsLab`, `%LocalAppData%\WindowsLab`) — [docs/architecture/data-root.md](docs/architecture/data-root.md).
+WindowsLab is in **Beta 0 (read-only)**. Source lives in `D:\WindowsLab`. The installed program and runtime data live on **C:** (`%ProgramData%\WindowsLab`, `%LocalAppData%\WindowsLab`).
 
 Before coding:
 
-1. Read `docs/ROADMAP.md`, `docs/architecture/decision-log.md`, `docs/architecture/modules.md`, `docs/architecture/folder-structure.md`.
+1. Read `docs/ROADMAP.md`, `docs/architecture/decision-log.md`, `docs/architecture/modules.md`.
 2. Do not import ChrisTitusTech/winutil JSON as tweaks.
 3. Do not add `InvokeScript` to the default catalog.
 4. Do not call `Win32_Product`.
 5. Do not trust `ProductName` / `WindowsProductName` for OS family. Use `CurrentBuild >= 22000`.
-6. Do not test mutating tweaks on the host. Use VM `WindowsLab-Test-25H2` ([docs/testing/vm-lab.md](docs/testing/vm-lab.md)). Existing `D:\VM\Windows 11 x64` is dirty until proven otherwise.
-7. Grade evidence; if UNKNOWN, do not apply.
+6. Do not apply tweaks on the host. Beta 0 is detect/simulate only. Mutating tests: VM `WindowsLab-Test-25H2`.
+7. Grade evidence; if UNKNOWN or EXPERIMENTAL, do not recommend.
 8. Do not hardcode this PC’s CPU/GPU/RAM. Facts + `requires[]` only.
 9. Do not run `vssadmin` / System Restore changes on the host unless the operator asked.
 10. Prefer cheap models for boilerplate, medium for Windows internals, independent review for tweak handlers.
 
-Phase 1 scope: Core + Cli + tests. Do **not** start WinUI, Worker, or tweak apply until the matching phase.
+Beta 0 scope: Core + Audit + Tweaks.detect + Recommendations + Cli + WPF App + installer. **No** Worker apply, no backup writes, no WinUI yet (D017).
 
-CLI for agents: `windowslab audit --os` is read-only. Prefer JSON when `--output json` exists.
+CLI: prefer `--output json`. `windowslab tweak apply` and `windowslab preset apply` must exit 13. `windowslab checklist` and `windowslab preset list|show|simulate` are read-only.

@@ -1,9 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <AssemblyName>windowslab</AssemblyName>
-    <RootNamespace>WindowsLab.Cli</RootNamespace>
-    <Description>WindowsLab command-line client.</Description>
+    <OutputType>WinExe</OutputType>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>WindowsLab</AssemblyName>
+    <RootNamespace>WindowsLab.App</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\WindowsLab.Core\WindowsLab.Core.csproj" />

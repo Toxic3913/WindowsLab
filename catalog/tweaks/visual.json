@@ -1,0 +1,23 @@
+[
+  {
+    "id": "desktop.visual-fx-performance",
+    "title": "Efectos visuales: ajustar para el mejor rendimiento",
+    "description": "VisualFXSetting=2 (Propiedades del sistema > Rendimiento). Más feo, menos animaciones. No afirma FPS.",
+    "category": "desktop",
+    "risk": "LOW",
+    "evidence": "OFFICIAL",
+    "evidenceRefs": [],
+    "minBuild": 22000,
+    "editions": ["*"],
+    "profiles": ["gaming"],
+    "requires": [],
+    "conflicts": [],
+    "requiresReboot": false,
+    "affectsSecurity": false,
+    "affectsUpdates": false,
+    "affectsCompatibility": false,
+    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VisualEffects", "name": "VisualFXSetting", "valueKind": "DWord" },
+    "desired": { "equals": 2 },
+    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VisualEffects", "name": "VisualFXSetting", "valueKind": "DWord", "value": "2" }]
+  }
+]

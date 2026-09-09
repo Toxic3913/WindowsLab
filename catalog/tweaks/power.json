@@ -1,0 +1,23 @@
+[
+  {
+    "id": "power.best-performance",
+    "title": "Modo de energía: Mejor rendimiento",
+    "description": "ActiveOverlayAcPowerScheme = GUID oficial Best Performance. No es el plan Ultimate de foros. Detect-only en Beta 0.",
+    "category": "power",
+    "risk": "LOW",
+    "evidence": "OFFICIAL",
+    "evidenceRefs": ["https://learn.microsoft.com/windows/win32/api/powrprof/nf-powrprof-powersetuserconfiguredacpowermode"],
+    "minBuild": 22000,
+    "editions": ["*"],
+    "profiles": ["gaming", "balanced"],
+    "requires": [],
+    "conflicts": [],
+    "requiresReboot": false,
+    "affectsSecurity": false,
+    "affectsUpdates": false,
+    "affectsCompatibility": false,
+    "detect": { "kind": "registry", "hive": "HKLM", "path": "SYSTEM\\CurrentControlSet\\Control\\Power\\User\\PowerSchemes", "name": "ActiveOverlayAcPowerScheme", "valueKind": "String" },
+    "desired": { "equals": "ded574b5-45a0-4f42-8737-46345c09c238" },
+    "ops": [{ "kind": "registry", "hive": "HKLM", "path": "SYSTEM\\CurrentControlSet\\Control\\Power\\User\\PowerSchemes", "name": "ActiveOverlayAcPowerScheme", "valueKind": "String", "value": "ded574b5-45a0-4f42-8737-46345c09c238" }]
+  }
+]

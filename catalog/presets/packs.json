@@ -1,0 +1,137 @@
+[
+  {
+    "id": "perf.max",
+    "order": 10,
+    "title": "Rendimiento máximo",
+    "summary": "Modo Mejor rendimiento, Game Mode, menos DVR/captura, Sticky Keys sin atajo, menos chrome de barra. No toca Defender, Search ni telemetría Required.",
+    "settingsUri": "ms-settings:powersleep",
+    "tweakIds": [
+      "power.best-performance",
+      "gaming.game-mode-on",
+      "gaming.game-dvr-off",
+      "gaming.allow-game-dvr-off",
+      "gaming.hags-on",
+      "gaming.gamebar-tips-off",
+      "desktop.visual-fx-performance",
+      "taskbar.widgets-off",
+      "keyboard.stickykeys-hotkey-off"
+    ],
+    "checklistIds": [],
+    "steps": [
+      {
+        "title": "NVIDIA / AMD overlay in-game",
+        "howTo": "En el panel del fabricante, desactiva overlay y ShadowPlay/Replays si estás midiendo. No uses DDU salvo driver roto.",
+        "settingsUri": null
+      }
+    ]
+  },
+  {
+    "id": "privacy.lab",
+    "order": 20,
+    "title": "Privacidad de laboratorio",
+    "summary": "Diagnóstico al mínimo oficial (Required), sin anuncios ni sugerencias. No es telemetría cero.",
+    "settingsUri": "ms-settings:privacy-feedback",
+    "tweakIds": [
+      "privacy.allow-telemetry-required",
+      "privacy.advertising-id-off",
+      "privacy.tailored-experiences-off",
+      "privacy.start-track-progs-off",
+      "privacy.search-highlights-off",
+      "privacy.ink-personalization-off",
+      "privacy.restrict-implicit-text",
+      "privacy.content-delivery-off",
+      "privacy.silent-installed-apps-off",
+      "privacy.start-suggestions-off"
+    ],
+    "checklistIds": ["account.local", "telemetry.allow-required"]
+  },
+  {
+    "id": "desktop.lab",
+    "order": 30,
+    "title": "Explorador y accesos",
+    "summary": "Extensiones, Este equipo, Acceso rápido sin historial, barra limpia. Configuración específica de escritorio.",
+    "settingsUri": "ms-settings:taskbar",
+    "tweakIds": [
+      "explorer.show-file-extensions",
+      "explorer.show-hidden-files",
+      "explorer.hide-protected-os-files",
+      "explorer.launch-this-pc",
+      "explorer.hide-frequent-quick-access",
+      "explorer.hide-recent-quick-access",
+      "explorer.compact-mode",
+      "taskbar.widgets-off",
+      "taskbar.search-icon",
+      "taskbar.hide-task-view",
+      "keyboard.stickykeys-hotkey-off"
+    ],
+    "checklistIds": ["explorer.pin-folders", "explorer.shortcuts-keyboard"]
+  },
+  {
+    "id": "gaming",
+    "order": 40,
+    "title": "Juegos",
+    "summary": "Game Mode + menos captura en segundo plano. HAGS solo si hay GPU NVIDIA. No promete FPS.",
+    "settingsUri": "ms-settings:gaming-gamemode",
+    "tweakIds": [
+      "power.best-performance",
+      "gaming.game-mode-on",
+      "gaming.game-dvr-off",
+      "gaming.allow-game-dvr-off",
+      "gaming.hags-on",
+      "gaming.gamebar-tips-off",
+      "keyboard.stickykeys-hotkey-off"
+    ],
+    "checklistIds": ["apps.gpu", "apps.steam"]
+  },
+  {
+    "id": "developer",
+    "order": 50,
+    "title": "Desarrollo",
+    "summary": "Rutas largas, archivos ocultos, Este equipo, Alt+Tab solo ventanas. Sideload es MEDIUM: míralo antes.",
+    "settingsUri": "ms-settings:developers",
+    "tweakIds": [
+      "developer.long-paths",
+      "explorer.show-file-extensions",
+      "explorer.show-hidden-files",
+      "explorer.launch-this-pc",
+      "explorer.show-full-path",
+      "explorer.compact-mode",
+      "desktop.alttab-windows-only",
+      "developer.appmodel-unlock"
+    ],
+    "checklistIds": ["apps.git", "apps.dotnet", "apps.cursor", "apps.pwsh"]
+  },
+  {
+    "id": "offline",
+    "order": 60,
+    "title": "Cuenta local y sin red",
+    "summary": "Sesión local, Delivery Optimization LAN, firewall on. No apagues IPv6 ni Windows Update.",
+    "settingsUri": "ms-settings:yourinfo",
+    "tweakIds": [
+      "network.delivery-opt-lan"
+    ],
+    "checklistIds": [
+      "account.local",
+      "network.offline-setup",
+      "network.firewall-on",
+      "network.no-disable-stack",
+      "never.disable-updates"
+    ],
+    "steps": [
+      {
+        "title": "Modo avión solo para el primer arranque",
+        "howTo": "Configura cuenta local y teclado sin red. Después conecta y actualiza.",
+        "settingsUri": "ms-settings:network-status"
+      }
+    ]
+  },
+  {
+    "id": "custom",
+    "order": 90,
+    "title": "Configuración específica",
+    "summary": "Todos los tweaks del catálogo. Marca los que quieras simular. Apply sigue bloqueado en Beta 0.",
+    "custom": true,
+    "tweakIds": [],
+    "checklistIds": []
+  }
+]
