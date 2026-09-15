@@ -1,0 +1,23 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <SolidColorBrush x:Key="BgBrush" Color="#FF0E1116"/>
+  <SolidColorBrush x:Key="PanelBrush" Color="#FF161B22"/>
+  <SolidColorBrush x:Key="PanelElevatedBrush" Color="#FF1C2330"/>
+  <SolidColorBrush x:Key="MutedBrush" Color="#FF8B949E"/>
+  <SolidColorBrush x:Key="AccentBrush" Color="#FF4EA1FF"/>
+  <SolidColorBrush x:Key="AccentHoverBrush" Color="#FF6BB3FF"/>
+  <SolidColorBrush x:Key="AccentDeepBrush" Color="#FF1F4B7A"/>
+  <SolidColorBrush x:Key="TextBrush" Color="#FFE6EDF3"/>
+  <SolidColorBrush x:Key="WarnBrush" Color="#FFFFB347"/>
+  <SolidColorBrush x:Key="BorderBrushSubtle" Color="#FF30363D"/>
+  <SolidColorBrush x:Key="DangerBrush" Color="#FFF85149"/>
+  <SolidColorBrush x:Key="OkBrush" Color="#FF3FB950"/>
+  <SolidColorBrush x:Key="HoverBrush" Color="#FF21262D"/>
+  <SolidColorBrush x:Key="SelectionBrush" Color="#FF1F3A5F"/>
+  <SolidColorBrush x:Key="SelectionAltBrush" Color="#FF243B5C"/>
+  <SolidColorBrush x:Key="ButtonHoverBrush" Color="#FF243044"/>
+  <SolidColorBrush x:Key="ButtonPressedBrush" Color="#FF1A2436"/>
+  <SolidColorBrush x:Key="RowAltBrush" Color="#FF131820"/>
+  <SolidColorBrush x:Key="HeaderBrush" Color="#FF0D1117"/>
+  <SolidColorBrush x:Key="SecondaryTextBrush" Color="#FF9A9A9A"/>
+</ResourceDictionary>

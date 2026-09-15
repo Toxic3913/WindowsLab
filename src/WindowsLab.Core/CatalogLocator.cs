@@ -11,6 +11,9 @@ public static class CatalogLocator
     public static string? FindPresetsDirectory(string? startDirectory = null) =>
         FindCatalogSubdirectory("presets", startDirectory);
 
+    public static string? FindApplicationsDirectory(string? startDirectory = null) =>
+        FindCatalogSubdirectory("applications", startDirectory);
+
     private static string? FindCatalogSubdirectory(string name, string? startDirectory)
     {
         var current = new DirectoryInfo(startDirectory ?? AppContext.BaseDirectory);

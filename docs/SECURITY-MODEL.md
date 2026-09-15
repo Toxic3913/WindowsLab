@@ -57,7 +57,7 @@ Out of scope: product keys, stored VPN passwords, browser cookies. Do not implem
 
 ## Hardening the app itself
 
-- Authenticode on `windowslab.exe` / worker (cert: **NEEDS_RESEARCH**)
+- Authenticode on `windowslab-cli.exe` / worker (cert: **NEEDS_RESEARCH**)
 - ASLR/CFI defaults from .NET
 - Named pipe ACL: only same user + admins
 - Disable plugin load from writable-by-everyone paths

@@ -1,3 +1,3 @@
 # Tweaks catalog
 
-Phase 4. Each file must match `schemas/tweak.schema.json`. No `InvokeScript`. UNKNOWN evidence ⇒ engine will not apply.
+Beta 0: JSON files in this folder (~36 tweaks). Detect only. No `InvokeScript`. UNKNOWN/EXPERIMENTAL are not recommended.

@@ -133,3 +133,28 @@ Do not change an architectural decision without a new dated entry.
 - **Reason:** C: is for Windows and installed software. D: already holds DEV-IA, NEXUS, VMs — source belongs there.
 - **Trade-offs:** Other machines without D: clone the repo wherever they want; runtime path does not depend on D:.
 
+## D017 — Beta 0 is read-only; WPF shell; dual installer
+
+- **Date:** 2026-09-06
+- **Context:** Operator wants a usable beta (dashboard, advice, catalog, easy install) before the lab VM. Apply on the host remains forbidden (D010). WinUI 3 + WASDK self-contained is a common “won't start on a clean PC” failure. D011 gated WinUI on an elevation prototype; Beta 0 has **no** elevated worker.
+- **Chosen:** Beta 0 = audit + detect + recommend + **simulate**. Apply is policy-blocked (exit 13). GUI is **WPF .NET 10 unpackaged** (the D002 fallback). Distribution is **self-contained win-x64**: Inno Setup `setup.exe` to `C:\Program Files\WindowsLab` **and** a portable zip. WinUI 3 remains the later shell target; Core is unchanged.
+- **Reason:** Ship on any Windows 11 x64 without the SDK. Do not mutate the daily driver.
+- **Trade-offs:** Fluent/Mica wait until a later GUI swap. Catalog is curated (~30–40), not WinUtil-scale.
+
+## D018 — Beta 0.1 lab apply (HKCU only)
+
+- **Date:** 2026-09-14
+- **Context:** Operator on lab VM wants Apply from the WPF UI; full Phase 3–4 backup/worker not ready. System ComboBox/DataGrid chrome made the dark UI unreadable; product lacked an icon.
+- **Chosen:** Enable **lab apply** for tweaks that are `registry` + **HKCU** + **LOW** + **OFFICIAL|STRONG**, no reboot/security/compat flags. Backup previous value (or missing) under `%LocalAppData%\WindowsLab\backups\` before write (D005). CLI requires `--lab-apply` (without it still exit 13). GUI prompts Yes/No then applies. HKLM / services / elevation / Worker remain blocked. Dark WPF chrome + `assets/WindowsLab.ico`.
+- **Reason:** Unblock VM lab workflows without mutating HKLM or the daily-driver host policy surface.
+- **Trade-offs:** No System Restore point yet; rollback is per-value JSON. Preset CLI `apply` still exit 13 (use GUI pack apply).
+
+## D019 — Applications module (winget-only, curated)
+
+- **Date:** 2026-09-15
+- **Context:** Operator wants prep-of-PCs UX including selecting default installers (browsers/tools) with multi-axis recommendations (privacy, telemetry, security, performance, ecosystem) — without becoming a WinUtil checkbox wall.
+- **Options:** Defer forever (D001 trade-off); checklist-only howTo; curated winget module; full choco+winget+InvokeScript.
+- **Chosen:** Curated `catalog/applications/*.json` + `WindowsLab.Applications` winget client. Install requires explicit confirmation (`--yes` / GUI Yes). No Chocolatey auto-install, no `irm|iex`, no WinUtil JSON import. UNKNOWN/EXPERIMENTAL never recommended or installed by default. No Worker yet: spawn `winget`; if elevation required, one `runas` UAC prompt. Browser ranking is profile-weighted multi-axis (no fixed “best browser”). Install ≠ set default browser (open `ms-settings:defaultapps`).
+- **Reason:** Fill the prep gap vs WinUtil while keeping evidence grades and least-privilege install path.
+- **Trade-offs:** Smaller catalog than WinUtil; machine-wide packages may UAC; uninstall/rollback via `winget uninstall` is a follow-up.
+

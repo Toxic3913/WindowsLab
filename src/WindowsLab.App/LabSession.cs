@@ -1,3 +1,4 @@
+using WindowsLab.Applications;
 using WindowsLab.Audit;
 using WindowsLab.Core;
 using WindowsLab.Recommendations;
@@ -15,6 +16,8 @@ public sealed class LabSession
     public IReadOnlyList<ChecklistResult> ChecklistResults { get; }
     public IReadOnlyList<PresetDefinition> Presets { get; }
     public IReadOnlyList<PresetEvaluation> PresetEvals { get; }
+    public IReadOnlyList<ApplicationDefinition> Applications { get; }
+    public IReadOnlyList<AppRecommendation> AppRecommendations { get; }
     public UserProfile Profile { get; }
 
     public LabSession(UserProfile profile)
@@ -31,6 +34,14 @@ public sealed class LabSession
         var presetDir = CatalogLocator.FindPresetsDirectory();
         Presets = presetDir is null ? [] : PresetLoader.LoadDirectory(presetDir);
         PresetEvals = PresetEvaluator.EvaluateAll(Presets, Catalog, Detections, ChecklistResults);
+        var appsDir = CatalogLocator.FindApplicationsDirectory();
+        Applications = appsDir is null ? [] : ApplicationCatalogLoader.LoadDirectory(appsDir);
+        var facts = InstalledAppDetector.Scan();
+        var installedIds = Applications
+            .Where(a => InstalledAppDetector.IsInstalled(a, facts))
+            .Select(a => a.Id)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        AppRecommendations = AppRecommendationEngine.Rank(Applications, profile, installedIds);
     }
 
     public VolumeInventory? SystemVolume =>

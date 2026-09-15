@@ -54,7 +54,7 @@ public static class ChecklistEvaluator
             "defender" => Defender(item, inventory),
             "firewall" => Firewall(item, inventory),
             "diskfree" => Disk(item, inventory),
-            _ => new ChecklistResult(item.Id, item.Section, item.Title, ChecklistVerdict.Info, "manual", item.DesiredEquals ?? "", item.HowTo, item.Policy, item.Description)
+            _ => new ChecklistResult(item.Id, item.Section, item.Title, ChecklistVerdict.Info, "manual", item.DesiredEquals ?? "", item.HowTo, item.Policy, item.Description, item.SettingsUri)
         };
     }
 
@@ -71,10 +71,11 @@ public static class ChecklistEvaluator
                 desired,
                 item.HowTo,
                 item.Policy,
-                local ? "Sesión local." : "Parece cuenta Microsoft/Entra. Pasa a cuenta local en Configuración > Cuentas.");
+                local ? "Sesión local." : "Parece cuenta Microsoft/Entra. Pasa a cuenta local en Configuración > Cuentas.",
+                item.SettingsUri);
         }
 
-        return new ChecklistResult(item.Id, item.Section, item.Title, ChecklistVerdict.Info, name, desired, item.HowTo, item.Policy, item.Description);
+        return new ChecklistResult(item.Id, item.Section, item.Title, ChecklistVerdict.Info, name, desired, item.HowTo, item.Policy, item.Description, item.SettingsUri);
     }
 
     private static ChecklistResult Telemetry(ChecklistDefinition item, IRegistryReader registry)
@@ -87,7 +88,7 @@ public static class ChecklistEvaluator
         }
         catch (UnauthorizedAccessException)
         {
-            return new ChecklistResult(item.Id, item.Section, item.Title, ChecklistVerdict.Unknown, "denied", "1", item.HowTo, item.Policy, "HKLM denegado. El mínimo oficial en Pro/Home es Required (1); 0 no se honra.");
+            return new ChecklistResult(item.Id, item.Section, item.Title, ChecklistVerdict.Unknown, "denied", "1", item.HowTo, item.Policy, "HKLM denegado. El mínimo oficial en Pro/Home es Required (1); 0 no se honra.", item.SettingsUri);
         }
 
         var actual = Format(raw);
@@ -100,7 +101,7 @@ public static class ChecklistEvaluator
             _ => (ChecklistVerdict.Unknown, "Valor de telemetría no reconocido.")
         };
 
-        return new ChecklistResult(item.Id, item.Section, item.Title, verdict, actual, "1 (Required)", item.HowTo, item.Policy, note);
+        return new ChecklistResult(item.Id, item.Section, item.Title, verdict, actual, "1 (Required)", item.HowTo, item.Policy, note, item.SettingsUri);
     }
 
     private static ChecklistResult Registry(ChecklistDefinition item, IRegistryReader registry)
@@ -117,7 +118,7 @@ public static class ChecklistEvaluator
         }
         catch (UnauthorizedAccessException)
         {
-            return new ChecklistResult(item.Id, item.Section, item.Title, ChecklistVerdict.Unknown, "denied", item.DesiredEquals ?? "", item.HowTo, item.Policy, "Registro denegado (a menudo HKLM sin admin).");
+            return new ChecklistResult(item.Id, item.Section, item.Title, ChecklistVerdict.Unknown, "denied", item.DesiredEquals ?? "", item.HowTo, item.Policy, "Registro denegado (a menudo HKLM sin admin).", item.SettingsUri);
         }
 
         var actual = Format(raw);
@@ -129,15 +130,15 @@ public static class ChecklistEvaluator
         {
             if (!string.IsNullOrEmpty(desired) && !match)
             {
-                return new ChecklistResult(item.Id, item.Section, item.Title, ChecklistVerdict.Gap, actual, desired, item.HowTo, item.Policy, "Anti-patrón: este valor no debería cambiarse en un baseline.");
+                return new ChecklistResult(item.Id, item.Section, item.Title, ChecklistVerdict.Gap, actual, desired, item.HowTo, item.Policy, "Anti-patrón: este valor no debería cambiarse en un baseline.", item.SettingsUri);
             }
 
-            return new ChecklistResult(item.Id, item.Section, item.Title, match ? ChecklistVerdict.Ok : ChecklistVerdict.Info, actual, string.IsNullOrEmpty(desired) ? "no desactivar" : desired, item.HowTo, item.Policy, item.Description);
+            return new ChecklistResult(item.Id, item.Section, item.Title, match ? ChecklistVerdict.Ok : ChecklistVerdict.Info, actual, string.IsNullOrEmpty(desired) ? "no desactivar" : desired, item.HowTo, item.Policy, item.Description, item.SettingsUri);
         }
 
         if (item.Policy == ChecklistPolicy.Info)
         {
-            return new ChecklistResult(item.Id, item.Section, item.Title, ChecklistVerdict.Info, actual, desired, item.HowTo, item.Policy, item.Description);
+            return new ChecklistResult(item.Id, item.Section, item.Title, ChecklistVerdict.Info, actual, desired, item.HowTo, item.Policy, item.Description, item.SettingsUri);
         }
 
         return new ChecklistResult(
@@ -147,7 +148,8 @@ public static class ChecklistEvaluator
             desired,
             item.HowTo,
             item.Policy,
-            match ? "Coincide." : item.Description);
+            match ? "Coincide." : item.Description,
+            item.SettingsUri);
     }
 
     private static ChecklistResult ProcessItem(ChecklistDefinition item)
@@ -157,7 +159,7 @@ public static class ChecklistEvaluator
         var note = item.Policy == ChecklistPolicy.NeverDisable
             ? (running ? "En ejecución. No matar: Windows lo relanza y no es un 'boost'." : "No está en ejecución ahora. No hay que forzarlo.")
             : item.Description;
-        return new ChecklistResult(item.Id, item.Section, item.Title, ChecklistVerdict.Info, running ? "running" : "not-running", "info", item.HowTo, item.Policy, note);
+        return new ChecklistResult(item.Id, item.Section, item.Title, ChecklistVerdict.Info, running ? "running" : "not-running", "info", item.HowTo, item.Policy, note, item.SettingsUri);
     }
 
     private static ChecklistResult ServiceItem(ChecklistDefinition item, IRegistryReader registry)
@@ -186,12 +188,12 @@ public static class ChecklistEvaluator
             var verdict = actual == "4" && string.Equals(svc, "WinDefend", StringComparison.OrdinalIgnoreCase)
                 ? ChecklistVerdict.Gap
                 : ChecklistVerdict.Info;
-            return new ChecklistResult(item.Id, item.Section, item.Title, verdict, decoded, "no deshabilitar", item.HowTo, item.Policy, note);
+            return new ChecklistResult(item.Id, item.Section, item.Title, verdict, decoded, "no deshabilitar", item.HowTo, item.Policy, note, item.SettingsUri);
         }
 
         var match = (item.DesiredEquals ?? "").Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
             .Any(part => string.Equals(actual, part, StringComparison.OrdinalIgnoreCase));
-        return new ChecklistResult(item.Id, item.Section, item.Title, match ? ChecklistVerdict.Ok : ChecklistVerdict.Gap, decoded, item.DesiredEquals ?? "", item.HowTo, item.Policy, item.Description);
+        return new ChecklistResult(item.Id, item.Section, item.Title, match ? ChecklistVerdict.Ok : ChecklistVerdict.Gap, decoded, item.DesiredEquals ?? "", item.HowTo, item.Policy, item.Description, item.SettingsUri);
     }
 
     private static ChecklistResult Tool(ChecklistDefinition item, MachineInventory inventory)
@@ -205,7 +207,8 @@ public static class ChecklistEvaluator
             "opcional",
             item.HowTo,
             item.Policy,
-            present ? "Detectado en PATH." : item.Description);
+            present ? "Detectado en PATH." : item.Description,
+            item.SettingsUri);
     }
 
     private static ChecklistResult Defender(ChecklistDefinition item, MachineInventory inventory)
@@ -213,7 +216,7 @@ public static class ChecklistEvaluator
         var on = inventory.Security.DefenderEnabled;
         if (on is null)
         {
-            return new ChecklistResult(item.Id, item.Section, item.Title, ChecklistVerdict.Unknown, "unknown", "on", item.HowTo, item.Policy, "WMI Defender denegado (a menudo hace falta admin).");
+            return new ChecklistResult(item.Id, item.Section, item.Title, ChecklistVerdict.Unknown, "unknown", "on", item.HowTo, item.Policy, "WMI Defender denegado (a menudo hace falta admin).", item.SettingsUri);
         }
 
         return new ChecklistResult(
@@ -223,7 +226,8 @@ public static class ChecklistEvaluator
             "on",
             item.HowTo,
             item.Policy,
-            on.Value ? "Defender activo." : "No desactivar Defender. Reactívalo en Seguridad de Windows.");
+            on.Value ? "Defender activo." : "No desactivar Defender. Reactívalo en Seguridad de Windows.",
+            item.SettingsUri);
     }
 
     private static ChecklistResult Firewall(ChecklistDefinition item, MachineInventory inventory)
@@ -241,7 +245,8 @@ public static class ChecklistEvaluator
             "on",
             item.HowTo,
             item.Policy,
-            on.Value ? "Firewall de perfil estándar activado." : "El firewall no debería apagarse en un baseline.");
+            on.Value ? "Firewall de perfil estándar activado." : "El firewall no debería apagarse en un baseline.",
+            item.SettingsUri);
     }
 
     private static ChecklistResult Disk(ChecklistDefinition item, MachineInventory inventory)
@@ -261,11 +266,12 @@ public static class ChecklistEvaluator
             ">= 20 GB",
             item.HowTo,
             item.Policy,
-            ok ? "Espacio razonable en C:." : "C: bajo. Restaura/puntos de restauración pueden fallar.");
+            ok ? "Espacio razonable en C:." : "C: bajo. Restaura/puntos de restauración pueden fallar.",
+            item.SettingsUri);
     }
 
     private static ChecklistResult Unknown(ChecklistDefinition item, string note) =>
-        new(item.Id, item.Section, item.Title, ChecklistVerdict.Unknown, "unknown", item.DesiredEquals ?? "", item.HowTo, item.Policy, note);
+        new(item.Id, item.Section, item.Title, ChecklistVerdict.Unknown, "unknown", item.DesiredEquals ?? "", item.HowTo, item.Policy, note, item.SettingsUri);
 
     private static string Format(object? value) => value switch
     {

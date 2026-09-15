@@ -28,3 +28,13 @@ Ordered list with: why, risk, side effects, reboot, security/update/compat flags
 ## Forbidden product copy
 
 "Apply all essential tweaks."
+
+## Applications (Beta 0.2 / D019)
+
+App recommendations use a **separate** multi-axis formula (not the tweak formula above):
+
+```
+score = Σ (axisWeight[profile][axis] × app.axes[axis]) × evidenceWeight − riskPenalty
+```
+
+Axes: privacy, telemetry, security, performance, ecosystem. Profile weights are documented in the UI. There is no fixed “best browser”; ranking changes with profile. UNKNOWN/EXPERIMENTAL apps are never recommended or installed by default.

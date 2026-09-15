@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <AssemblyName>WindowsLab-Setup</AssemblyName>
+    <RootNamespace>WindowsLab.Setup</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\artifacts\zip\WindowsLab-portable-win-x64.zip" Condition="Exists('..\..\artifacts\zip\WindowsLab-portable-win-x64.zip')" LogicalName="payload.zip" />
+    <EmbeddedResource Include="..\..\docs\legal\EULA-es.txt" LogicalName="eula-es.txt" />
+    <EmbeddedResource Include="..\..\docs\legal\EULA-en.txt" LogicalName="eula-en.txt" />
+  </ItemGroup>
+</Project>

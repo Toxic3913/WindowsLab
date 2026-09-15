@@ -14,5 +14,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\WindowsLab.Core\WindowsLab.Core.csproj" />
+    <ProjectReference Include="..\..\src\WindowsLab.Audit\WindowsLab.Audit.csproj" />
+    <ProjectReference Include="..\..\src\WindowsLab.Tweaks\WindowsLab.Tweaks.csproj" />
+    <ProjectReference Include="..\..\src\WindowsLab.Recommendations\WindowsLab.Recommendations.csproj" />
+    <ProjectReference Include="..\..\src\WindowsLab.Applications\WindowsLab.Applications.csproj" />
   </ItemGroup>
 </Project>

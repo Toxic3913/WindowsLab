@@ -4,30 +4,43 @@
   "title": "TweakDefinition",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "risk", "evidence", "minBuild", "editions", "ops"],
+  "required": ["id", "title", "category", "risk", "evidence", "minBuild", "detect", "desired", "ops"],
   "properties": {
     "id": { "type": "string", "pattern": "^[a-z0-9]+(\\.[a-z0-9-]+)+$" },
     "title": { "type": "string" },
+    "description": { "type": "string" },
+    "category": { "type": "string" },
     "risk": { "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"] },
-    "evidence": { "enum": ["OFFICIAL", "STRONG", "WEAK", "UNKNOWN"] },
+    "evidence": { "enum": ["OFFICIAL", "STRONG", "COMMUNITY", "EXPERIMENTAL", "UNKNOWN"] },
+    "evidenceRefs": { "type": "array", "items": { "type": "string" } },
     "minBuild": { "type": "integer", "minimum": 10240 },
     "maxBuild": { "type": ["integer", "null"] },
-    "editions": {
-      "type": "array",
-      "items": { "type": "string" },
-      "minItems": 1
+    "editions": { "type": "array", "items": { "type": "string" } },
+    "profiles": { "type": "array", "items": { "type": "string" } },
+    "requires": { "type": "array", "items": { "type": "string" } },
+    "conflicts": { "type": "array", "items": { "type": "string" } },
+    "requiresReboot": { "type": "boolean" },
+    "affectsSecurity": { "type": "boolean" },
+    "affectsUpdates": { "type": "boolean" },
+    "affectsCompatibility": { "type": "boolean" },
+    "detect": {
+      "type": "object",
+      "required": ["kind", "hive", "path", "name"],
+      "properties": {
+        "kind": { "const": "registry" },
+        "hive": { "type": "string" },
+        "path": { "type": "string" },
+        "name": { "type": "string" },
+        "valueKind": { "type": "string" }
+      }
     },
-    "requires": {
-      "type": "array",
-      "items": { "type": "string" },
-      "default": []
+    "desired": {
+      "type": "object",
+      "required": ["equals"],
+      "properties": {
+        "equals": {}
+      }
     },
-    "conflicts": {
-      "type": "array",
-      "items": { "type": "string" },
-      "default": []
-    },
-    "reboot": { "type": "boolean", "default": false },
     "ops": {
       "type": "array",
       "minItems": 1,
@@ -35,9 +48,12 @@
         "type": "object",
         "required": ["kind"],
         "properties": {
-          "kind": {
-            "enum": ["registry", "service", "task", "power", "handler"]
-          }
+          "kind": { "enum": ["registry", "service", "task", "power", "handler"] },
+          "hive": { "type": "string" },
+          "path": { "type": "string" },
+          "name": { "type": "string" },
+          "valueKind": { "type": "string" },
+          "value": {}
         }
       }
     }

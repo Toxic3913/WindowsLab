@@ -1,6 +1,6 @@
 # WindowsLab.Cli
 
-Phase **1**. Console host `windowslab.exe`.
+Phase **1**. Console host `windowslab-cli.exe` (distinct from GUI `WindowsLab.exe` on case-insensitive Windows).
 
 ```text
 windowslab --help

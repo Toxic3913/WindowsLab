@@ -5,6 +5,7 @@
     <AssemblyName>WindowsLab</AssemblyName>
     <RootNamespace>WindowsLab.App</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>..\..\assets\WindowsLab.ico</ApplicationIcon>
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
@@ -12,10 +13,13 @@
     <ProjectReference Include="..\WindowsLab.Audit\WindowsLab.Audit.csproj" />
     <ProjectReference Include="..\WindowsLab.Tweaks\WindowsLab.Tweaks.csproj" />
     <ProjectReference Include="..\WindowsLab.Recommendations\WindowsLab.Recommendations.csproj" />
+    <ProjectReference Include="..\WindowsLab.Applications\WindowsLab.Applications.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\catalog\tweaks\*.json" Link="catalog\tweaks\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="..\..\catalog\checklists\*.json" Link="catalog\checklists\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="..\..\catalog\presets\*.json" Link="catalog\presets\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="..\..\catalog\applications\*.json" Link="catalog\applications\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="..\..\tools\**\*" Link="tools\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

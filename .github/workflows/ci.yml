@@ -14,3 +14,6 @@ jobs:
           dotnet-version: "10.0.x"
       - name: Test
         run: dotnet test WindowsLab.sln -c Release --nologo
+      - name: Build dashboard
+        run: dotnet build src/WindowsLab.App/WindowsLab.App.csproj -c Release --nologo
+

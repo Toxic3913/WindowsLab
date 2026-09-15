@@ -1,7 +1,8 @@
 # Dashboard architecture
 
-Date: 2026-09-05  
-GUI technology: WinUI 3 (D002). Not implemented in Phase 0.
+Date: 2026-09-06  
+GUI technology: **WPF .NET 10** for Beta 0 (D017). WinUI 3 remains the later shell (D002). Not a WinUtil clone.
+
 
 ## Shell
 
@@ -21,7 +22,7 @@ NavigationView (left) with the operator-requested destinations. Each destination
 | Hardware | CPU/GPU/RAM/board | BIOS age warning |
 | Storage | volumes, SMART if admin | |
 | Network | adapters, DNS, WinHTTP, VPN present | Fortinet visible |
-| Applications | Uninstall registry + AppX | winget later |
+| Applications | Curated winget catalog + multi-axis recommend | Install with confirmation (D019); not WinUtil-scale |
 | Services | filter + diffs vs baseline | |
 | Scheduled Tasks | list + export | |
 | Drivers | signed list | |
@@ -32,12 +33,12 @@ NavigationView (left) with the operator-requested destinations. Each destination
 | Developer | toolchain | |
 | Plugins | sideload | |
 | Logs | SQLite viewer | |
-| Settings | theme, language, elevation helper | |
+| Settings | theme (dark/light/system), language, elevation helper | |
 
 ## UX rules
 
 1. Apply is a cart with diffs.
 2. CRITICAL items red, require typing the tweak id.
 3. Every row shows evidence grade.
-4. Dark theme default (host is a lab PC).
+4. Dark theme default; light + system selectable (Beta 0.2).
 5. No "boost" wording.

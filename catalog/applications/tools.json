@@ -1,0 +1,82 @@
+[
+  {
+    "id": "app.tool.git",
+    "title": "Git",
+    "description": "Distributed version control. Recommended for developer and lab baselines.",
+    "wingetId": "Git.Git",
+    "category": "tool",
+    "evidence": "OFFICIAL",
+    "evidenceRefs": ["https://git-scm.com/"],
+    "risk": "LOW",
+    "axes": {
+      "privacy": 0.7,
+      "telemetry": 0.75,
+      "security": 0.85,
+      "performance": 0.8,
+      "ecosystem": 0.9
+    },
+    "profiles": ["developer", "balanced", "virtualization"],
+    "scopePreference": "machine",
+    "detectNames": ["Git", "Git for Windows"]
+  },
+  {
+    "id": "app.tool.pwsh",
+    "title": "PowerShell 7",
+    "description": "Cross-platform PowerShell (pwsh). Preferred over Windows PowerShell 5.1 for scripts.",
+    "wingetId": "Microsoft.PowerShell",
+    "category": "tool",
+    "evidence": "OFFICIAL",
+    "evidenceRefs": ["https://learn.microsoft.com/powershell/"],
+    "risk": "LOW",
+    "axes": {
+      "privacy": 0.65,
+      "telemetry": 0.55,
+      "security": 0.85,
+      "performance": 0.8,
+      "ecosystem": 0.85
+    },
+    "profiles": ["developer", "balanced", "virtualization"],
+    "scopePreference": "machine",
+    "detectNames": ["PowerShell 7"]
+  },
+  {
+    "id": "app.tool.7zip",
+    "title": "7-Zip",
+    "description": "Open-source archiver. Low telemetry footprint.",
+    "wingetId": "7zip.7zip",
+    "category": "tool",
+    "evidence": "STRONG",
+    "evidenceRefs": ["https://www.7-zip.org/"],
+    "risk": "LOW",
+    "axes": {
+      "privacy": 0.85,
+      "telemetry": 0.9,
+      "security": 0.75,
+      "performance": 0.8,
+      "ecosystem": 0.7
+    },
+    "profiles": ["balanced", "developer", "gaming", "virtualization"],
+    "scopePreference": "machine",
+    "detectNames": ["7-Zip"]
+  },
+  {
+    "id": "app.tool.libreoffice",
+    "title": "LibreOffice",
+    "description": "Suite ofimática libre. Preferible descargar el instalador a Descargas y revisar antes de instalar.",
+    "wingetId": "TheDocumentFoundation.LibreOffice",
+    "category": "tool",
+    "evidence": "STRONG",
+    "evidenceRefs": ["https://www.libreoffice.org/"],
+    "risk": "LOW",
+    "axes": {
+      "privacy": 0.85,
+      "telemetry": 0.9,
+      "security": 0.75,
+      "performance": 0.65,
+      "ecosystem": 0.7
+    },
+    "profiles": ["balanced", "developer", "virtualization"],
+    "scopePreference": "machine",
+    "detectNames": ["LibreOffice"]
+  }
+]

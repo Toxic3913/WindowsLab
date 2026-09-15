@@ -551,6 +551,61 @@
     "detect": { "kind": "process", "process": "steam" }
   },
   {
+    "id": "bg.edge-startup",
+    "order": 100,
+    "section": "Procesos en segundo plano",
+    "title": "Reducir Microsoft Edge en segundo plano",
+    "policy": "info",
+    "description": "Edge inicia boost/startup a menudo aunque uses otro navegador. No hace falta matar msedge.exe a lo bruto: desactiva inicio y apps en segundo plano.",
+    "howTo": "1) Edge > Configuración > Sistema y rendimiento > Inicio al iniciar Windows = Off, Continuar ejecutándose en segundo plano = Off. 2) Configuración Windows > Aplicaciones > Inicio > Edge off. 3) Aplicaciones instaladas > Edge > Opciones avanzadas > Segundo plano = Nunca. No uses scripts que desinstalan Edge del sistema (rompe WebView2).",
+    "detect": { "kind": "process", "process": "msedge" },
+    "settingsUri": "ms-settings:startupapps"
+  },
+  {
+    "id": "bg.onedrive",
+    "order": 101,
+    "section": "Procesos en segundo plano",
+    "title": "OneDrive (si no lo usas)",
+    "policy": "info",
+    "description": "OneDrive sincroniza y queda residente. Si no lo necesitas, desvincula y quítalo del inicio.",
+    "howTo": "Icono OneDrive > Configuración > Cuenta > Desvincular. Configuración > Aplicaciones > Inicio > OneDrive = Off. Desinstalar solo si no usas archivos en la nube de Microsoft.",
+    "detect": { "kind": "process", "process": "OneDrive" },
+    "settingsUri": "ms-settings:startupapps"
+  },
+  {
+    "id": "bg.widgets-copilot",
+    "order": 102,
+    "section": "Procesos en segundo plano",
+    "title": "Widgets / Copilot / noticias en barra",
+    "policy": "info",
+    "description": "Widgets y feed mantienen procesos y red en idle. Apágalos desde Configuración, no con kill de procesos.",
+    "howTo": "Configuración > Personalización > Barra de tareas > Widgets = Off. Quita icono Copilot si aparece. Privacidad > Diagnósticos: experiencias a medida Off.",
+    "detect": { "kind": "manual" },
+    "settingsUri": "ms-settings:personalization-taskbar"
+  },
+  {
+    "id": "bg.xbox-gamebar",
+    "order": 103,
+    "section": "Procesos en segundo plano",
+    "title": "Xbox Game Bar / capturas (si no las usas)",
+    "policy": "info",
+    "description": "Game Bar puede quedar en segundo plano. Desactívalo si no grabas; no desactives Game Mode si juegas.",
+    "howTo": "Configuración > Juegos > Xbox Game Bar = Off. Capturas: desactiva grabación en segundo plano. Game Mode puede quedar On.",
+    "detect": { "kind": "manual" },
+    "settingsUri": "ms-settings:gaming-gamebar"
+  },
+  {
+    "id": "bg.teams-outlook",
+    "order": 104,
+    "section": "Procesos en segundo plano",
+    "title": "Teams / Outlook new / Phone Link al inicio",
+    "policy": "info",
+    "description": "Apps Store de Microsoft suelen auto-iniciar. Quítalas del inicio si no las usas a diario.",
+    "howTo": "Configuración > Aplicaciones > Inicio: Teams, Outlook, Phone Link, Your Phone = Off.",
+    "detect": { "kind": "manual" },
+    "settingsUri": "ms-settings:startupapps"
+  },
+  {
     "id": "apps.no-irm-iex",
     "order": 99,
     "section": "Programas externos",

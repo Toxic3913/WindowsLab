@@ -1,18 +1,36 @@
 <Window x:Class="WindowsLab.App.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="WindowsLab Beta 0"
-        Height="720" Width="1100"
+        Title="WindowsLab"
+        Height="740" Width="1180"
+        MinHeight="560" MinWidth="960"
         WindowStartupLocation="CenterScreen"
-        Background="#FF121212">
+        Background="{DynamicResource BgBrush}">
   <DockPanel>
-    <Border DockPanel.Dock="Top" Background="#FF1A1A1A" Padding="16,10">
+    <Border DockPanel.Dock="Top" Background="{DynamicResource PanelBrush}" Padding="16,12" BorderBrush="{DynamicResource BorderBrushSubtle}" BorderThickness="0,0,0,1">
       <DockPanel>
-        <TextBlock Text="WindowsLab" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
-        <TextBlock x:Name="SubtitleText" Margin="16,0,0,0" Foreground="#FF9A9A9A" VerticalAlignment="Center"
-                   Text="Beta 0 — solo lectura"/>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+          <Border Width="28" Height="28" CornerRadius="6" Background="{DynamicResource AccentDeepBrush}" Margin="0,0,12,0">
+            <TextBlock Text="W" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource AccentBrush}"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          </Border>
+          <TextBlock Text="WindowsLab" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
+          <TextBlock x:Name="SubtitleText" Margin="14,0,0,0" Foreground="{DynamicResource MutedBrush}" VerticalAlignment="Center"
+                     Text="Beta 0.2 — lab apply + apps"/>
+        </StackPanel>
         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
-          <TextBlock Text="Perfil" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="#FF9A9A9A"/>
+          <TextBlock x:Name="LangLabel" Text="Idioma" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{DynamicResource MutedBrush}"/>
+          <ComboBox x:Name="LangBox" Width="72" Margin="0,0,16,0" SelectionChanged="LangBox_OnSelectionChanged">
+            <ComboBoxItem Content="ES" IsSelected="True"/>
+            <ComboBoxItem Content="EN"/>
+          </ComboBox>
+          <TextBlock x:Name="ThemeLabel" Text="Tema" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{DynamicResource MutedBrush}"/>
+          <ComboBox x:Name="ThemeBox" Width="100" Margin="0,0,16,0" SelectionChanged="ThemeBox_OnSelectionChanged">
+            <ComboBoxItem Content="dark" Tag="dark" IsSelected="True"/>
+            <ComboBoxItem Content="light" Tag="light"/>
+            <ComboBoxItem Content="system" Tag="system"/>
+          </ComboBox>
+          <TextBlock x:Name="ProfileLabel" Text="Perfil" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{DynamicResource MutedBrush}"/>
           <ComboBox x:Name="ProfileBox" Width="160" SelectionChanged="ProfileBox_OnSelectionChanged">
             <ComboBoxItem Content="balanced" IsSelected="True"/>
             <ComboBoxItem Content="developer"/>
@@ -23,46 +41,84 @@
       </DockPanel>
     </Border>
     <ListBox x:Name="Nav" DockPanel.Dock="Left" Width="180" SelectionChanged="Nav_OnSelectionChanged">
-      <ListBoxItem Content="Inicio" IsSelected="True"/>
-      <ListBoxItem Content="Configurar"/>
-      <ListBoxItem Content="Sistema"/>
-      <ListBoxItem Content="Seguridad"/>
-      <ListBoxItem Content="Tweaks"/>
-      <ListBoxItem Content="Consejos"/>
-      <ListBoxItem Content="Checklist"/>
-      <ListBoxItem Content="Ajustes"/>
+      <ListBoxItem x:Name="NavHome" Content="Inicio" IsSelected="True"/>
+      <ListBoxItem x:Name="NavConfig" Content="Configurar"/>
+      <ListBoxItem x:Name="NavResources" Content="Recursos"/>
+      <ListBoxItem x:Name="NavSystem" Content="Sistema"/>
+      <ListBoxItem x:Name="NavSecurity" Content="Seguridad"/>
+      <ListBoxItem x:Name="NavTweaks" Content="Tweaks"/>
+      <ListBoxItem x:Name="NavAdvice" Content="Consejos"/>
+      <ListBoxItem x:Name="NavChecklist" Content="Checklist"/>
+      <ListBoxItem x:Name="NavApps" Content="Aplicaciones"/>
+      <ListBoxItem x:Name="NavSettings" Content="Ajustes"/>
     </ListBox>
     <Grid Margin="16">
       <ScrollViewer x:Name="PageHome" VerticalScrollBarVisibility="Auto">
         <StackPanel>
           <TextBlock x:Name="HomeSummary" FontSize="16" TextWrapping="Wrap"/>
-          <TextBlock x:Name="HomeWarn" Margin="0,12,0,0" Foreground="#FFFFB347" TextWrapping="Wrap"/>
-          <TextBlock Margin="0,16,0,8" FontWeight="SemiBold" Text="Packs de configuración"/>
-          <ItemsControl x:Name="HomePresetList"/>
-          <TextBlock Margin="0,16,0,8" FontWeight="SemiBold" Text="Sondas"/>
+          <TextBlock x:Name="HomeWarn" Margin="0,12,0,0" Foreground="{DynamicResource WarnBrush}" TextWrapping="Wrap"/>
+          <TextBlock x:Name="HomeQuickTitle" Margin="0,18,0,8" FontWeight="SemiBold" FontSize="16" Text="Acciones rápidas"/>
+          <UniformGrid Columns="2" Margin="0,0,0,8">
+            <Button x:Name="BtnActivateWindows" Style="{StaticResource PrimaryButton}" Height="56" Margin="0,0,8,8"
+                    Content="Activar Windows" Click="ActivateWindows_OnClick" ToolTip="Ejecuta tools\activate.win o abre Configuración > Activación"/>
+            <Button x:Name="BtnLibreOffice" Height="56" Margin="0,0,8,8"
+                    Content="Descargar LibreOffice" Click="DownloadLibreOffice_OnClick" ToolTip="Descarga el instalador a Descargas\WindowsLab"/>
+            <Button x:Name="BtnBgInfoQuick" Height="56" Margin="0,0,8,8"
+                    Content="Activar BGInfo" Click="ActivateBgInfo_OnClick" ToolTip="Instala (winget) y abre Sysinternals BGInfo"/>
+            <Button x:Name="BtnDesktopInfoQuick" Height="56" Margin="0,0,8,8"
+                    Content="DesktopInfo overlay" Click="OpenDesktopInfo_OnClick"/>
+          </UniformGrid>
+          <TextBlock x:Name="HomeQuickStatus" Margin="0,0,0,12" Foreground="{DynamicResource MutedBrush}" TextWrapping="Wrap"/>
+          <TextBlock x:Name="HomePacksTitle" Margin="0,8,0,8" FontWeight="SemiBold" Text="Packs — pulsa un botón para configurar"/>
+          <ItemsControl x:Name="HomePresetList">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <WrapPanel/>
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Button Width="250" Height="80" Margin="0,0,8,8" Padding="12" Click="HomePreset_OnClick" Tag="{Binding}">
+                  <StackPanel>
+                    <TextBlock Text="{Binding Eval.Preset.Title}" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                    <TextBlock Text="{Binding Label}" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,4,0,0"/>
+                  </StackPanel>
+                </Button>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+          <TextBlock x:Name="HomeProbesTitle" Margin="0,16,0,8" FontWeight="SemiBold" Text="Sondas"/>
           <ItemsControl x:Name="ProbeList"/>
         </StackPanel>
       </ScrollViewer>
       <DockPanel x:Name="PageConfig" Visibility="Collapsed">
-        <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,0,0,8"
+        <TextBlock x:Name="ConfigHint" DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,0,0,8"
                    Text="Elige un pack. Cada fila abre la página de Windows correspondiente. WindowsLab no escribe el registro en Beta 0: tú confirmas el cambio en Configuración."/>
         <ListBox x:Name="PresetList" DockPanel.Dock="Left" Width="240" DisplayMemberPath="Label"
                  SelectionChanged="PresetList_OnSelectionChanged" Margin="0,0,12,0"/>
         <DockPanel>
           <StackPanel DockPanel.Dock="Top">
             <TextBlock x:Name="PresetTitle" FontSize="18" FontWeight="SemiBold"/>
-            <TextBlock x:Name="PresetSummary" TextWrapping="Wrap" Margin="0,6,0,8" Foreground="#FFB0B0B0"/>
+            <TextBlock x:Name="PresetSummary" TextWrapping="Wrap" Margin="0,6,0,8" Foreground="{DynamicResource SecondaryTextBrush}"/>
             <TextBlock x:Name="PresetProgress" FontWeight="SemiBold" Margin="0,0,0,8"/>
+            <TextBlock x:Name="TelemetryLimitHint" TextWrapping="Wrap" Margin="0,0,0,8" Foreground="{DynamicResource WarnBrush}"/>
             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-              <Button Content="Abrir Configuración de Windows" Click="OpenPresetSettings_OnClick" Margin="0,0,8,0" Padding="10,4"/>
-              <Button Content="Simular pack" Click="SimulatePreset_OnClick" Margin="0,0,8,0" Padding="10,4"/>
-              <Button Content="Abrir ajuste seleccionado" Click="OpenSelectedSetting_OnClick" Margin="0,0,8,0" Padding="10,4"/>
-              <Button Content="Aplicar pack" IsEnabled="False" ToolTip="Beta 0: bloqueado (exit 13). Apply solo en la VM." Padding="10,4"/>
+              <Button x:Name="BtnActivatePack" Content="Abrir en Windows" Click="OpenPresetSettings_OnClick" Margin="0,0,8,0" Padding="10,4"/>
+              <Button x:Name="BtnSimulatePack" Content="Simular pack" Click="SimulatePreset_OnClick" Margin="0,0,8,0" Padding="10,4"/>
+              <Button x:Name="BtnActivateRow" Content="Abrir fila" Click="OpenSelectedSetting_OnClick" Margin="0,0,8,0" Padding="10,4"/>
+              <Button x:Name="BtnApplyPack" Style="{StaticResource PrimaryButton}" Content="Aplicar pack (HKCU)" Click="ApplyPack_OnClick" ToolTip="Solo HKCU LOW OFFICIAL/STRONG" Padding="10,4"/>
             </StackPanel>
             <TextBlock x:Name="PresetSimulateText" TextWrapping="Wrap" Margin="0,0,0,8"/>
           </StackPanel>
           <DataGrid x:Name="PresetGrid" AutoGenerateColumns="False" IsReadOnly="False" SelectionMode="Single">
             <DataGrid.Columns>
+              <DataGridTemplateColumn Header="" Width="90">
+                <DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate>
+                    <Button Content="Activar" Click="ActivateRow_OnClick" Tag="{Binding}" Padding="8,2"/>
+                  </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+              </DataGridTemplateColumn>
               <DataGridCheckBoxColumn Header="Incluir" Binding="{Binding Include, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="70"/>
               <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" IsReadOnly="True" Width="80"/>
               <DataGridTextColumn Header="Ajuste" Binding="{Binding Title}" IsReadOnly="True" Width="280"/>
@@ -73,6 +129,23 @@
           </DataGrid>
         </DockPanel>
       </DockPanel>
+      <ScrollViewer x:Name="PageResources" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+          <TextBlock x:Name="ResourcesTitle" FontSize="18" FontWeight="SemiBold" Text="Recursos en vivo"/>
+          <TextBlock x:Name="ResourcesHint" Margin="0,8,0,12" TextWrapping="Wrap"/>
+          <WrapPanel Margin="0,0,0,12">
+            <Button x:Name="BtnDesktopInfo" Content="DesktopInfo overlay" Click="OpenDesktopInfo_OnClick" Padding="12,8" Margin="0,0,8,8"/>
+            <Button x:Name="BtnBgInfo" Style="{StaticResource PrimaryButton}" Content="Activar BGInfo" Click="ActivateBgInfo_OnClick" Padding="12,8" Margin="0,0,8,8"
+                    ToolTip="Detecta, instala con winget si falta, y lanza Bginfo64"/>
+            <Button x:Name="BtnBgInfoDocs" Content="Docs BGInfo" Click="OpenBgInfoOfficial_OnClick" Padding="12,8" Margin="0,0,8,8"/>
+            <Button x:Name="BtnGodMode" Content="Modo Dios" Click="OpenGodMode_OnClick" Padding="12,8" Margin="0,0,8,8"/>
+            <Button x:Name="BtnActivateWindowsRes" Content="Activar Windows" Click="ActivateWindows_OnClick" Padding="12,8" Margin="0,0,8,8"/>
+            <Button x:Name="BtnLibreOfficeRes" Content="Descargar LibreOffice" Click="DownloadLibreOffice_OnClick" Padding="12,8" Margin="0,0,8,8"/>
+          </WrapPanel>
+          <TextBlock x:Name="ResourcesStatus" Margin="0,0,0,12" Foreground="{DynamicResource MutedBrush}" TextWrapping="Wrap"/>
+          <TextBlock x:Name="LivePreview" FontFamily="Consolas" TextWrapping="Wrap"/>
+        </StackPanel>
+      </ScrollViewer>
       <ScrollViewer x:Name="PageSystem" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
         <StackPanel x:Name="SystemPanel"/>
       </ScrollViewer>
@@ -80,30 +153,110 @@
         <StackPanel x:Name="SecurityPanel"/>
       </ScrollViewer>
       <DockPanel x:Name="PageTweaks" Visibility="Collapsed">
-        <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,0,0,8"
-                   Text="Catálogo curado. Aplicar está deshabilitado. Simular muestra actual vs desired sin escribir."/>
+        <TextBlock x:Name="TweaksHint" DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,0,0,8"
+                   Text="Catálogo curado. Aplicar = HKCU seguro con backup. HKLM sigue bloqueado."/>
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,8,0,0">
           <Button Content="Simular selección" Click="Simulate_OnClick"/>
-          <Button Content="Aplicar" IsEnabled="False" ToolTip="Beta 0: bloqueado"/>
+          <Button x:Name="BtnApplyTweak" Style="{StaticResource PrimaryButton}" Content="Aplicar selección" Click="ApplyTweak_OnClick"/>
           <TextBlock x:Name="SimulateText" VerticalAlignment="Center" TextWrapping="Wrap"/>
         </StackPanel>
         <DataGrid x:Name="TweakGrid" SelectionMode="Single" AutoGenerateColumns="True"/>
       </DockPanel>
       <DockPanel x:Name="PageAdvice" Visibility="Collapsed">
-        <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,0,0,8"
-                   Text="Consejos según perfil. EXPERIMENTAL y UNKNOWN no aparecen. No hay 'aplicar todo'."/>
+        <TextBlock x:Name="AdviceHint" DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,0,0,8"
+                   Text="Consejos según perfil + guía de procesos en segundo plano. No matamos Defender/Search/SysMain."/>
+        <TextBlock x:Name="AdviceBgTitle" DockPanel.Dock="Top" FontWeight="SemiBold" Margin="0,0,0,6" Text="Procesos en segundo plano"/>
+        <ItemsControl x:Name="AdviceTipsList" DockPanel.Dock="Top" Margin="0,0,0,12">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Background="{DynamicResource PanelElevatedBrush}" CornerRadius="8" Padding="12" Margin="0,0,0,8"
+                      BorderBrush="{DynamicResource BorderBrushSubtle}" BorderThickness="1">
+                <DockPanel>
+                  <Button DockPanel.Dock="Right" Content="Abrir" Click="AdviceTipOpen_OnClick" Tag="{Binding}" Padding="10,4" Margin="12,0,0,0" VerticalAlignment="Top"/>
+                  <StackPanel>
+                    <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                    <TextBlock Text="{Binding Body}" Margin="0,4,0,0" Foreground="{DynamicResource MutedBrush}" TextWrapping="Wrap"/>
+                  </StackPanel>
+                </DockPanel>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <TextBlock DockPanel.Dock="Top" FontWeight="SemiBold" Margin="0,0,0,6" Text="Tweaks recomendados (perfil)"/>
         <DataGrid x:Name="AdviceGrid" AutoGenerateColumns="True"/>
       </DockPanel>
       <DockPanel x:Name="PageChecklist" Visibility="Collapsed">
-        <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,0,0,8"
-                   Text="Baseline de laboratorio: cuenta local, privacidad realista, red, accesos, programas. No se matan procesos ni se promete telemetría cero. Beta 0 no aplica nada."/>
+        <TextBlock x:Name="ChecklistHint" DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,0,0,8"
+                   Text="Checklist simple: pulsa Activar para abrir la config de Windows o aplicar el ajuste HKCU si está enlazado."/>
         <TextBlock x:Name="ChecklistSummary" DockPanel.Dock="Top" FontWeight="SemiBold" Margin="0,0,0,8"/>
-        <DataGrid x:Name="ChecklistGrid" AutoGenerateColumns="True" IsReadOnly="True"/>
+        <DataGrid x:Name="ChecklistGrid" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single">
+          <DataGrid.Columns>
+            <DataGridTemplateColumn Header="" Width="100">
+              <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                  <Button Content="Activar" Click="ChecklistActivate_OnClick" Tag="{Binding}" Padding="8,2"
+                          IsEnabled="{Binding CanActivate}"/>
+                </DataTemplate>
+              </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="70"/>
+            <DataGridTextColumn Header="Sección" Binding="{Binding Section}" Width="140"/>
+            <DataGridTextColumn Header="Ajuste" Binding="{Binding Title}" Width="260"/>
+            <DataGridTextColumn Header="Cómo" Binding="{Binding HowTo}" Width="*"/>
+          </DataGrid.Columns>
+        </DataGrid>
+      </DockPanel>
+      <DockPanel x:Name="PageApps" Visibility="Collapsed">
+        <TextBlock x:Name="AppsHint" DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,0,0,8"/>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,8">
+          <TextBlock x:Name="AppsFilterLabel" VerticalAlignment="Center" Margin="0,0,8,0"/>
+          <ComboBox x:Name="AppsCategoryBox" Width="140" SelectionChanged="AppsCategoryBox_OnSelectionChanged">
+            <ComboBoxItem Content="all" IsSelected="True"/>
+            <ComboBoxItem Content="browser"/>
+            <ComboBoxItem Content="tool"/>
+          </ComboBox>
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,8,0,0">
+          <Button x:Name="BtnInstallApp" Style="{StaticResource PrimaryButton}" Content="Instalar selección" Click="InstallApp_OnClick"/>
+          <Button x:Name="BtnDefaultApps" Content="Apps predeterminadas" Click="OpenDefaultApps_OnClick"/>
+          <TextBlock x:Name="AppsStatusText" VerticalAlignment="Center" TextWrapping="Wrap" Margin="12,0,0,0"/>
+        </StackPanel>
+        <DataGrid x:Name="AppsGrid" AutoGenerateColumns="False" SelectionMode="Single" IsReadOnly="True">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="Score" Binding="{Binding Score}" Width="70"/>
+            <DataGridTextColumn Header="App" Binding="{Binding Title}" Width="140"/>
+            <DataGridTextColumn Header="Categoría" Binding="{Binding Category}" Width="90"/>
+            <DataGridTextColumn Header="Estado" Binding="{Binding InstalledLabel}" Width="90"/>
+            <DataGridTextColumn Header="Evidence" Binding="{Binding Evidence}" Width="90"/>
+            <DataGridTextColumn Header="Priv" Binding="{Binding Privacy}" Width="50"/>
+            <DataGridTextColumn Header="Telem" Binding="{Binding Telemetry}" Width="55"/>
+            <DataGridTextColumn Header="Sec" Binding="{Binding Security}" Width="50"/>
+            <DataGridTextColumn Header="Perf" Binding="{Binding Performance}" Width="50"/>
+            <DataGridTextColumn Header="Eco" Binding="{Binding Ecosystem}" Width="50"/>
+            <DataGridTextColumn Header="Por qué" Binding="{Binding Why}" Width="*"/>
+          </DataGrid.Columns>
+        </DataGrid>
       </DockPanel>
       <StackPanel x:Name="PageSettings" Visibility="Collapsed">
-        <TextBlock TextWrapping="Wrap" Text="Instalación: C:\Program Files\WindowsLab o zip portable. Datos: %ProgramData%\WindowsLab. Código: D:\WindowsLab."/>
-        <TextBlock Margin="0,12,0,0" TextWrapping="Wrap" Text="Sin firma Authenticode, SmartScreen puede avisar. No usa irm|iex. Apply/backup llegan con la VM (fases 3–4)."/>
-        <TextBlock Margin="0,12,0,0" x:Name="SettingsCatalogPath"/>
+        <TextBlock x:Name="SettingsThemeTitle" FontWeight="SemiBold" FontSize="16" Text="Tema" Margin="0,0,0,8"/>
+        <TextBlock x:Name="SettingsThemeHint" TextWrapping="Wrap" Margin="0,0,0,16" Foreground="{DynamicResource MutedBrush}"
+                   Text="Oscuro / claro / sistema. El acento es azul en ambos modos."/>
+        <TextBlock x:Name="SettingsChannelsTitle" FontWeight="SemiBold" FontSize="16" Text="Canales de configuración"/>
+        <TextBlock x:Name="SettingsChannelsHint" Margin="0,8,0,12" TextWrapping="Wrap"/>
+        <ItemsControl x:Name="ChannelList">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding}" TextWrapping="Wrap" Margin="0,0,0,12"/>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+          <Button x:Name="BtnOpenUser" Content="Abrir carpeta de usuario" Click="OpenUserChannel_OnClick"/>
+          <Button x:Name="BtnOpenMachine" Content="Abrir carpeta de máquina" Click="OpenMachineChannel_OnClick"/>
+        </StackPanel>
+        <TextBlock Margin="0,16,0,0" x:Name="SettingsCatalogPath" TextWrapping="Wrap"/>
+        <TextBlock x:Name="SettingsInstallPath" Margin="0,12,0,0" TextWrapping="Wrap"/>
+        <TextBlock Margin="0,12,0,0" TextWrapping="Wrap" Text="Sin firma Authenticode: SmartScreen puede avisar. No usa irm|iex."/>
       </StackPanel>
     </Grid>
   </DockPanel>

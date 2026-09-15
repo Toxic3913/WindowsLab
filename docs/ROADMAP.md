@@ -2,7 +2,7 @@
 
 Date: 2026-09-05
 
-Phase 0 is **confirmed**. Phase 1 is in progress (Core + Cli + tree). Mutating work stays on the lab VM ([testing/vm-lab.md](testing/vm-lab.md)).
+Phase 0 is **confirmed**. Phase 1 foundation is **done**. **Beta 0.2** (D017/D018/D019) is the current product slice: dashboard + lab apply HKCU + curated winget apps + dual theme. Full mutating HKLM apply stays for Phase 3–4 on the lab VM ([testing/vm-lab.md](testing/vm-lab.md)).
 
 Agent model notes use Cursor's available slugs: cheap `composer-2.5-fast` for boilerplate, `gpt-5.6-sol-medium` for specialized design, current session model for architecture/critical review. Do **not** default to the most expensive model.
 
@@ -32,9 +32,36 @@ Agent model notes use Cursor's available slugs: cheap `composer-2.5-fast` for bo
 | Acceptance | `dotnet test` green on host |
 | Agent | `composer-2.5-fast` for project files; medium for schema |
 
-**Phase 1 first slice (done):** solution Core + Cli, OS identity without ProductName, data-root = `%ProgramData%\WindowsLab` on C:, repo on `D:\WindowsLab`, `windowslab --help` and `windowslab audit --os`. Directory tree + module READMEs for later engines. SQLite log follows later in this phase.
+**Phase 1 first slice (done).** SQLite log is deferred; Beta 0 does not require it.
+
+## BETA 0.2 — Theme + Applications (current)
+
+| | |
+| --- | --- |
+| Objective | Dual theme (dark/light/system); curated apps via winget; multi-axis browser/tool recommendations |
+| Dependencies | Beta 0.1 |
+| Tasks | `catalog/applications`, `WindowsLab.Applications`, `app` CLI, WPF Aplicaciones page, theme dictionaries |
+| Deliverables | Same as Beta 0.1 + app list/recommend/install + theme toggle |
+| Tests | App scoring by profile; catalog load; theme round-trip |
+| Risks | winget UAC; unsigned SmartScreen |
+| Acceptance | Unelevated audit; lab apply HKCU; `app install --yes` with confirmation; theme persists |
+| Agent | medium |
+
+## BETA 0 — Read-only product (superseded by 0.1/0.2)
+
+| | |
+| --- | --- |
+| Objective | Installable dashboard + lab apply HKCU (D018). Dual installer, WPF shell, self-contained win-x64 |
+| Dependencies | Phase 1 |
+| Tasks | Audit probes, curated catalog, recommend, CLI JSON, WPF, `eng/publish.ps1` |
+| Deliverables | `WindowsLab.exe` (GUI), `windowslab-cli.exe` (CLI), `WindowsLab-Setup.exe`, portable zip |
+| Tests | Probe fakes, catalog load, scoring, apply blocked (exit 13) |
+| Risks | SmartScreen unsigned; WASDK avoided (D017) |
+| Acceptance | Unelevated audit on host; Apply does not write; setup.exe or zip runs without the .NET SDK |
+| Agent | medium |
 
 ## PHASE 2 — Audit Engine
+
 
 | | |
 | --- | --- |

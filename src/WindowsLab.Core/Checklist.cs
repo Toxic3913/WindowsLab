@@ -30,7 +30,8 @@ public sealed record ChecklistDefinition(
     string? ProcessName,
     string? ServiceName,
     string? ToolId,
-    string? DesiredEquals);
+    string? DesiredEquals,
+    string? SettingsUri = null);
 
 public sealed record ChecklistResult(
     string Id,
@@ -41,4 +42,5 @@ public sealed record ChecklistResult(
     string Desired,
     string HowTo,
     ChecklistPolicy Policy,
-    string Note);
+    string Note,
+    string? SettingsUri = null);

@@ -1,19 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <AssemblyName>windowslab</AssemblyName>
+    <AssemblyName>windowslab-cli</AssemblyName>
     <RootNamespace>WindowsLab.Cli</RootNamespace>
-    <Description>WindowsLab command-line client.</Description>
+    <Description>WindowsLab command-line client (windowslab-cli.exe — never collide with WindowsLab.exe on Windows).</Description>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\WindowsLab.Core\WindowsLab.Core.csproj" />
     <ProjectReference Include="..\WindowsLab.Audit\WindowsLab.Audit.csproj" />
     <ProjectReference Include="..\WindowsLab.Tweaks\WindowsLab.Tweaks.csproj" />
     <ProjectReference Include="..\WindowsLab.Recommendations\WindowsLab.Recommendations.csproj" />
+    <ProjectReference Include="..\WindowsLab.Applications\WindowsLab.Applications.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\catalog\tweaks\*.json" Link="catalog\tweaks\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="..\..\catalog\checklists\*.json" Link="catalog\checklists\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="..\..\catalog\presets\*.json" Link="catalog\presets\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="..\..\catalog\applications\*.json" Link="catalog\applications\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

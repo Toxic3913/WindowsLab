@@ -1,5 +1,6 @@
 using WindowsLab.Cli;
 using WindowsLab.Core;
+using WindowsLab.Tweaks;
 
 namespace WindowsLab.Cli.Tests;
 
@@ -20,6 +21,9 @@ public sealed class CliAppTests
         Assert.Contains("audit --os", stdout.ToString(), StringComparison.Ordinal);
         Assert.Contains("checklist", stdout.ToString(), StringComparison.Ordinal);
         Assert.Contains("preset", stdout.ToString(), StringComparison.Ordinal);
+        Assert.Contains("windowslab-cli", stdout.ToString(), StringComparison.Ordinal);
+        Assert.Contains("app list", stdout.ToString(), StringComparison.Ordinal);
+        Assert.Contains("app install", stdout.ToString(), StringComparison.Ordinal);
     }
 
     [Fact]
@@ -60,7 +64,59 @@ public sealed class CliAppTests
         var stderr = new StringWriter();
         var code = CliApp.Run(["tweak", "apply", "explorer.show-file-extensions"], stdout, stderr);
         Assert.Equal(13, code);
-        Assert.Contains("Beta 0", stderr.ToString(), StringComparison.Ordinal);
+        Assert.Contains("lab-apply", stderr.ToString(), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Tweak_apply_dry_run_lab_flag_does_not_require_live_write()
+    {
+        var store = new DictionaryRegistry();
+        store.Set("HKCU", @"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "HideFileExt", 1);
+        var tweak = new TweakDefinition(
+            "explorer.show-file-extensions",
+            "Show extensions",
+            "d",
+            "explorer",
+            RiskLevel.Low,
+            EvidenceGrade.Official,
+            [],
+            22000,
+            ["*"],
+            ["balanced"],
+            [],
+            [],
+            false,
+            false,
+            false,
+            false,
+            new RegistryDetect("HKCU", @"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "HideFileExt", "DWord"),
+            "0",
+            [new TweakOp("registry", "HKCU", @"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "HideFileExt", "DWord", "0")]);
+
+        var services = new CliServices
+        {
+            LoadCatalog = () => [tweak],
+            Registry = () => store
+        };
+        var stdout = new StringWriter();
+        var stderr = new StringWriter();
+        var code = CliApp.Run(
+            ["tweak", "apply", "explorer.show-file-extensions", "--lab-apply", "--dry-run"],
+            stdout,
+            stderr,
+            services: services);
+        Assert.Equal(0, code);
+        Assert.Contains("Dry-run", stdout.ToString(), StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(1, store.GetValue("HKCU", @"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "HideFileExt"));
+    }
+
+    private sealed class DictionaryRegistry : WindowsLab.Tweaks.IRegistryReader
+    {
+        private readonly Dictionary<string, object?> _values = new(StringComparer.OrdinalIgnoreCase);
+        private static string K(string h, string p, string n) => $"{h}|{p}|{n}";
+        public void Set(string h, string p, string n, object? v) => _values[K(h, p, n)] = v;
+        public object? GetValue(string hive, string path, string name) =>
+            _values.TryGetValue(K(hive, path, name), out var v) ? v : null;
     }
 
     [Fact]
@@ -147,5 +203,15 @@ public sealed class CliAppTests
         var text = stdout.ToString();
         Assert.Contains("\"ok\": 1", text, StringComparison.Ordinal);
         Assert.Contains("account.local", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void App_install_without_yes_exits_nonzero()
+    {
+        var stdout = new StringWriter();
+        var stderr = new StringWriter();
+        var code = CliApp.Run(["app", "install", "app.browser.brave"], stdout, stderr);
+        Assert.Equal(1, code);
+        Assert.Contains("--yes", stderr.ToString(), StringComparison.Ordinal);
     }
 }

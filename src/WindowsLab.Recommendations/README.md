@@ -1,5 +1,3 @@
 # WindowsLab.Recommendations
 
-Phase **4–6** — not in the solution yet.
-
-Rank tweaks from **facts** + profile. Never hardcode this PC’s CPU/GPU/RAM.
+Beta **0**. Rank tweaks from inventory facts + profile. EXPERIMENTAL/UNKNOWN never auto-selected. No apply.

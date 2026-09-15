@@ -1,0 +1,4 @@
+@echo off
+REM Same as activate.win.cmd — official Activation settings.
+REM Replace with your lab script if you have one (keep a backup of this file).
+start "" ms-settings:activation

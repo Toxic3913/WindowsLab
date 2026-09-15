@@ -33,7 +33,7 @@ D:\WindowsLab\                              # git repo / source / docs / tests
   eng/                                      # scripts, not the product
   src/
     WindowsLab.Core/                        # models, OS identity, data root
-    WindowsLab.Cli/                         # windowslab.exe
+    WindowsLab.Cli/                         # windowslab-cli.exe
     WindowsLab.Audit/                       # Beta 0 probes
     WindowsLab.Tweaks/                      # catalog + detect
     WindowsLab.Recommendations/             # ranking

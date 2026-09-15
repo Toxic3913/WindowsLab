@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://windowslab.local/schemas/application.json",
+  "title": "ApplicationDefinition",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "title", "wingetId", "category", "evidence", "axes", "profiles"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^app\\.[a-z0-9]+(\\.[a-z0-9-]+)+$" },
+    "title": { "type": "string" },
+    "description": { "type": "string" },
+    "wingetId": { "type": "string", "minLength": 3 },
+    "category": { "type": "string" },
+    "evidence": { "enum": ["OFFICIAL", "STRONG", "COMMUNITY", "EXPERIMENTAL", "UNKNOWN"] },
+    "evidenceRefs": { "type": "array", "items": { "type": "string" } },
+    "risk": { "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"] },
+    "axes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["privacy", "telemetry", "security", "performance", "ecosystem"],
+      "properties": {
+        "privacy": { "type": "number", "minimum": 0, "maximum": 1 },
+        "telemetry": { "type": "number", "minimum": 0, "maximum": 1 },
+        "security": { "type": "number", "minimum": 0, "maximum": 1 },
+        "performance": { "type": "number", "minimum": 0, "maximum": 1 },
+        "ecosystem": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "profiles": { "type": "array", "items": { "type": "string" } },
+    "scopePreference": { "enum": ["user", "machine", "any"] },
+    "detectNames": { "type": "array", "items": { "type": "string" } }
+  }
+}

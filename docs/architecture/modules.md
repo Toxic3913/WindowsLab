@@ -38,7 +38,7 @@ Pipeline: AUDIT → DETECT → ANALYZE → RECOMMEND → APPROVAL → BACKUP →
 
 | | |
 | --- | --- |
-| Purpose | `windowslab.exe` — first engine client |
+| Purpose | `windowslab-cli.exe` — first engine client (never named `windowslab.exe`; collides with GUI on Windows) |
 | Depends on | Core |
 | Must | `--help` / `-h`. `audit --os` prints build, DisplayVersion, edition, `isWindows11` from Core. Exit `0` on success. JSON later (`--output json` stub may print “not implemented”). |
 | Must not | Elevation prompt for `audit --os`. Apply tweaks. |
@@ -71,7 +71,11 @@ Elevated process only. No UI. Named-pipe JSON-RPC (planned).
 
 ### `WindowsLab.Recommendations` — Phase 4–6
 
-Profile + inventory facts → ranked list. No apply.
+Profile + inventory facts → ranked tweak list. Beta 0.2 also ranks curated apps (multi-axis). No apply.
+
+### `WindowsLab.Applications` — Beta 0.2 (D019)
+
+Curated winget catalog loader, installed-app detect (Uninstall registry), install with explicit approval. Logs under ProgramData reports.
 
 ### `WindowsLab.Benchmarks` — Phase 6
 

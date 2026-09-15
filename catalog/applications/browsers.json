@@ -1,0 +1,82 @@
+[
+  {
+    "id": "app.browser.brave",
+    "title": "Brave",
+    "description": "Chromium with built-in ad/tracker blocking. Strong privacy/telemetry axes; lower ecosystem lock-in than Chrome.",
+    "wingetId": "Brave.Brave",
+    "category": "browser",
+    "evidence": "STRONG",
+    "evidenceRefs": ["https://brave.com/privacy/browser/"],
+    "risk": "LOW",
+    "axes": {
+      "privacy": 0.9,
+      "telemetry": 0.85,
+      "security": 0.8,
+      "performance": 0.75,
+      "ecosystem": 0.55
+    },
+    "profiles": ["balanced", "developer", "gaming", "virtualization"],
+    "scopePreference": "user",
+    "detectNames": ["Brave"]
+  },
+  {
+    "id": "app.browser.firefox",
+    "title": "Mozilla Firefox",
+    "description": "Independent engine (Gecko). Strong privacy and security posture; solid telemetry controls.",
+    "wingetId": "Mozilla.Firefox",
+    "category": "browser",
+    "evidence": "STRONG",
+    "evidenceRefs": ["https://www.mozilla.org/privacy/firefox/"],
+    "risk": "LOW",
+    "axes": {
+      "privacy": 0.88,
+      "telemetry": 0.8,
+      "security": 0.82,
+      "performance": 0.7,
+      "ecosystem": 0.6
+    },
+    "profiles": ["balanced", "developer", "gaming", "virtualization"],
+    "scopePreference": "user",
+    "detectNames": ["Mozilla Firefox", "Firefox"]
+  },
+  {
+    "id": "app.browser.chrome",
+    "title": "Google Chrome",
+    "description": "High performance and extension ecosystem; weaker privacy and telemetry axes.",
+    "wingetId": "Google.Chrome",
+    "category": "browser",
+    "evidence": "STRONG",
+    "evidenceRefs": ["https://www.google.com/chrome/privacy/"],
+    "risk": "LOW",
+    "axes": {
+      "privacy": 0.35,
+      "telemetry": 0.25,
+      "security": 0.85,
+      "performance": 0.9,
+      "ecosystem": 0.95
+    },
+    "profiles": ["balanced", "developer", "gaming", "virtualization"],
+    "scopePreference": "user",
+    "detectNames": ["Google Chrome", "Chrome"]
+  },
+  {
+    "id": "app.browser.edge",
+    "title": "Microsoft Edge",
+    "description": "Inbox Chromium browser. Strong security and Windows ecosystem; weaker privacy/telemetry than Brave/Firefox.",
+    "wingetId": "Microsoft.Edge",
+    "category": "browser",
+    "evidence": "OFFICIAL",
+    "evidenceRefs": ["https://www.microsoft.com/edge"],
+    "risk": "LOW",
+    "axes": {
+      "privacy": 0.4,
+      "telemetry": 0.3,
+      "security": 0.88,
+      "performance": 0.88,
+      "ecosystem": 0.9
+    },
+    "profiles": ["balanced", "developer", "gaming", "virtualization"],
+    "scopePreference": "machine",
+    "detectNames": ["Microsoft Edge", "Edge"]
+  }
+]

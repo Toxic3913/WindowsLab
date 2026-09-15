@@ -32,7 +32,7 @@ WindowsLab is a **local-first** Windows 11 lab. It does not phone home. It reads
 | Process | Integrity | Role |
 | --- | --- | --- |
 | `WindowsLab.App` | Medium | WinUI dashboard, never mutates HKLM |
-| `windowslab.exe` | Medium or High | CLI; can request elevation |
+| `windowslab-cli.exe` | Medium or High | CLI; can request elevation |
 | `WindowsLab.Worker` | High | Mutating operations only |
 | Plugin hosts | Medium/High per capability | Vendor GPU, Docker, etc. |
 

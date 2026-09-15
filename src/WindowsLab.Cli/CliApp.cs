@@ -1,4 +1,5 @@
 using System.Text.Json;
+using WindowsLab.Applications;
 using WindowsLab.Audit;
 using WindowsLab.Core;
 using WindowsLab.Recommendations;
@@ -13,6 +14,7 @@ public sealed class CliServices
     public Func<IReadOnlyList<TweakDefinition>> LoadCatalog { get; init; } = LoadCatalogDefault;
     public Func<IReadOnlyList<ChecklistDefinition>> LoadChecklists { get; init; } = LoadChecklistsDefault;
     public Func<IReadOnlyList<PresetDefinition>> LoadPresets { get; init; } = LoadPresetsDefault;
+    public Func<IReadOnlyList<ApplicationDefinition>> LoadApplications { get; init; } = LoadApplicationsDefault;
     public Func<IRegistryReader> Registry { get; init; } = () => new LiveRegistryReader();
     public Func<string> WindowsIdentityName { get; init; } = () => System.Security.Principal.WindowsIdentity.GetCurrent().Name;
 
@@ -33,6 +35,12 @@ public sealed class CliServices
         var dir = CatalogLocator.FindPresetsDirectory();
         return dir is null ? [] : PresetLoader.LoadDirectory(dir);
     }
+
+    private static IReadOnlyList<ApplicationDefinition> LoadApplicationsDefault()
+    {
+        var dir = CatalogLocator.FindApplicationsDirectory();
+        return dir is null ? [] : ApplicationCatalogLoader.LoadDirectory(dir);
+    }
 }
 
 public static class CliApp
@@ -41,25 +49,32 @@ public static class CliApp
 
     public const string HelpText =
         """
-        WindowsLab — Beta 0 (solo lectura)
+        WindowsLab CLI — Beta 0.2 (lab apply HKCU + apps winget)
+        Ejecutable: windowslab-cli.exe  (no confundir con WindowsLab.exe = GUI)
 
         Uso:
-          windowslab --help
-          windowslab audit
-          windowslab audit --os
-          windowslab audit --output json
-          windowslab tweak list
-          windowslab tweak detect <id>
-          windowslab tweak simulate <id>
-          windowslab recommend [--profile balanced|developer|gaming|virtualization]
-          windowslab recommend --output json
-          windowslab checklist
-          windowslab checklist --output json
-          windowslab preset list
-          windowslab preset show <id>
-          windowslab preset simulate <id>
+          windowslab-cli --help
+          windowslab-cli audit
+          windowslab-cli audit --os
+          windowslab-cli audit --output json
+          windowslab-cli tweak list
+          windowslab-cli tweak detect <id>
+          windowslab-cli tweak simulate <id>
+          windowslab-cli tweak apply <id> --lab-apply [--dry-run]
+          windowslab-cli recommend [--profile balanced|developer|gaming|virtualization]
+          windowslab-cli recommend --output json
+          windowslab-cli app list [--category browser|tool]
+          windowslab-cli app recommend [--profile …] [--category browser]
+          windowslab-cli app install <id> --yes
+          windowslab-cli checklist
+          windowslab-cli checklist --output json
+          windowslab-cli preset list
+          windowslab-cli preset show <id>
+          windowslab-cli preset simulate <id>
 
-        tweak apply / preset apply  Bloqueado en Beta 0 (exit 13). No escribe el registro.
+        tweak apply sin --lab-apply → exit 13.
+        app install sin --yes → exit 1.
+        Apply lab: solo HKCU, riesgo LOW, evidencia OFFICIAL/STRONG, con backup.
 
         Código: D:\WindowsLab    Programa: C:\Program Files\WindowsLab
         """;
@@ -84,6 +99,7 @@ public static class CliApp
                 LoadCatalog = services.LoadCatalog,
                 LoadChecklists = services.LoadChecklists,
                 LoadPresets = services.LoadPresets,
+                LoadApplications = services.LoadApplications,
                 Registry = services.Registry,
                 WindowsIdentityName = services.WindowsIdentityName
             };
@@ -130,8 +146,59 @@ public static class CliApp
 
         if (EqualsCmd(args, 0, "tweak") && EqualsCmd(args, 1, "apply"))
         {
-            stderr.WriteLine("Beta 0: apply is disabled (policy). Use tweak detect / simulate.");
-            return ExitCodes.PolicyBlocked;
+            if (!HasFlag(args, "--lab-apply"))
+            {
+                stderr.WriteLine("Apply lab: añade --lab-apply (solo HKCU LOW OFFICIAL/STRONG). Sin flag: exit 13.");
+                return ExitCodes.PolicyBlocked;
+            }
+
+            if (args.Count < 3 || args[2].StartsWith('-'))
+            {
+                stderr.WriteLine("Usage: windowslab-cli tweak apply <id> --lab-apply [--dry-run] [--output json]");
+                return ExitCodes.Generic;
+            }
+
+            var id = args[2];
+            var catalog = services.LoadCatalog();
+            var tweak = catalog.FirstOrDefault(t => string.Equals(t.Id, id, StringComparison.OrdinalIgnoreCase));
+            if (tweak is null)
+            {
+                stderr.WriteLine($"Tweak not found: {id}");
+                return 10;
+            }
+
+            if (!TweakApplicator.IsLabEligible(tweak))
+            {
+                stderr.WriteLine("Policy: tweak not eligible for lab apply (need HKCU LOW OFFICIAL/STRONG).");
+                return ExitCodes.PolicyBlocked;
+            }
+
+            var dry = HasFlag(args, "--dry-run");
+            var reader = services.Registry();
+            IRegistryWriter writer = dry ? new DryRunRegistryWriter() : new LiveRegistryWriter();
+            var result = TweakApplicator.Apply(tweak, reader, writer, dryRun: dry);
+            string? backupPath = null;
+            if (result.Backup is not null && !dry && result.Outcome is ApplyOutcome.Ok or ApplyOutcome.VerifyFailed)
+            {
+                backupPath = TweakApplicator.PersistBackup(result.Backup);
+            }
+
+            if (json)
+            {
+                WriteJson(stdout, "tweak apply", result.Succeeded ? ExitCodes.Ok : ExitCodes.Generic,
+                    new { result.Outcome, result.Message, result.Backup, backupPath, dryRun = dry });
+            }
+            else
+            {
+                stdout.WriteLine($"outcome: {result.Outcome}");
+                stdout.WriteLine($"message: {result.Message}");
+                if (backupPath is not null)
+                {
+                    stdout.WriteLine($"backup: {backupPath}");
+                }
+            }
+
+            return result.Succeeded ? ExitCodes.Ok : ExitCodes.Generic;
         }
 
         if (EqualsCmd(args, 0, "tweak") && EqualsCmd(args, 1, "list"))
@@ -156,7 +223,7 @@ public static class CliApp
         {
             if (args.Count < 3)
             {
-                stderr.WriteLine("Usage: windowslab tweak detect <id>");
+                stderr.WriteLine("Usage: windowslab-cli tweak detect <id>");
                 return ExitCodes.Generic;
             }
 
@@ -210,9 +277,119 @@ public static class CliApp
             return ExitCodes.Ok;
         }
 
+        if (EqualsCmd(args, 0, "app") && EqualsCmd(args, 1, "list"))
+        {
+            var apps = services.LoadApplications();
+            var category = GetOption(args, "--category");
+            if (!string.IsNullOrWhiteSpace(category))
+            {
+                apps = apps.Where(a => string.Equals(a.Category, category, StringComparison.OrdinalIgnoreCase)).ToArray();
+            }
+
+            var facts = InstalledAppDetector.Scan();
+            if (json)
+            {
+                WriteJson(stdout, "app list", ExitCodes.Ok, apps.Select(a => new
+                {
+                    a.Id,
+                    a.Title,
+                    a.Category,
+                    a.WingetId,
+                    a.Evidence,
+                    a.Risk,
+                    installed = InstalledAppDetector.IsInstalled(a, facts),
+                    a.Axes
+                }));
+            }
+            else
+            {
+                foreach (var a in apps)
+                {
+                    var installed = InstalledAppDetector.IsInstalled(a, facts) ? "installed" : "missing";
+                    stdout.WriteLine($"{a.Id}\t{a.Category}\t{a.Evidence}\t{installed}\t{a.WingetId}\t{a.Title}");
+                }
+            }
+
+            return ExitCodes.Ok;
+        }
+
+        if (EqualsCmd(args, 0, "app") && EqualsCmd(args, 1, "recommend"))
+        {
+            var profile = ParseProfile(GetOption(args, "--profile"));
+            var category = GetOption(args, "--category");
+            var apps = services.LoadApplications();
+            var facts = InstalledAppDetector.Scan();
+            var installedIds = apps
+                .Where(a => InstalledAppDetector.IsInstalled(a, facts))
+                .Select(a => a.Id)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+            var recs = AppRecommendationEngine.Rank(apps, profile, installedIds, category);
+            if (json)
+            {
+                WriteJson(stdout, "app recommend", ExitCodes.Ok, new { profile, category, weights = AppRecommendationEngine.WeightsFor(profile), recs });
+            }
+            else
+            {
+                stdout.WriteLine($"profile: {profile}");
+                foreach (var rec in recs)
+                {
+                    stdout.WriteLine($"{rec.Score:0.000}\t{rec.AppId}\t{(rec.Installed ? "installed" : "missing")}\t{rec.Why}");
+                }
+            }
+
+            return ExitCodes.Ok;
+        }
+
+        if (EqualsCmd(args, 0, "app") && EqualsCmd(args, 1, "install"))
+        {
+            if (!HasFlag(args, "--yes"))
+            {
+                stderr.WriteLine("app install requires --yes (explicit approval).");
+                return ExitCodes.Generic;
+            }
+
+            if (args.Count < 3 || args[2].StartsWith('-'))
+            {
+                stderr.WriteLine("Usage: windowslab-cli app install <id> --yes [--output json]");
+                return ExitCodes.Generic;
+            }
+
+            var id = args[2];
+            var apps = services.LoadApplications();
+            var app = apps.FirstOrDefault(a => string.Equals(a.Id, id, StringComparison.OrdinalIgnoreCase));
+            if (app is null)
+            {
+                stderr.WriteLine($"App not found: {id}");
+                return 10;
+            }
+
+            var result = WingetClient.Install(app, allowElevate: true);
+            if (json)
+            {
+                WriteJson(stdout, "app install",
+                    result.Outcome is WingetOutcome.Ok or WingetOutcome.AlreadyInstalled ? ExitCodes.Ok : ExitCodes.Generic,
+                    result);
+            }
+            else
+            {
+                stdout.WriteLine($"outcome: {result.Outcome}");
+                stdout.WriteLine($"message: {result.Message}");
+                if (result.LogPath is not null)
+                {
+                    stdout.WriteLine($"log: {result.LogPath}");
+                }
+            }
+
+            return result.Outcome is WingetOutcome.Ok or WingetOutcome.AlreadyInstalled
+                ? ExitCodes.Ok
+                : result.Outcome == WingetOutcome.Denied
+                    ? ExitCodes.PolicyBlocked
+                    : ExitCodes.Generic;
+        }
+
         if (EqualsCmd(args, 0, "preset") && EqualsCmd(args, 1, "apply"))
         {
-            stderr.WriteLine("Beta 0: preset apply is disabled (policy). Use preset simulate / the Configurar page.");
+            stderr.WriteLine("preset apply: usa la GUI (Configurar → Aplicar pack) o tweak apply <id> --lab-apply.");
             return ExitCodes.PolicyBlocked;
         }
 
@@ -251,7 +428,7 @@ public static class CliApp
         {
             if (args.Count < 3)
             {
-                stderr.WriteLine("Usage: windowslab preset show <id>");
+                stderr.WriteLine("Usage: windowslab-cli preset show <id>");
                 return ExitCodes.Generic;
             }
 
@@ -333,7 +510,7 @@ public static class CliApp
             return ExitCodes.Ok;
         }
 
-        stderr.WriteLine("Unknown command. Use windowslab --help.");
+        stderr.WriteLine("Unknown command. Use windowslab-cli --help.");
         return ExitCodes.Generic;
     }
 

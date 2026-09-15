@@ -126,6 +126,89 @@
     ]
   },
   {
+    "id": "desktop.pro",
+    "order": 70,
+    "title": "Escritorio Pro / Modo Dios",
+    "summary": "Extensiones, ocultos, Este equipo, Acceso rápido limpio, Sticky Keys, Modo Dios. No desactiva Defender ni telemetría Required.",
+    "settingsUri": "shell:::{ED7BA470-8E54-465E-825C-99712043E01C}",
+    "tweakIds": [
+      "explorer.show-file-extensions",
+      "explorer.show-hidden-files",
+      "explorer.hide-protected-os-files",
+      "explorer.launch-this-pc",
+      "explorer.hide-frequent-quick-access",
+      "explorer.hide-recent-quick-access",
+      "explorer.compact-mode",
+      "explorer.show-full-path",
+      "taskbar.widgets-off",
+      "keyboard.stickykeys-hotkey-off"
+    ],
+    "checklistIds": ["explorer.pin-folders", "explorer.shortcuts-keyboard"],
+    "steps": [
+      {
+        "title": "Modo Dios (todas las applets)",
+        "howTo": "Abre el panel clásico con todas las opciones de Windows. Alternativa: crear carpeta GodMode.{ED7BA470-8E54-465E-825C-99712043E01C} en el Escritorio.",
+        "settingsUri": "shell:::{ED7BA470-8E54-465E-825C-99712043E01C}"
+      },
+      {
+        "title": "Opciones de carpeta",
+        "howTo": "Ver > Mostrar > extensiones y elementos ocultos. No marques archivos de sistema protegidos.",
+        "settingsUri": "shell:::{6DFD7C5C-2451-11d3-A299-00C04F8EF6AF}"
+      }
+    ]
+  },
+  {
+    "id": "tools.lab",
+    "order": 80,
+    "title": "Herramientas rápidas (lab)",
+    "summary": "Atajos a Configuración, diagnósticos, red, desarrolladores, energía. Solo abre páginas; no escribe.",
+    "settingsUri": "ms-settings:",
+    "tweakIds": [],
+    "checklistIds": ["apps.winget", "apps.pwsh", "apps.git"],
+    "steps": [
+      {
+        "title": "Privacidad / Diagnósticos (mínimo Required)",
+        "howTo": "Home/Pro: Obligatorio. No existe telemetría cero.",
+        "settingsUri": "ms-settings:privacy-feedback"
+      },
+      {
+        "title": "Windows Update",
+        "howTo": "Mantén el sistema al día en la VM de lab.",
+        "settingsUri": "ms-settings:windowsupdate"
+      },
+      {
+        "title": "Energía / Mejor rendimiento",
+        "howTo": "Slider Mejor rendimiento (GUID oficial).",
+        "settingsUri": "ms-settings:powersleep"
+      },
+      {
+        "title": "Para desarrolladores",
+        "howTo": "Modo desarrollador, rutas largas (detect).",
+        "settingsUri": "ms-settings:developers"
+      },
+      {
+        "title": "Firewall",
+        "howTo": "No lo apagues en un baseline.",
+        "settingsUri": "ms-settings:windowsdefender"
+      },
+      {
+        "title": "Administrador de tareas",
+        "howTo": "Ctrl+Shift+Esc. No mates MsMpEng/dwm.",
+        "settingsUri": "taskmgr"
+      },
+      {
+        "title": "BGInfo (Sysinternals)",
+        "howTo": "Estándar del sector para info en el escritorio.",
+        "settingsUri": "https://learn.microsoft.com/sysinternals/downloads/bginfo"
+      },
+      {
+        "title": "Modo Dios",
+        "howTo": "Todas las applets en un solo panel.",
+        "settingsUri": "shell:::{ED7BA470-8E54-465E-825C-99712043E01C}"
+      }
+    ]
+  },
+  {
     "id": "custom",
     "order": 90,
     "title": "Configuración específica",

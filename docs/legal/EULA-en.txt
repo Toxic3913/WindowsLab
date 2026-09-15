@@ -1,0 +1,56 @@
+WindowsLab — End-User License Agreement (Beta 0)
+================================================
+
+Product: WindowsLab (Windows 11 audit / recommend lab)
+Version: 0.1.0-beta
+Publisher: WindowsLab / repository operator
+
+BY INSTALLING OR USING THIS SOFTWARE YOU AGREE TO THE FOLLOWING:
+
+1. LICENSE
+   You receive a personal, non-exclusive, revocable right to install and use
+   WindowsLab on machines you own or control, for audit, simulation, and (in
+   later versions) apply-with-backup as documented.
+
+2. BETA / NO WARRANTY
+   Provided "AS IS" without warranties. Beta 0 is read-only: it does not apply
+   registry tweaks. Use at your own risk.
+
+3. NOT A MICROSOFT PRODUCT
+   WindowsLab is not affiliated with Microsoft. Windows, BGInfo, and Sysinternals
+   are trademarks of their respective owners. For desktop wallpaper system info,
+   prefer official Sysinternals BGInfo.
+
+4. CODE SIGNING / SMARTSCREEN
+   Beta builds may lack Authenticode signatures. SmartScreen/UAC may warn.
+   Verify the binary came from your own build (D:\WindowsLab\artifacts) or a
+   channel you control.
+
+5. PERMISSIONS
+   Installing under Program Files requires administrator rights. The main app
+   can audit without elevation. Do not run as admin unless documentation says so.
+
+6. PROHIBITED
+   - Shipping tampered builds as official
+   - Using WindowsLab to bypass TPM/Secure Boot, crack licenses, or disable
+     Defender by default
+   - Shipping unreviewed irm|iex / InvokeScript catalogs
+
+7. DATA
+   UI prefs: %LocalAppData%\WindowsLab
+   Runtime (later backups/logs): %ProgramData%\WindowsLab
+   Beta 0 sends no telemetry to WindowsLab servers.
+
+8. TELEMETRY LIMIT (IMPORTANT)
+   On Windows 11 Home/Pro, diagnostic data cannot be reduced below Required (1).
+   AllowTelemetry=0 is not honored on those editions. WindowsLab will not claim
+   or attempt "100% telemetry off" on consumer SKUs.
+
+9. LIABILITY
+   You are responsible for OS changes you make (manually or, later, via Apply
+   on a lab VM with backup).
+
+10. ACCEPTANCE
+    If you disagree, do not install or run WindowsLab.
+
+Date: 2026-09-14
