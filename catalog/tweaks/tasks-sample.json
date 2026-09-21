@@ -1,0 +1,23 @@
+[
+  {
+    "id": "task.ceip-consolidator-disabled",
+    "title": "Desactivar tarea CEIP Consolidator",
+    "description": "schtasks /Change /Disable en \\Microsoft\\Windows\\Customer Experience Improvement Program\\Consolidator. Requiere elevación.",
+    "category": "privacy",
+    "risk": "LOW",
+    "evidence": "STRONG",
+    "evidenceRefs": [],
+    "minBuild": 22000,
+    "editions": [],
+    "profiles": ["balanced", "gaming"],
+    "requires": [],
+    "conflicts": [],
+    "requiresReboot": false,
+    "affectsSecurity": false,
+    "affectsUpdates": false,
+    "affectsCompatibility": false,
+    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\WindowsLab", "name": "Unused", "valueKind": "DWord" },
+    "desired": { "equals": "0" },
+    "ops": [{ "kind": "task", "path": "\\Microsoft\\Windows\\Customer Experience Improvement Program\\Consolidator", "value": "disable" }]
+  }
+]

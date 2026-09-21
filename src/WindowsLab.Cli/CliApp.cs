@@ -1,6 +1,7 @@
 using System.Text.Json;
 using WindowsLab.Applications;
 using WindowsLab.Audit;
+using WindowsLab.Backup;
 using WindowsLab.Core;
 using WindowsLab.Recommendations;
 using WindowsLab.Tweaks;
@@ -49,7 +50,7 @@ public static class CliApp
 
     public const string HelpText =
         """
-        WindowsLab CLI — Beta 0.2 (lab apply HKCU + apps winget)
+        WindowsLab CLI — Beta 0.3 (system apply + lab HKCU + apps)
         Ejecutable: windowslab-cli.exe  (no confundir con WindowsLab.exe = GUI)
 
         Uso:
@@ -57,24 +58,21 @@ public static class CliApp
           windowslab-cli audit
           windowslab-cli audit --os
           windowslab-cli audit --output json
-          windowslab-cli tweak list
-          windowslab-cli tweak detect <id>
-          windowslab-cli tweak simulate <id>
+          windowslab-cli tweak list|detect|simulate <id>
           windowslab-cli tweak apply <id> --lab-apply [--dry-run]
-          windowslab-cli recommend [--profile balanced|developer|gaming|virtualization]
-          windowslab-cli recommend --output json
+          windowslab-cli tweak apply <id> --apply [--yes] [--i-am-on-lab-vm] [--dry-run]
+          windowslab-cli tweak rollback --backup-id <id> [--i-am-on-lab-vm]
+          windowslab-cli backup list [--output json]
+          windowslab-cli recommend [--profile …]
           windowslab-cli app list [--category browser|tool]
-          windowslab-cli app recommend [--profile …] [--category browser]
+          windowslab-cli app recommend [--profile …]
           windowslab-cli app install <id> --yes
           windowslab-cli checklist
-          windowslab-cli checklist --output json
-          windowslab-cli preset list
-          windowslab-cli preset show <id>
-          windowslab-cli preset simulate <id>
+          windowslab-cli preset list|show|simulate <id>
+          windowslab-cli preset apply <id> --yes [--i-am-on-lab-vm]
 
-        tweak apply sin --lab-apply → exit 13.
-        app install sin --yes → exit 1.
-        Apply lab: solo HKCU, riesgo LOW, evidencia OFFICIAL/STRONG, con backup.
+        --lab-apply = HKCU LOW only (no Worker). --apply = system pipeline (UAC/Worker).
+        System apply on host needs AllowSystemApply or --i-am-on-lab-vm (D020).
 
         Código: D:\WindowsLab    Programa: C:\Program Files\WindowsLab
         """;
@@ -146,15 +144,17 @@ public static class CliApp
 
         if (EqualsCmd(args, 0, "tweak") && EqualsCmd(args, 1, "apply"))
         {
-            if (!HasFlag(args, "--lab-apply"))
+            var lab = HasFlag(args, "--lab-apply");
+            var system = HasFlag(args, "--apply");
+            if (!lab && !system)
             {
-                stderr.WriteLine("Apply lab: añade --lab-apply (solo HKCU LOW OFFICIAL/STRONG). Sin flag: exit 13.");
+                stderr.WriteLine("Apply: usa --lab-apply (HKCU) o --apply (sistema/Worker). Sin flag: exit 13.");
                 return ExitCodes.PolicyBlocked;
             }
 
             if (args.Count < 3 || args[2].StartsWith('-'))
             {
-                stderr.WriteLine("Usage: windowslab-cli tweak apply <id> --lab-apply [--dry-run] [--output json]");
+                stderr.WriteLine("Usage: windowslab-cli tweak apply <id> (--lab-apply|--apply) [--yes] [--dry-run] [--i-am-on-lab-vm]");
                 return ExitCodes.Generic;
             }
 
@@ -167,38 +167,132 @@ public static class CliApp
                 return 10;
             }
 
-            if (!TweakApplicator.IsLabEligible(tweak))
+            var dry = HasFlag(args, "--dry-run");
+            var iAmLab = HasFlag(args, "--i-am-on-lab-vm");
+            var settings = OperatorSettingsStore.Load();
+
+            if (lab)
             {
-                stderr.WriteLine("Policy: tweak not eligible for lab apply (need HKCU LOW OFFICIAL/STRONG).");
+                if (!TweakApplicator.IsLabEligible(tweak))
+                {
+                    stderr.WriteLine("Policy: tweak not eligible for lab apply (need HKCU LOW OFFICIAL/STRONG).");
+                    return ExitCodes.PolicyBlocked;
+                }
+
+                var reader = services.Registry();
+                IRegistryWriter writer = dry ? new DryRunRegistryWriter() : new LiveRegistryWriter();
+                var result = TweakApplicator.Apply(tweak, reader, writer, dryRun: dry);
+                string? backupPath = null;
+                if (result.Backup is not null && !dry && result.Outcome is ApplyOutcome.Ok or ApplyOutcome.VerifyFailed)
+                {
+                    backupPath = TweakApplicator.PersistBackup(result.Backup);
+                }
+
+                if (json)
+                {
+                    WriteJson(stdout, "tweak apply", result.Succeeded ? ExitCodes.Ok : ExitCodes.Generic,
+                        new { result.Outcome, result.Message, result.Backup, backupPath, dryRun = dry, mode = "lab" });
+                }
+                else
+                {
+                    stdout.WriteLine($"outcome: {result.Outcome}");
+                    stdout.WriteLine($"message: {result.Message}");
+                    if (backupPath is not null)
+                    {
+                        stdout.WriteLine($"backup: {backupPath}");
+                    }
+                }
+
+                return result.Succeeded ? ExitCodes.Ok : ExitCodes.Generic;
+            }
+
+            // --apply system pipeline
+            if (!HasFlag(args, "--yes") && !dry)
+            {
+                stderr.WriteLine("System apply requires --yes (and lab-vm opt-in if not on VM).");
+                return ExitCodes.Generic;
+            }
+
+            if (!TweakApplicator.IsApplyEligible(tweak) && !TweakApplicator.IsLabEligible(tweak))
+            {
+                stderr.WriteLine("Policy: tweak not eligible for system apply.");
                 return ExitCodes.PolicyBlocked;
             }
 
-            var dry = HasFlag(args, "--dry-run");
-            var reader = services.Registry();
-            IRegistryWriter writer = dry ? new DryRunRegistryWriter() : new LiveRegistryWriter();
-            var result = TweakApplicator.Apply(tweak, reader, writer, dryRun: dry);
-            string? backupPath = null;
-            if (result.Backup is not null && !dry && result.Outcome is ApplyOutcome.Ok or ApplyOutcome.VerifyFailed)
-            {
-                backupPath = TweakApplicator.PersistBackup(result.Backup);
-            }
+            var catalogDir = CatalogLocator.FindTweaksDirectory()
+                             ?? throw new DirectoryNotFoundException("catalog/tweaks not found");
+            var job = SystemApplyEngine.ApplyAsync(
+                [tweak],
+                new FileBackupStore(),
+                services.Registry(),
+                settings,
+                iAmLab,
+                dry,
+                catalogDir).GetAwaiter().GetResult();
 
             if (json)
             {
-                WriteJson(stdout, "tweak apply", result.Succeeded ? ExitCodes.Ok : ExitCodes.Generic,
-                    new { result.Outcome, result.Message, result.Backup, backupPath, dryRun = dry });
+                WriteJson(stdout, "tweak apply", job.Succeeded ? ExitCodes.Ok : ExitCodes.Generic,
+                    new { job.Succeeded, job.Message, job.BackupId, job.Results, mode = "system" });
             }
             else
             {
-                stdout.WriteLine($"outcome: {result.Outcome}");
-                stdout.WriteLine($"message: {result.Message}");
-                if (backupPath is not null)
+                stdout.WriteLine($"succeeded: {job.Succeeded}");
+                stdout.WriteLine($"message: {job.Message}");
+                if (job.BackupId is not null)
                 {
-                    stdout.WriteLine($"backup: {backupPath}");
+                    stdout.WriteLine($"backupId: {job.BackupId}");
                 }
             }
 
+            return job.Succeeded ? ExitCodes.Ok : ExitCodes.Generic;
+        }
+
+        if (EqualsCmd(args, 0, "tweak") && EqualsCmd(args, 1, "rollback"))
+        {
+            var backupId = GetOption(args, "--backup-id");
+            if (string.IsNullOrWhiteSpace(backupId))
+            {
+                stderr.WriteLine("Usage: windowslab-cli tweak rollback --backup-id <id> [--i-am-on-lab-vm]");
+                return ExitCodes.Generic;
+            }
+
+            var store = new FileBackupStore();
+            var result = SystemApplyEngine.RollbackAsync(
+                backupId,
+                store,
+                OperatorSettingsStore.Load(),
+                HasFlag(args, "--i-am-on-lab-vm")).GetAwaiter().GetResult();
+            if (json)
+            {
+                WriteJson(stdout, "tweak rollback", result.Succeeded ? ExitCodes.Ok : ExitCodes.Generic, result);
+            }
+            else
+            {
+                stdout.WriteLine($"succeeded: {result.Succeeded}");
+                stdout.WriteLine($"message: {result.Message}");
+            }
+
             return result.Succeeded ? ExitCodes.Ok : ExitCodes.Generic;
+        }
+
+        if (EqualsCmd(args, 0, "backup") && EqualsCmd(args, 1, "list"))
+        {
+            var store = new FileBackupStore();
+            var list = store.List();
+            if (json)
+            {
+                WriteJson(stdout, "backup list", ExitCodes.Ok, list);
+            }
+            else
+            {
+                foreach (var b in list)
+                {
+                    stdout.WriteLine($"{b.BackupId}\t{b.CreatedUtc:u}\t{b.HighestRisk}\t{b.Reason}\t{string.Join(',', b.TweakIds)}");
+                }
+            }
+
+            return ExitCodes.Ok;
         }
 
         if (EqualsCmd(args, 0, "tweak") && EqualsCmd(args, 1, "list"))
@@ -389,8 +483,76 @@ public static class CliApp
 
         if (EqualsCmd(args, 0, "preset") && EqualsCmd(args, 1, "apply"))
         {
-            stderr.WriteLine("preset apply: usa la GUI (Configurar → Aplicar pack) o tweak apply <id> --lab-apply.");
-            return ExitCodes.PolicyBlocked;
+            if (!HasFlag(args, "--yes"))
+            {
+                stderr.WriteLine("preset apply requires --yes [--i-am-on-lab-vm] [--dry-run]");
+                return ExitCodes.Generic;
+            }
+
+            if (args.Count < 3 || args[2].StartsWith('-'))
+            {
+                stderr.WriteLine("Usage: windowslab-cli preset apply <id> --yes [--i-am-on-lab-vm] [--dry-run]");
+                return ExitCodes.Generic;
+            }
+
+            var presetId = args[2];
+            var presets = services.LoadPresets();
+            var preset = presets.FirstOrDefault(p => string.Equals(p.Id, presetId, StringComparison.OrdinalIgnoreCase));
+            if (preset is null)
+            {
+                stderr.WriteLine($"Preset not found: {presetId}");
+                return 10;
+            }
+
+            var catalog = services.LoadCatalog();
+            var inventory = services.Audit();
+            var detections = TweakDetector.DetectAll(catalog, services.Registry());
+            var checks = ChecklistEvaluator.Evaluate(services.LoadChecklists(), inventory, services.Registry(), services.WindowsIdentityName());
+            var eval = PresetEvaluator.Evaluate(preset, catalog, detections, checks);
+            var ids = eval.Items
+                .Where(i => i.Estado == "FALTA" && i.Kind != "step")
+                .Select(i => i.Id)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToArray();
+            var tweaks = ids
+                .Select(id => catalog.FirstOrDefault(t => string.Equals(t.Id, id, StringComparison.OrdinalIgnoreCase)))
+                .Where(t => t is not null)
+                .Cast<TweakDefinition>()
+                .Where(t => TweakApplicator.IsApplyEligible(t) || TweakApplicator.IsLabEligible(t))
+                .ToArray();
+
+            if (tweaks.Length == 0)
+            {
+                stderr.WriteLine("No eligible pending tweaks in preset.");
+                return ExitCodes.Ok;
+            }
+
+            var catalogDir = CatalogLocator.FindTweaksDirectory()
+                             ?? throw new DirectoryNotFoundException("catalog/tweaks not found");
+            var job = SystemApplyEngine.ApplyAsync(
+                tweaks,
+                new FileBackupStore(),
+                services.Registry(),
+                OperatorSettingsStore.Load(),
+                HasFlag(args, "--i-am-on-lab-vm"),
+                HasFlag(args, "--dry-run"),
+                catalogDir).GetAwaiter().GetResult();
+
+            if (json)
+            {
+                WriteJson(stdout, "preset apply", job.Succeeded ? ExitCodes.Ok : ExitCodes.Generic, job);
+            }
+            else
+            {
+                stdout.WriteLine($"succeeded: {job.Succeeded}");
+                stdout.WriteLine($"message: {job.Message}");
+                if (job.BackupId is not null)
+                {
+                    stdout.WriteLine($"backupId: {job.BackupId}");
+                }
+            }
+
+            return job.Succeeded ? ExitCodes.Ok : ExitCodes.Generic;
         }
 
         if (EqualsCmd(args, 0, "preset") && (EqualsCmd(args, 1, "list") || args.Count == 1))

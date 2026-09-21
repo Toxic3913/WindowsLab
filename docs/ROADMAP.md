@@ -2,9 +2,35 @@
 
 Date: 2026-09-05
 
-Phase 0 is **confirmed**. Phase 1 foundation is **done**. **Beta 0.2** (D017/D018/D019) is the current product slice: dashboard + lab apply HKCU + curated winget apps + dual theme. Full mutating HKLM apply stays for Phase 3–4 on the lab VM ([testing/vm-lab.md](testing/vm-lab.md)).
+Phase 0 is **confirmed**. Phase 1 foundation is **done**. **Beta 0.3** (D020) is the current product slice: system apply (Backup + Worker + HKLM) on the lab VM, plus Beta 0.2 features. Mutating tests stay on [testing/vm-lab.md](testing/vm-lab.md).
 
 Agent model notes use Cursor's available slugs: cheap `composer-2.5-fast` for boilerplate, `gpt-5.6-sol-medium` for specialized design, current session model for architecture/critical review. Do **not** default to the most expensive model.
+
+## BETA 0.3 — System apply (current)
+
+| | |
+| --- | --- |
+| Objective | Backup manifests, elevated Worker, HKLM + service/task/power apply, rollback, restore-point attempt |
+| Dependencies | Beta 0.2 |
+| Tasks | `WindowsLab.Backup`, `WindowsLab.Worker`, `SystemApplyEngine`, CLI `--apply` / `backup list` / rollback, GUI Respaldos + AllowSystemApply |
+| Deliverables | Apply on VM with UAC; host gated; lab `--lab-apply` still works |
+| Tests | Backup store unit tests; eligibility tests; VM smoke checklist |
+| Risks | UAC cancel; RP 24h limit; unsigned SmartScreen |
+| Acceptance | Lab VM: apply HKLM sample + rollback from ProgramData backup; host refuses system apply without opt-in |
+| Agent | medium + independent review for handlers |
+
+## BETA 0.2 — Theme + Applications (done)
+
+| | |
+| --- | --- |
+| Objective | Dual theme (dark/light/system); curated apps via winget; multi-axis browser/tool recommendations |
+| Dependencies | Beta 0.1 |
+| Tasks | `catalog/applications`, `WindowsLab.Applications`, `app` CLI, WPF Aplicaciones page, theme dictionaries |
+| Deliverables | Same as Beta 0.1 + app list/recommend/install + theme toggle |
+| Tests | App scoring by profile; catalog load; theme round-trip |
+| Risks | winget UAC; unsigned SmartScreen |
+| Acceptance | Unelevated audit; lab apply HKCU; `app install --yes` with confirmation; theme persists |
+| Agent | medium |
 
 ## PHASE 0 — Research
 
@@ -34,20 +60,7 @@ Agent model notes use Cursor's available slugs: cheap `composer-2.5-fast` for bo
 
 **Phase 1 first slice (done).** SQLite log is deferred; Beta 0 does not require it.
 
-## BETA 0.2 — Theme + Applications (current)
-
-| | |
-| --- | --- |
-| Objective | Dual theme (dark/light/system); curated apps via winget; multi-axis browser/tool recommendations |
-| Dependencies | Beta 0.1 |
-| Tasks | `catalog/applications`, `WindowsLab.Applications`, `app` CLI, WPF Aplicaciones page, theme dictionaries |
-| Deliverables | Same as Beta 0.1 + app list/recommend/install + theme toggle |
-| Tests | App scoring by profile; catalog load; theme round-trip |
-| Risks | winget UAC; unsigned SmartScreen |
-| Acceptance | Unelevated audit; lab apply HKCU; `app install --yes` with confirmation; theme persists |
-| Agent | medium |
-
-## BETA 0 — Read-only product (superseded by 0.1/0.2)
+## BETA 0 — Read-only product (superseded by 0.1/0.2/0.3)
 
 | | |
 | --- | --- |

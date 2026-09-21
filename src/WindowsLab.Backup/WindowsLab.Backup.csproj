@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>WindowsLab.Backup</RootNamespace>
+    <Description>Named backups under ProgramData (exact inverse rollback).</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WindowsLab.Core\WindowsLab.Core.csproj" />
+  </ItemGroup>
+</Project>

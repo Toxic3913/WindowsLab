@@ -14,7 +14,8 @@ public sealed record OperatorSettings(
     string? LastPresetId,
     DateTimeOffset SavedUtc,
     string Language = "es",
-    string Theme = "dark");
+    string Theme = "dark",
+    bool AllowSystemApply = false);
 
 public static class ConfigChannels
 {
@@ -49,6 +50,7 @@ public static class ConfigChannels
         Directory.CreateDirectory(UserRoot);
         Directory.CreateDirectory(MachineRoot);
         Directory.CreateDirectory(Path.Combine(UserRoot, "backups"));
+        Directory.CreateDirectory(Path.Combine(MachineRoot, "backups"));
         Directory.CreateDirectory(Path.Combine(MachineRoot, "reports"));
         Directory.CreateDirectory(Path.Combine(MachineRoot, "tmp"));
     }

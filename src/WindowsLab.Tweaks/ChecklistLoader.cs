@@ -56,8 +56,7 @@ public static class ChecklistLoader
             Read(detect, "process"),
             Read(detect, "service"),
             Read(detect, "tool"),
-            desired,
-            Read(el, "settingsUri"));
+            desired);
     }
 
     private static string? Read(JsonElement el, string name) =>

@@ -120,13 +120,22 @@ public sealed class CliAppTests
     }
 
     [Fact]
-    public void Preset_apply_is_policy_blocked()
+    public void Preset_apply_without_yes_fails()
     {
         var stdout = new StringWriter();
         var stderr = new StringWriter();
         var code = CliApp.Run(["preset", "apply", "perf.max"], stdout, stderr);
+        Assert.Equal(1, code);
+        Assert.Contains("--yes", stderr.ToString(), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Tweak_apply_without_flag_is_policy_blocked()
+    {
+        var stdout = new StringWriter();
+        var stderr = new StringWriter();
+        var code = CliApp.Run(["tweak", "apply", "explorer.show-file-extensions"], stdout, stderr);
         Assert.Equal(13, code);
-        Assert.Contains("preset apply", stderr.ToString(), StringComparison.Ordinal);
     }
 
     [Fact]

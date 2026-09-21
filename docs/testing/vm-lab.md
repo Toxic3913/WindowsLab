@@ -108,11 +108,26 @@ ISO on this host (confirmed present): `D:\VM\COMPARTIDO\Win11_25H2_Spanish_x64_v
 1. Connect NAT. Install **VMware Tools** (VM → Install VMware Tools) and reboot.
 2. Windows Update until current. Note build + UBR in the snapshot description.
 3. System Protection **on** for C: (plenty of free space in this guest).
-4. Optional: copy the WindowsLab portable zip (`artifacts\zip\WindowsLab-portable-win-x64.zip`) onto the desktop. Run **audit / checklist / Configurar** only. **Do not expect Apply** until Phase 4 (Beta 0 exits 13).
+4. Optional: copy the WindowsLab portable zip (`artifacts\zip\WindowsLab-portable-win-x64.zip`) onto the desktop. Enable **Permitir apply de sistema** in Ajustes (or use CLI `--i-am-on-lab-vm`).
 5. Do **not** install Steam, Docker, Cursor, or GPU “tweaks” on this image.
 6. Snapshot **`snap-clean-25h2`**. This is the only golden restore point.
 
-### D. How to test later
+### D. Beta 0.3 smoke (system apply)
+
+On a **clone** of `snap-clean-25h2` (never the golden snapshot):
+
+1. Copy build: `WindowsLab.exe`, `windowslab-cli.exe`, `WindowsLab.Worker.exe`, `catalog\`.
+2. `windowslab-cli audit --os --output json`
+3. Lab HKCU: `windowslab-cli tweak apply explorer.show-file-extensions --lab-apply --output json`
+4. System (UAC): `windowslab-cli tweak apply developer.long-paths --apply --yes --i-am-on-lab-vm --output json`
+5. `windowslab-cli backup list --output json` → note `backupId`
+6. `windowslab-cli tweak rollback --backup-id <id> --i-am-on-lab-vm`
+7. Optional: `service.remote-registry-disabled` / `power.high-performance-scheme` with `--apply --yes --i-am-on-lab-vm`
+8. Revert snapshot
+
+Host PC-HUGO: system apply must refuse without opt-in (D020).
+
+### E. How to test later
 
 1. Clone or revert `snap-clean-25h2`.
 2. Apply packs **inside the clone**, never on the golden snapshot.

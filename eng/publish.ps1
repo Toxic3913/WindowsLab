@@ -18,6 +18,12 @@ dotnet publish (Join-Path $root 'src\WindowsLab.Cli\WindowsLab.Cli.csproj') `
   -p:PublishReadyToRun=false `
   -o $publish
 
+Write-Host 'Publishing Worker (WindowsLab.Worker.exe)...'
+dotnet publish (Join-Path $root 'src\WindowsLab.Worker\WindowsLab.Worker.csproj') `
+  -c Release -r win-x64 --self-contained true `
+  -p:PublishReadyToRun=false `
+  -o $publish
+
 Write-Host 'Publishing App (WindowsLab.exe WinExe) LAST...'
 dotnet publish (Join-Path $root 'src\WindowsLab.App\WindowsLab.App.csproj') `
   -c Release -r win-x64 --self-contained true `
@@ -26,8 +32,10 @@ dotnet publish (Join-Path $root 'src\WindowsLab.App\WindowsLab.App.csproj') `
 
 $gui = Join-Path $publish 'WindowsLab.exe'
 $cli = Join-Path $publish 'windowslab-cli.exe'
+$worker = Join-Path $publish 'WindowsLab.Worker.exe'
 if (-not (Test-Path $gui)) { throw "Missing WindowsLab.exe after publish" }
 if (-not (Test-Path $cli)) { throw "Missing windowslab-cli.exe after publish" }
+if (-not (Test-Path $worker)) { throw "Missing WindowsLab.Worker.exe after publish" }
 if ([string]::Equals((Resolve-Path $gui).Path, (Resolve-Path $cli).Path, [StringComparison]::OrdinalIgnoreCase)) {
   throw 'FATAL: GUI and CLI resolve to the same path on Windows (name collision).'
 }

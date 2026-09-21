@@ -4,5 +4,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\WindowsLab.Core\WindowsLab.Core.csproj" />
+    <ProjectReference Include="..\WindowsLab.Backup\WindowsLab.Backup.csproj" />
   </ItemGroup>
 </Project>

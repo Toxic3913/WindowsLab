@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using WindowsLab.Applications;
+using WindowsLab.Backup;
 using WindowsLab.Core;
 using WindowsLab.Tweaks;
 
@@ -99,6 +100,7 @@ public partial class MainWindow : Window
         SelectProfileBox(saved.Profile);
         SelectThemeBox(saved.Theme);
         ThemeService.Apply(OperatorSettingsStore.ParseTheme(saved.Theme));
+        ChkAllowSystemApply.IsChecked = saved.AllowSystemApply;
         _suppressProfile = false;
         _suppressTheme = false;
         ApplyUiLanguage();
@@ -107,6 +109,7 @@ public partial class MainWindow : Window
         Loaded += (_, _) =>
         {
             StartupLog.Write("MainWindow.Loaded");
+            RefreshBackupList();
             BeginLoad();
         };
         StartupLog.Write("MainWindow.ctor.end");
@@ -248,7 +251,8 @@ public partial class MainWindow : Window
         Loc.Language = lang.StartsWith("en", StringComparison.Ordinal) ? "en" : "es";
         ApplyUiLanguage();
         Persist();
-        if (Nav.SelectedIndex == 2)
+        if (Nav.SelectedItem is ListBoxItem navItem &&
+            string.Equals(navItem.Tag as string, "resources", StringComparison.OrdinalIgnoreCase))
         {
             RefreshLivePreview();
         }
@@ -284,8 +288,19 @@ public partial class MainWindow : Window
         NavSettings.Content = Loc.T("nav.settings");
         ThemeLabel.Text = Loc.T("theme.label");
         UpdateThemeBoxLabels();
-        HomePacksTitle.Text = Loc.T("home.packs");
-        HomeProbesTitle.Text = Loc.T("home.probes");
+        HomeModesTitle.Text = Loc.T("home.modes");
+        HomeModesHint.Text = Loc.T("home.modesHint");
+        BtnModeGamingTitle.Text = Loc.T("mode.gaming");
+        BtnModeGamingSub.Text = Loc.T("mode.gaming.sub");
+        BtnModeOptimizedTitle.Text = Loc.T("mode.optimized");
+        BtnModeOptimizedSub.Text = Loc.T("mode.optimized.sub");
+        BtnModeDevTitle.Text = Loc.T("mode.dev");
+        BtnModeDevSub.Text = Loc.T("mode.dev.sub");
+        BtnModeBalancedTitle.Text = Loc.T("mode.balanced");
+        BtnModeBalancedSub.Text = Loc.T("mode.balanced.sub");
+        HomeToolsTitle.Text = Loc.T("home.tools");
+        HomePacksTitle.Text = Loc.T("home.morePacks");
+        HomeProbesTitle.Text = Loc.T("home.details");
         ConfigHint.Text = Loc.T("config.hint");
         BtnActivatePack.Content = Loc.T("btn.activatePack");
         BtnSimulatePack.Content = Loc.T("btn.simulatePack");
@@ -313,7 +328,6 @@ public partial class MainWindow : Window
         BtnDesktopInfoQuick.Content = Loc.T("btn.desktopInfo");
         BtnActivateWindowsRes.Content = Loc.T("btn.activateWindows");
         BtnLibreOfficeRes.Content = Loc.T("btn.libreoffice");
-        HomeQuickTitle.Text = Loc.T("home.quick");
         AdviceHint.Text = Loc.T("advice.hint");
         AdviceBgTitle.Text = Loc.T("advice.bg.title");
         SettingsThemeTitle.Text = Loc.T("theme.label");
@@ -321,9 +335,20 @@ public partial class MainWindow : Window
         SettingsChannelsHint.Text = Loc.T("settings.channelsHint");
         BtnOpenUser.Content = Loc.T("btn.openUser");
         BtnOpenMachine.Content = Loc.T("btn.openMachine");
+        SettingsUpdateTitle.Text = Loc.T("update.title");
+        BtnCheckUpdates.Content = Loc.T("update.check");
+        BtnCheckUpdatesSettings.Content = Loc.T("update.check");
+        BtnOpenReleases.Content = Loc.T("update.open");
+        SettingsVersionText.Text = Loc.IsEnglish
+            ? "Installed version: " + AppUpdateChecker.GetCurrentVersion()
+            : "Versión instalada: " + AppUpdateChecker.GetCurrentVersion();
         SettingsInstallPath.Text = Loc.IsEnglish
             ? "Setup: D:\\WindowsLab\\artifacts\\installer\\WindowsLab-Setup.exe  ·  Inno: WindowsLab-Setup-Inno.exe  ·  Zip: artifacts\\zip\\WindowsLab-portable-win-x64.zip"
             : "Instalador: D:\\WindowsLab\\artifacts\\installer\\WindowsLab-Setup.exe  ·  Inno: WindowsLab-Setup-Inno.exe  ·  Zip: artifacts\\zip\\WindowsLab-portable-win-x64.zip";
+        if (_session is not null)
+        {
+            RenderHome();
+        }
     }
 
     private void UpdateThemeBoxLabels()
@@ -370,8 +395,74 @@ public partial class MainWindow : Window
         Persist();
     }
 
+    private void OpenReleases_OnClick(object sender, RoutedEventArgs e) =>
+        Launch(AppUpdateChecker.ReleasesPageUrl, Loc.IsEnglish
+            ? "Could not open the browser."
+            : "No se pudo abrir el navegador.");
+
+    private async void CheckUpdates_OnClick(object sender, RoutedEventArgs e)
+    {
+        UpdateStatusText.Text = Loc.T("update.checking");
+        HomeQuickStatus.Text = Loc.T("update.checking");
+        BtnCheckUpdates.IsEnabled = false;
+        BtnCheckUpdatesSettings.IsEnabled = false;
+        try
+        {
+            var result = await AppUpdateChecker.CheckAsync().ConfigureAwait(true);
+            UpdateStatusText.Text = result.Message;
+            HomeQuickStatus.Text = result.Message;
+
+            if (result.Status is UpdateCheckStatus.UpdateAvailable or UpdateCheckStatus.NoReleasePublished)
+            {
+                var open = MessageBox.Show(
+                    result.Message + "\n\n" +
+                    (Loc.IsEnglish ? "Open GitHub releases page?" : "¿Abrir la página de releases en GitHub?"),
+                    Loc.T("update.title"),
+                    MessageBoxButton.YesNo,
+                    result.Status == UpdateCheckStatus.UpdateAvailable
+                        ? MessageBoxImage.Information
+                        : MessageBoxImage.Question);
+                if (open == MessageBoxResult.Yes)
+                {
+                    Launch(result.ReleaseUrl ?? AppUpdateChecker.ReleasesPageUrl,
+                        Loc.IsEnglish ? "Could not open the browser." : "No se pudo abrir el navegador.");
+                }
+            }
+            else if (result.Status == UpdateCheckStatus.UpToDate)
+            {
+                MessageBox.Show(result.Message, Loc.T("update.title"), MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                var open = MessageBox.Show(
+                    result.Message + "\n\n" +
+                    (Loc.IsEnglish ? "Open releases page anyway?" : "¿Abrir releases de todos modos?"),
+                    Loc.T("update.title"),
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+                if (open == MessageBoxResult.Yes)
+                {
+                    Launch(AppUpdateChecker.ReleasesPageUrl,
+                        Loc.IsEnglish ? "Could not open the browser." : "No se pudo abrir el navegador.");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            var msg = Loc.IsEnglish ? "Update check failed: " + ex.Message : "Fallo al buscar updates: " + ex.Message;
+            UpdateStatusText.Text = msg;
+            HomeQuickStatus.Text = msg;
+        }
+        finally
+        {
+            BtnCheckUpdates.IsEnabled = true;
+            BtnCheckUpdatesSettings.IsEnabled = true;
+        }
+    }
+
     private void OpenGodMode_OnClick(object sender, RoutedEventArgs e) =>
         Launch("shell:::{ED7BA470-8E54-465E-825C-99712043E01C}", Loc.T("tools.godmodeHow"));
+
 
     private void ProfileBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -411,20 +502,41 @@ public partial class MainWindow : Window
             return;
         }
 
-        var index = Nav.SelectedIndex;
-        PageHome.Visibility = index == 0 ? Visibility.Visible : Visibility.Collapsed;
-        PageConfig.Visibility = index == 1 ? Visibility.Visible : Visibility.Collapsed;
-        PageResources.Visibility = index == 2 ? Visibility.Visible : Visibility.Collapsed;
-        PageSystem.Visibility = index == 3 ? Visibility.Visible : Visibility.Collapsed;
-        PageSecurity.Visibility = index == 4 ? Visibility.Visible : Visibility.Collapsed;
-        PageTweaks.Visibility = index == 5 ? Visibility.Visible : Visibility.Collapsed;
-        PageAdvice.Visibility = index == 6 ? Visibility.Visible : Visibility.Collapsed;
-        PageChecklist.Visibility = index == 7 ? Visibility.Visible : Visibility.Collapsed;
-        PageApps.Visibility = index == 8 ? Visibility.Visible : Visibility.Collapsed;
-        PageSettings.Visibility = index == 9 ? Visibility.Visible : Visibility.Collapsed;
-        if (index == 2)
+        if (Nav.SelectedItem is not ListBoxItem item || item.Tag is not string tag || string.IsNullOrWhiteSpace(tag))
+        {
+            return;
+        }
+
+        ShowPage(tag);
+        if (tag == "resources")
         {
             RefreshLivePreview();
+        }
+    }
+
+    private void ShowPage(string tag)
+    {
+        PageHome.Visibility = tag == "home" ? Visibility.Visible : Visibility.Collapsed;
+        PageConfig.Visibility = tag == "config" ? Visibility.Visible : Visibility.Collapsed;
+        PageResources.Visibility = tag == "resources" ? Visibility.Visible : Visibility.Collapsed;
+        PageSystem.Visibility = tag == "system" ? Visibility.Visible : Visibility.Collapsed;
+        PageSecurity.Visibility = tag == "security" ? Visibility.Visible : Visibility.Collapsed;
+        PageTweaks.Visibility = tag == "tweaks" ? Visibility.Visible : Visibility.Collapsed;
+        PageAdvice.Visibility = tag == "advice" ? Visibility.Visible : Visibility.Collapsed;
+        PageChecklist.Visibility = tag == "checklist" ? Visibility.Visible : Visibility.Collapsed;
+        PageApps.Visibility = tag == "apps" ? Visibility.Visible : Visibility.Collapsed;
+        PageSettings.Visibility = tag == "settings" ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void SelectNav(string tag)
+    {
+        foreach (var obj in Nav.Items)
+        {
+            if (obj is ListBoxItem item && string.Equals(item.Tag as string, tag, StringComparison.OrdinalIgnoreCase))
+            {
+                Nav.SelectedItem = item;
+                return;
+            }
         }
     }
 
@@ -437,26 +549,95 @@ public partial class MainWindow : Window
 
         var inv = _session.Inventory;
         HomeSummary.Text =
-            $"{inv.Os.FamilyLabel} {inv.Os.DisplayVersion} (build {inv.Os.Build})  ·  {inv.Cpu.Name}  ·  {inv.Ram.TotalBytes / (1024d * 1024 * 1024):0.0} GB RAM  ·  {_session.Catalog.Count} tweaks  ·  {_session.Presets.Count} packs  ·  {_session.ChecklistResults.Count(c => c.Verdict == ChecklistVerdict.Gap)} huecos en checklist";
+            $"{inv.Os.FamilyLabel} {inv.Os.DisplayVersion}  ·  {inv.Cpu.Name}  ·  {inv.Ram.TotalBytes / (1024d * 1024 * 1024):0.0} GB";
 
         var c = _session.SystemVolume;
         if (c is not null)
         {
             var freeGb = c.FreeBytes / (1024d * 1024 * 1024);
             HomeWarn.Text = freeGb < 20
-                ? $"C: tiene {freeGb:0.0} GB libres. Los puntos de restauración pueden fallar. WindowsLab no mueve VSS en Beta 0."
-                : $"C: {freeGb:0.0} GB libres. Usa Configurar para packs. Apply lab = HKCU seguro con backup.";
+                ? $"C: {freeGb:0.0} GB libres — espacio bajo."
+                : "";
         }
         else
         {
             HomeWarn.Text = "";
         }
 
+        UpdateModeButton(BtnModeGamingStat, "gaming");
+        UpdateModeButton(BtnModeOptimizedStat, "perf.max");
+        UpdateModeButton(BtnModeDevStat, "developer");
+        UpdateModeButton(BtnModeBalancedStat, "privacy.lab");
+
         HomePresetList.ItemsSource = _session.PresetEvals
             .Where(p => !p.Preset.IsCustom)
             .Select(e => new PresetPick { Eval = e })
             .ToList();
         ProbeList.ItemsSource = inv.Probes.Select(p => $"{p.Status,-12} {p.ProbeId}  {p.Message}").ToArray();
+    }
+
+    private void UpdateModeButton(TextBlock stat, string presetId)
+    {
+        if (_session is null)
+        {
+            stat.Text = "";
+            return;
+        }
+
+        var eval = _session.PresetEvals.FirstOrDefault(p =>
+            string.Equals(p.Preset.Id, presetId, StringComparison.OrdinalIgnoreCase));
+        if (eval is null || eval.Total == 0)
+        {
+            stat.Text = Loc.IsEnglish ? "Pack missing" : "Pack no encontrado";
+            return;
+        }
+
+        stat.Text = Loc.IsEnglish
+            ? $"{eval.ReadyCount}/{eval.Total} ready · {eval.GapCount} gaps"
+            : $"{eval.ReadyCount}/{eval.Total} listos · {eval.GapCount} pendientes";
+    }
+
+    private void QuickMode_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (_session is null || sender is not Button btn || btn.Tag is not string mode)
+        {
+            return;
+        }
+
+        var (profile, presetId, labelKey) = mode.ToLowerInvariant() switch
+        {
+            "gaming" => (UserProfile.Gaming, "gaming", "mode.gaming"),
+            "optimized" => (UserProfile.Balanced, "perf.max", "mode.optimized"),
+            "developer" => (UserProfile.Developer, "developer", "mode.dev"),
+            "balanced" => (UserProfile.Balanced, "privacy.lab", "mode.balanced"),
+            _ => (UserProfile.Balanced, "privacy.lab", "mode.balanced")
+        };
+
+        if (mode is not ("gaming" or "optimized" or "developer" or "balanced"))
+        {
+            HomeModeStatus.Text = "Unknown mode: " + mode;
+            return;
+        }
+
+        var label = Loc.T(labelKey);
+
+        _suppressProfile = true;
+        SelectProfileBox(profile switch
+        {
+            UserProfile.Gaming => "gaming",
+            UserProfile.Developer => "developer",
+            UserProfile.Virtualization => "virtualization",
+            UserProfile.Balanced => "balanced",
+            _ => "balanced"
+        });
+        _suppressProfile = false;
+
+        HomeModeStatus.Text = Loc.IsEnglish
+            ? $"Mode: {label} → pack {presetId}"
+            : $"Modo: {label} → pack {presetId}";
+
+        SelectNav("config");
+        Reload(profile, presetId);
     }
 
     private void RenderPresets(string? selectPresetId = null)
@@ -520,7 +701,7 @@ public partial class MainWindow : Window
             return;
         }
 
-        Nav.SelectedIndex = 1;
+        SelectNav("config");
         RenderPresets(pick.Eval.Preset.Id);
     }
 
@@ -654,16 +835,76 @@ public partial class MainWindow : Window
 
     private void Persist()
     {
-        if (_session is null)
+        var profile = (ProfileBox.SelectedItem as ComboBoxItem)?.Content?.ToString()
+                      ?? _session?.Profile.ToString().ToLowerInvariant()
+                      ?? "balanced";
+        var preset = (PresetList.SelectedItem as PresetPick)?.Eval.Preset.Id
+                     ?? OperatorSettingsStore.Load().LastPresetId;
+        var lang = Loc.Language;
+        var theme = (ThemeBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "dark";
+        var allowSystem = ChkAllowSystemApply.IsChecked == true;
+        OperatorSettingsStore.Save(new OperatorSettings(profile, preset, DateTimeOffset.UtcNow, lang, theme, allowSystem));
+    }
+
+    private void AllowSystemApply_OnChanged(object sender, RoutedEventArgs e)
+    {
+        if (!IsLoaded)
         {
             return;
         }
 
-        var profile = (ProfileBox.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "balanced";
-        var preset = (PresetList.SelectedItem as PresetPick)?.Eval.Preset.Id;
-        var lang = Loc.Language;
-        var theme = (ThemeBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "dark";
-        OperatorSettingsStore.Save(new OperatorSettings(profile, preset, DateTimeOffset.UtcNow, lang, theme));
+        Persist();
+    }
+
+    private void RefreshBackups_OnClick(object sender, RoutedEventArgs e) => RefreshBackupList();
+
+    private void RefreshBackupList()
+    {
+        try
+        {
+            var store = new FileBackupStore();
+            BackupList.ItemsSource = store.List()
+                .Select(b => $"{b.BackupId}  ·  {b.CreatedUtc:u}  ·  {b.HighestRisk}  ·  {b.Reason}")
+                .ToList();
+            BackupStatus.Text = "";
+        }
+        catch (Exception ex)
+        {
+            BackupStatus.Text = Loc.IsEnglish ? "Could not list backups: " + ex.Message : "No se pudo listar backups: " + ex.Message;
+        }
+    }
+
+    private async void RestoreBackup_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (BackupList.SelectedItem is not string line)
+        {
+            BackupStatus.Text = Loc.IsEnglish ? "Select a backup first." : "Selecciona un backup primero.";
+            return;
+        }
+
+        var backupId = line.Split('·', 2, StringSplitOptions.TrimEntries)[0].Trim();
+        if (string.IsNullOrWhiteSpace(backupId))
+        {
+            BackupStatus.Text = Loc.IsEnglish ? "Invalid backup id." : "Id de backup inválido.";
+            return;
+        }
+
+        var settings = OperatorSettingsStore.Load();
+        BackupStatus.Text = Loc.IsEnglish ? "Restoring…" : "Restaurando…";
+        try
+        {
+            var result = await SystemApplyEngine.RollbackAsync(
+                backupId,
+                new FileBackupStore(),
+                settings,
+                iAmOnLabVm: false).ConfigureAwait(true);
+            BackupStatus.Text = result.Message;
+            RefreshBackupList();
+        }
+        catch (Exception ex)
+        {
+            BackupStatus.Text = Loc.IsEnglish ? "Restore failed: " + ex.Message : "Restauración falló: " + ex.Message;
+        }
     }
 
     private void OpenUserChannel_OnClick(object sender, RoutedEventArgs e) =>
@@ -747,7 +988,7 @@ public partial class MainWindow : Window
         ApplyTweaksById([row.Id], status => SimulateText.Text = status);
     }
 
-    private void ApplyTweaksById(string[] ids, Action<string> report)
+    private async void ApplyTweaksById(string[] ids, Action<string> report)
     {
         if (_session is null)
         {
@@ -766,20 +1007,33 @@ public partial class MainWindow : Window
                 string.Equals(t.Id, id, StringComparison.OrdinalIgnoreCase)))
             .Where(t => t is not null)
             .Cast<TweakDefinition>()
-            .Where(TweakApplicator.IsLabEligible)
+            .Where(t => TweakApplicator.IsApplyEligible(t) || TweakApplicator.IsLabEligible(t))
             .ToArray();
 
         var skipped = ids.Length - tweaks.Length;
         if (tweaks.Length == 0)
         {
-            report($"Ningún ítem elegible para apply lab (HKCU/LOW/OFFICIAL|STRONG). Omitidos: {skipped}.");
+            report($"Ningún ítem elegible. Omitidos: {skipped}.");
             return;
         }
 
-        var list = string.Join("\n", tweaks.Select(t => "• " + t.Id));
+        var needsElev = tweaks.Any(TweakApplicator.NeedsElevation);
+        var settings = OperatorSettingsStore.Load();
+        if (needsElev && !SystemApplyPolicy.IsAllowed(settings, iAmOnLabVmFlag: false))
+        {
+            report(SystemApplyPolicy.RefuseMessage +
+                   " Activa «Permitir apply de sistema» en Ajustes (solo VM de lab).");
+            return;
+        }
+
+        var list = string.Join("\n", tweaks.Select(t =>
+            "• " + t.Id + (TweakApplicator.NeedsElevation(t) ? " [UAC]" : "")));
         var confirm = MessageBox.Show(
-            $"Se escribirán {tweaks.Length} valor(es) en HKCU (usuario actual).\n" +
-            $"Backup previo en %LocalAppData%\\WindowsLab\\backups\\\n\n{list}\n\n" +
+            $"Se aplicarán {tweaks.Length} tweak(s).\n" +
+            (needsElev
+                ? "Algunos requieren Worker elevado (UAC) + backup en %ProgramData%\\WindowsLab\\backups\\\n\n"
+                : "Backup en %LocalAppData% / ProgramData según el caso.\n\n") +
+            $"{list}\n\n" +
             (skipped > 0 ? $"({skipped} omitidos por política)\n\n" : "") +
             "¿Continuar?",
             "WindowsLab — aplicar",
@@ -792,41 +1046,37 @@ public partial class MainWindow : Window
             return;
         }
 
-        var reader = new LiveRegistryReader();
-        var writer = new LiveRegistryWriter();
-        var ok = 0;
-        var fail = 0;
-        var lines = new List<string>();
-
-        foreach (var tweak in tweaks)
+        var catalogDir = CatalogLocator.FindTweaksDirectory();
+        if (catalogDir is null)
         {
-            var result = TweakApplicator.Apply(tweak, reader, writer);
-            if (result.Backup is not null && result.Outcome is ApplyOutcome.Ok or ApplyOutcome.VerifyFailed)
-            {
-                try
-                {
-                    TweakApplicator.PersistBackup(result.Backup);
-                }
-                catch (Exception ex)
-                {
-                    lines.Add($"{tweak.Id}: backup falló ({ex.Message})");
-                }
-            }
-
-            lines.Add($"{tweak.Id}: {result.Outcome} — {result.Message}");
-            if (result.Succeeded)
-            {
-                ok++;
-            }
-            else
-            {
-                fail++;
-            }
+            report("Catálogo no encontrado.");
+            return;
         }
 
-        StartupLog.Write("Apply.batch", $"ok={ok} fail={fail}");
-        RefreshDetectionsAfterApply();
-        report($"Apply lab: OK {ok}, fallos {fail}.\n" + string.Join("\n", lines));
+        report(needsElev
+            ? (Loc.IsEnglish ? "Waiting for UAC / Worker…" : "Esperando UAC / Worker…")
+            : (Loc.IsEnglish ? "Applying…" : "Aplicando…"));
+        try
+        {
+            var job = await SystemApplyEngine.ApplyAsync(
+                tweaks,
+                new FileBackupStore(),
+                new LiveRegistryReader(),
+                settings,
+                iAmOnLabVm: false,
+                dryRun: false,
+                catalogDir).ConfigureAwait(true);
+
+            StartupLog.Write("Apply.system", job.Message);
+            RefreshDetectionsAfterApply();
+            RefreshBackupList();
+            report(job.Message + "\n" + string.Join("\n",
+                job.Results.Select(r => $"{r.Outcome}: {r.Message}")));
+        }
+        catch (Exception ex)
+        {
+            report("Apply falló: " + ex.Message);
+        }
     }
 
     private void RefreshDetectionsAfterApply()

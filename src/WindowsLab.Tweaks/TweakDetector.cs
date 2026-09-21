@@ -37,13 +37,49 @@ public static class TweakDetector
         ArgumentNullException.ThrowIfNull(tweak);
         ArgumentNullException.ThrowIfNull(registry);
 
+        var primary = tweak.Ops.Count > 0 ? tweak.Ops[0] : null;
+        var kind = primary?.Kind?.ToLowerInvariant() ?? "registry";
+
         try
         {
+            if (kind == "service" && !string.IsNullOrWhiteSpace(primary?.Name))
+            {
+                var start = ServiceOpExecutor.ReadStartType(primary!.Name!);
+                var desired = MapServiceDesired(primary.Value?.ToString() ?? tweak.DesiredEquals);
+                var actual = start?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "(missing)";
+                var match = start is int s && s == desired;
+                return new TweakDetection(tweak.Id, ProbeStatus.Ok, actual, desired.ToString(System.Globalization.CultureInfo.InvariantCulture), match, null);
+            }
+
+            if (kind == "power")
+            {
+                var guid = PowerOpExecutor.GetActiveSchemeGuid();
+                var desired = (primary?.Value?.ToString() ?? tweak.DesiredEquals)?.Trim() ?? "";
+                var match = string.Equals(guid, desired, StringComparison.OrdinalIgnoreCase);
+                return new TweakDetection(tweak.Id, ProbeStatus.Ok, guid ?? "(missing)", desired, match, null);
+            }
+
+            if (kind == "task")
+            {
+                var path = primary?.Path ?? primary?.Name ?? "";
+                var enabled = TaskOpExecutor.IsEnabled(path);
+                var wantDisable = string.Equals(primary?.Value?.ToString(), "disable", StringComparison.OrdinalIgnoreCase)
+                                  || tweak.DesiredEquals == "0";
+                var match = enabled is bool e && (wantDisable ? !e : e);
+                return new TweakDetection(
+                    tweak.Id,
+                    ProbeStatus.Ok,
+                    enabled is null ? "(unknown)" : (enabled.Value ? "enabled" : "disabled"),
+                    wantDisable ? "disabled" : "enabled",
+                    match,
+                    null);
+            }
+
             var raw = registry.GetValue(tweak.Detect.Hive, tweak.Detect.Path, tweak.Detect.Name);
-            var actual = Format(raw);
-            var desired = FormatDesired(tweak.DesiredEquals);
-            var match = ValuesMatch(raw, tweak.DesiredEquals);
-            return new TweakDetection(tweak.Id, ProbeStatus.Ok, actual, desired, match, raw is null ? "Value missing" : null);
+            var actualReg = Format(raw);
+            var desiredReg = FormatDesired(tweak.DesiredEquals);
+            var matchReg = ValuesMatch(raw, tweak.DesiredEquals);
+            return new TweakDetection(tweak.Id, ProbeStatus.Ok, actualReg, desiredReg, matchReg, raw is null ? "Value missing" : null);
         }
         catch (UnauthorizedAccessException ex)
         {
@@ -57,6 +93,16 @@ public static class TweakDetector
 
     public static IReadOnlyList<TweakDetection> DetectAll(IEnumerable<TweakDefinition> tweaks, IRegistryReader registry) =>
         tweaks.Select(t => Detect(t, registry)).ToArray();
+
+    private static int MapServiceDesired(string desired) => desired.Trim().ToLowerInvariant() switch
+    {
+        "boot" or "0" => 0,
+        "system" or "1" => 1,
+        "auto" or "automatic" or "2" => 2,
+        "demand" or "manual" or "3" => 3,
+        "disabled" or "4" => 4,
+        _ => int.TryParse(desired, out var n) ? n : 4
+    };
 
     private static bool ValuesMatch(object? actual, string? desired)
     {

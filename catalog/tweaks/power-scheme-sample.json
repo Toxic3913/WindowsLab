@@ -1,0 +1,23 @@
+[
+  {
+    "id": "power.high-performance-scheme",
+    "title": "Plan de energía Alto rendimiento",
+    "description": "powercfg /setactive High Performance (GUID 8c5e7fda-…). Requiere elevación en algunas ediciones. Backup del esquema activo.",
+    "category": "power",
+    "risk": "LOW",
+    "evidence": "OFFICIAL",
+    "evidenceRefs": ["https://learn.microsoft.com/windows-hardware/design/device-experiences/powercfg-command-line-options"],
+    "minBuild": 22000,
+    "editions": [],
+    "profiles": ["gaming", "balanced", "developer"],
+    "requires": [],
+    "conflicts": ["power.best-performance"],
+    "requiresReboot": false,
+    "affectsSecurity": false,
+    "affectsUpdates": false,
+    "affectsCompatibility": false,
+    "detect": { "kind": "registry", "hive": "HKLM", "path": "SYSTEM\\CurrentControlSet\\Control\\Power\\User\\PowerSchemes", "name": "ActiveOverlayAcPowerScheme", "valueKind": "String" },
+    "desired": { "equals": "8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c" },
+    "ops": [{ "kind": "power", "value": "8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c" }]
+  }
+]

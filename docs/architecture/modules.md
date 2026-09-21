@@ -57,17 +57,17 @@ xUnit. No `[Live]` mutating tests. Live OS read for `audit --os` is allowed (rea
 
 Read-only probe runner. Coverage = `ola.txt` + host-audit gaps (DXGI VRAM, topology, denied labels). Dual-path USER then admin. See [../AUDIT-ENGINE.md](../AUDIT-ENGINE.md).
 
-### `WindowsLab.Backup` — Phase 3
+### `WindowsLab.Backup` — Phase 3 / Beta 0.3 (D020)
 
-Named backups under **data root** `backups\<id>\`. Exact inverse, not catalog `OriginalValue`. Restore-point layer may **recommend** VSS `For=C: On=D:` when C: is tight; never silent. See [../BACKUP-RECOVERY.md](../BACKUP-RECOVERY.md) and [data-root.md](data-root.md).
+Named backups under **data root** `backups\<id>\`. Exact inverse. Restore-point via Worker. Never silent `vssadmin`.
 
-### `WindowsLab.Tweaks` — Phase 4
+### `WindowsLab.Tweaks` — Phase 4 / Beta 0.3
 
-Catalog load + handlers. Five OFFICIAL/LOW samples first. Rollback from captured backup (D005).
+Catalog load + lab HKCU apply + system apply eligibility. Rollback from captured backup (D005).
 
-### `WindowsLab.Worker` — Phase 3–4
+### `WindowsLab.Worker` — Phase 3–4 / Beta 0.3 (D020)
 
-Elevated process only. No UI. Named-pipe JSON-RPC (planned).
+Elevated process only. Named-pipe JSON. No UI.
 
 ### `WindowsLab.Recommendations` — Phase 4–6
 

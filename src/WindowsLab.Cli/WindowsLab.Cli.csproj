@@ -11,6 +11,8 @@
     <ProjectReference Include="..\WindowsLab.Tweaks\WindowsLab.Tweaks.csproj" />
     <ProjectReference Include="..\WindowsLab.Recommendations\WindowsLab.Recommendations.csproj" />
     <ProjectReference Include="..\WindowsLab.Applications\WindowsLab.Applications.csproj" />
+    <ProjectReference Include="..\WindowsLab.Backup\WindowsLab.Backup.csproj" />
+    <ProjectReference Include="..\WindowsLab.Worker\WindowsLab.Worker.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\catalog\tweaks\*.json" Link="catalog\tweaks\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />

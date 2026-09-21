@@ -10,11 +10,19 @@ public interface IRegistryWriter
     void DeleteValue(string hive, string path, string name);
 }
 
+/// <summary>Unelevated lab writer — HKCU only (D018).</summary>
 public sealed class LiveRegistryWriter : IRegistryWriter
 {
+    private readonly bool _allowMachineHive;
+
+    public LiveRegistryWriter(bool allowMachineHive = false)
+    {
+        _allowMachineHive = allowMachineHive;
+    }
+
     public void SetValue(string hive, string path, string name, object value, RegistryValueKind kind)
     {
-        EnsureHkcu(hive);
+        EnsureAllowed(hive);
         using var key = OpenWritable(hive, path, create: true)
                         ?? throw new InvalidOperationException($"Cannot open registry key {hive}\\{path}");
         key.SetValue(name, value, kind);
@@ -22,7 +30,7 @@ public sealed class LiveRegistryWriter : IRegistryWriter
 
     public void DeleteValue(string hive, string path, string name)
     {
-        EnsureHkcu(hive);
+        EnsureAllowed(hive);
         using var key = OpenWritable(hive, path, create: false);
         if (key is null)
         {
@@ -39,15 +47,31 @@ public sealed class LiveRegistryWriter : IRegistryWriter
         }
     }
 
-    private static void EnsureHkcu(string hive)
+    private void EnsureAllowed(string hive)
     {
-        var ok = hive.Equals("HKCU", StringComparison.OrdinalIgnoreCase)
-                 || hive.Equals("HKEY_CURRENT_USER", StringComparison.OrdinalIgnoreCase);
-        if (!ok)
+        if (IsHkcu(hive))
         {
-            throw new InvalidOperationException("Beta 0.1 lab writer refuses non-HKCU hives: " + hive);
+            return;
         }
+
+        if (_allowMachineHive && IsHklm(hive))
+        {
+            return;
+        }
+
+        throw new InvalidOperationException(
+            _allowMachineHive
+                ? "Unsupported hive: " + hive
+                : "Unelevated writer refuses non-HKCU hives: " + hive);
     }
+
+    private static bool IsHkcu(string hive) =>
+        hive.Equals("HKCU", StringComparison.OrdinalIgnoreCase)
+        || hive.Equals("HKEY_CURRENT_USER", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsHklm(string hive) =>
+        hive.Equals("HKLM", StringComparison.OrdinalIgnoreCase)
+        || hive.Equals("HKEY_LOCAL_MACHINE", StringComparison.OrdinalIgnoreCase);
 
     private static RegistryKey? OpenWritable(string hive, string path, bool create)
     {

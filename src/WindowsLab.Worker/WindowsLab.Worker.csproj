@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>WindowsLab.Worker</AssemblyName>
+    <RootNamespace>WindowsLab.Worker</RootNamespace>
+    <Description>Elevated worker for system apply (named pipe).</Description>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WindowsLab.Core\WindowsLab.Core.csproj" />
+    <ProjectReference Include="..\WindowsLab.Backup\WindowsLab.Backup.csproj" />
+    <ProjectReference Include="..\WindowsLab.Tweaks\WindowsLab.Tweaks.csproj" />
+  </ItemGroup>
+</Project>

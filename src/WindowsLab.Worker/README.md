@@ -1,5 +1,3 @@
 # WindowsLab.Worker
 
-Phase **3–4** — not in the solution yet.
-
-Elevated process. Mutating ops only. GUI/CLI stay medium integrity (D003).
+Elevated process (Beta 0.3 / D020). Named pipe `\\.\pipe\WindowsLab.Worker`. GUI/CLI stay medium integrity and call via `WorkerClient` (`runas` when needed).

@@ -23,6 +23,22 @@ public sealed class TweakApplicatorTests
     }
 
     [Fact]
+    public void IsApplyEligible_allows_hklm_official_low()
+    {
+        var hklm = Sample("developer.long-paths", RiskLevel.Low, EvidenceGrade.Official, "HKLM");
+        Assert.False(TweakApplicator.IsLabEligible(hklm));
+        Assert.True(TweakApplicator.IsApplyEligible(hklm));
+        Assert.True(TweakApplicator.NeedsElevation(hklm));
+    }
+
+    [Fact]
+    public void IsApplyEligible_rejects_experimental()
+    {
+        var experimental = Sample("x.exp", RiskLevel.Low, EvidenceGrade.Experimental, "HKCU");
+        Assert.False(TweakApplicator.IsApplyEligible(experimental));
+    }
+
+    [Fact]
     public void Apply_writes_hkcu_and_persists_backup_then_rollback()
     {
         var store = new MemoryRegistry();

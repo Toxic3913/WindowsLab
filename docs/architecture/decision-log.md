@@ -158,3 +158,17 @@ Do not change an architectural decision without a new dated entry.
 - **Reason:** Fill the prep gap vs WinUtil while keeping evidence grades and least-privilege install path.
 - **Trade-offs:** Smaller catalog than WinUtil; machine-wide packages may UAC; uninstall/rollback via `winget uninstall` is a follow-up.
 
+## D020 — Beta 0.3 system apply (Backup + Worker)
+
+- **Date:** 2026-09-21
+- **Context:** Operator chose full engine on lab VM (B + VM): HKLM apply, restore points, service/task/power ops, rollback UI/CLI — without mutating the daily-driver host by default.
+- **Chosen:**
+  - `WindowsLab.Backup` stores named manifests under `%ProgramData%\WindowsLab\backups\<id>\` (exact inverse; D005/D012).
+  - `WindowsLab.Worker` elevated named-pipe host; GUI/CLI stay medium integrity and `runas` the Worker when needed (D003).
+  - Eligibility: OFFICIAL|STRONG; CRITICAL not auto-applied; protected services (Defender/DiagTrack/SysMain/Search) refused.
+  - Gate: `SystemApplyPolicy` — `AllowSystemApply` setting, `--i-am-on-lab-vm`, or machine name containing `WindowsLab-Test`. Otherwise only lab HKCU (`--lab-apply` / unelevated path).
+  - Restore point attempted before elevated jobs; HIGH requires success; LOW/MEDIUM may continue with logical backup if RP fails.
+  - `--lab-apply` preserved for unelevated HKCU LOW path (D018).
+- **Reason:** Unblock real prep workflows on the lab VM while keeping the host safe by default.
+- **Trade-offs:** Operator must opt in on non-VM machines; System Restore is best-effort; catalog samples for service/task/power are few and curated.
+
