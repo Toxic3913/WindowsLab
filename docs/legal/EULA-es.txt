@@ -1,8 +1,8 @@
-WindowsLab — Contrato de licencia (Beta 0)
-==========================================
+WindowsLab — Contrato de licencia (1.0)
+=======================================
 
-Producto: WindowsLab (laboratorio de auditoría y recomendaciones para Windows 11)
-Versión: 0.1.0-beta
+Producto: WindowsLab (auditoría, configuración y mantenimiento de Windows 11)
+Versión: 1.0.0
 Editor: WindowsLab / operador del repositorio
 
 AL INSTALAR O USAR ESTE SOFTWARE USTED ACEPTA LO SIGUIENTE:
@@ -10,24 +10,25 @@ AL INSTALAR O USAR ESTE SOFTWARE USTED ACEPTA LO SIGUIENTE:
 1. LICENCIA DE USO
    Se le concede un derecho personal, no exclusivo y revocable a instalar y usar
    WindowsLab en equipos de su propiedad o bajo su control, para auditoría,
-   simulación y (cuando exista en versiones posteriores) aplicación de ajustes
-   con copia de seguridad, según la documentación del producto.
+   simulación y aplicación de ajustes con copia de seguridad, según la
+   documentación del producto.
 
-2. BETA / SIN GARANTÍA
-   Este software se entrega "TAL CUAL", sin garantías. Beta 0 es solo lectura:
-   no aplica tweaks al registro. El uso es bajo su propio riesgo.
+2. SIN GARANTÍA
+   Este software se entrega "TAL CUAL", sin garantías. El uso es bajo su propio
+   riesgo. Los cambios en el sistema (apply) pueden requerir elevación y
+   confirmación explícita.
 
 3. NO ES UN PRODUCTO DE MICROSOFT
    WindowsLab no está afiliado a Microsoft. Windows, BGInfo y Sysinternals son
    marcas de sus titulares. Para cartel en el escritorio use BGInfo oficial.
 
 4. FIRMA DIGITAL / SMARTSCREEN
-   Esta Beta puede no estar firmada con Authenticode. SmartScreen/UAC pueden avisar.
-   Verifique el origen (D:\WindowsLab\artifacts o su canal).
+   El binario puede no estar firmado con Authenticode. SmartScreen/UAC pueden
+   avisar. Verifique el origen (canal de release o su propia build).
 
 5. PERMISOS
    Instalar en Archivos de programa requiere administrador. La app principal
-   puede auditar sin elevarse.
+   puede auditar sin elevarse. Apply de sistema pide UAC / Worker.
 
 6. PROHIBIDO
    - Builds adulterados como "oficiales"
@@ -37,16 +38,15 @@ AL INSTALAR O USAR ESTE SOFTWARE USTED ACEPTA LO SIGUIENTE:
 7. DATOS
    UI: %LocalAppData%\WindowsLab
    Runtime: %ProgramData%\WindowsLab
-   Beta 0 no envía telemetría a servidores de WindowsLab.
+   WindowsLab no envía telemetría a servidores propios.
 
 8. LÍMITE DE TELEMETRÍA (IMPORTANTE)
    En Home/Pro el mínimo oficial es Obligatorio / Required (1).
    AllowTelemetry=0 no se honra. WindowsLab no promete "telemetría al 100% off".
 
 9. RESPONSABILIDAD
-   Usted responde de los cambios en Windows. Apply mutante: solo en VM con backup.
+   Usted responde de los cambios en Windows. Use backup / rollback y, para
+   pruebas agresivas, una VM de laboratorio.
 
 10. ACEPTACIÓN
     Si no está de acuerdo, no instale ni ejecute WindowsLab.
-
-Fecha: 2026-09-14

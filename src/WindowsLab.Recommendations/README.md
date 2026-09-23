@@ -1,3 +1,3 @@
 # WindowsLab.Recommendations
 
-Beta **0**. Rank tweaks from inventory facts + profile. EXPERIMENTAL/UNKNOWN never auto-selected. No apply.
+Rank tweaks from inventory facts + profile. Skips EXPERIMENTAL/UNKNOWN and `affectsSecurity`. Also ranks curated apps (multi-axis).

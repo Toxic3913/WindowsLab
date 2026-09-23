@@ -16,7 +16,7 @@ Pipeline: AUDIT → DETECT → ANALYZE → RECOMMEND → APPROVAL → BACKUP →
 | Tweaks: evidence grade; UNKNOWN → no apply | Generic `InvokeScript` in default catalog |
 | Mutating tests on `WindowsLab-Test-25H2` | Tweaks on PC-HUGO |
 | Facts drive recommendations | Hardcode 12600K / RTX 3060 / 16 GB / “always D:” |
-| Spanish-capable messages OK; logs English-stable IDs | `irm \| iex`, ISO/TPM bypass, disable Defender by default |
+| Spanish-capable messages OK; logs English-stable IDs | `irm \| iex`, ISO/TPM bypass, silent/default Defender kill |
 
 ---
 
@@ -57,23 +57,23 @@ xUnit. No `[Live]` mutating tests. Live OS read for `audit --os` is allowed (rea
 
 Read-only probe runner. Coverage = `ola.txt` + host-audit gaps (DXGI VRAM, topology, denied labels). Dual-path USER then admin. See [../AUDIT-ENGINE.md](../AUDIT-ENGINE.md).
 
-### `WindowsLab.Backup` — Phase 3 / Beta 0.3 (D020)
+### `WindowsLab.Backup` — 1.0 (D020)
 
 Named backups under **data root** `backups\<id>\`. Exact inverse. Restore-point via Worker. Never silent `vssadmin`.
 
-### `WindowsLab.Tweaks` — Phase 4 / Beta 0.3
+### `WindowsLab.Tweaks` — 1.0
 
-Catalog load + lab HKCU apply + system apply eligibility. Rollback from captured backup (D005).
+Catalog load + lab HKCU apply + system apply eligibility + stacks/presets. Rollback from captured backup (D005).
 
-### `WindowsLab.Worker` — Phase 3–4 / Beta 0.3 (D020)
+### `WindowsLab.Worker` — 1.0 (D020)
 
 Elevated process only. Named-pipe JSON. No UI.
 
-### `WindowsLab.Recommendations` — Phase 4–6
+### `WindowsLab.Recommendations` — 1.0
 
-Profile + inventory facts → ranked tweak list. Beta 0.2 also ranks curated apps (multi-axis). No apply.
+Profile + inventory facts → ranked tweak list. Skips UNKNOWN/EXPERIMENTAL and `affectsSecurity` (D021). Also ranks curated apps (multi-axis).
 
-### `WindowsLab.Applications` — Beta 0.2 (D019)
+### `WindowsLab.Applications` — 1.0 (D019)
 
 Curated winget catalog loader, installed-app detect (Uninstall registry), install with explicit approval. Logs under ProgramData reports.
 
@@ -81,9 +81,9 @@ Curated winget catalog loader, installed-app detect (Uninstall registry), instal
 
 DiskSpd / CPU protocols. Never invent FPS. GPU benches are host-opt-in later (VM has no RTX).
 
-### `WindowsLab.App` — Phase 5
+### `WindowsLab.App` — 1.0
 
-WinUI 3 unpackaged. Gated on elevation prototype (D011). Shell routes may stub.
+WPF shell (D017). Home stacks, menu bar, Performance live page (D022), apply with D020/D021 gates. WinUI 3 remains later.
 
 ### `WindowsLab.Plugins.Abstractions` — Phase 10
 

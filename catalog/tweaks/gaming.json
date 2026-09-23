@@ -65,7 +65,7 @@
   {
     "id": "gaming.hags-on",
     "title": "Programación de GPU acelerada por hardware (HAGS)",
-    "description": "HwSchMode=2. COMMUNITY; requiere GPU reciente. No se aplica en Beta 0.",
+    "description": "HwSchMode=2. COMMUNITY; requiere GPU reciente. Apply con evidencia COMMUNITY; no recomendado por defecto.",
     "category": "gaming",
     "risk": "MEDIUM",
     "evidence": "COMMUNITY",

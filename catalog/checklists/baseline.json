@@ -204,7 +204,7 @@
     "section": "Seguridad (mantener)",
     "title": "UAC en el nivel por defecto o superior",
     "policy": "never",
-    "description": "EnableLUA=0 es un anti-patrón. Beta 0 no lo recomienda.",
+    "description": "EnableLUA=0 es un anti-patrón. WindowsLab no lo recomienda.",
     "howTo": "Configuración > Sistema > Información > Configuración de Control de cuentas de usuario = predeterminado.",
     "detect": { "kind": "registry", "hive": "HKLM", "path": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System", "name": "EnableLUA" },
     "desired": { "equals": 1 }
@@ -226,7 +226,7 @@
     "title": "Clave de recuperación BitLocker fuera del PC",
     "policy": "info",
     "description": "Si el volumen está cifrado, imprime o guarda la clave fuera del disco. WindowsLab no la almacena.",
-    "howTo": "manage-bde -protectors -get C:  (admin, solo lectura) o cuenta Microsoft/imprimir. No la pongas en el repo.",
+    "howTo": "manage-bde -protectors -get C:  (admin, consulta) o cuenta Microsoft/imprimir. No la pongas en el repo.",
     "detect": { "kind": "manual" }
   },
   {
@@ -386,7 +386,7 @@
     "title": "Plan de energía: no 'Ultimate' de foros",
     "policy": "info",
     "description": "Equilibrado o Alto rendimiento de Windows. No importes .pow desconocidos ni desactives CPU parking con scripts.",
-    "howTo": "powercfg /list (lectura). Cambios de plan: el operador, no el catálogo Beta 0.",
+    "howTo": "powercfg /list (lectura). Cambios de plan: el operador, no el catálogo por defecto.",
     "detect": { "kind": "manual" }
   },
   {
@@ -395,7 +395,7 @@
     "section": "Sistema",
     "title": "Punto de restauración antes de apply (fases 3–4)",
     "policy": "info",
-    "description": "Beta 0 no escribe. Cuando haya apply, backup primero. No ejecutes vssadmin en el host salvo que lo pidas.",
+    "description": "Antes de apply: backup. No ejecutes vssadmin en el host salvo que lo pidas.",
     "howTo": "Protección del sistema > Crear. Preferir sombras de C: en D: si C: está justo (admin, documentado).",
     "detect": { "kind": "manual" }
   },
@@ -405,7 +405,7 @@
     "section": "Sistema",
     "title": "Rutas largas (dev)",
     "policy": "recommend",
-    "description": "LongPathsEnabled=1. HKLM: detect-only en Beta 0.",
+    "description": "LongPathsEnabled=1. HKLM: requiere apply de sistema (opt-in D020).",
     "howTo": "Catálogo developer.long-paths. Requiere admin para aplicar más adelante.",
     "detect": { "kind": "registry", "hive": "HKLM", "path": "SYSTEM\\CurrentControlSet\\Control\\FileSystem", "name": "LongPathsEnabled" },
     "desired": { "equals": 1 }
@@ -551,61 +551,6 @@
     "detect": { "kind": "process", "process": "steam" }
   },
   {
-    "id": "bg.edge-startup",
-    "order": 100,
-    "section": "Procesos en segundo plano",
-    "title": "Reducir Microsoft Edge en segundo plano",
-    "policy": "info",
-    "description": "Edge inicia boost/startup a menudo aunque uses otro navegador. No hace falta matar msedge.exe a lo bruto: desactiva inicio y apps en segundo plano.",
-    "howTo": "1) Edge > Configuración > Sistema y rendimiento > Inicio al iniciar Windows = Off, Continuar ejecutándose en segundo plano = Off. 2) Configuración Windows > Aplicaciones > Inicio > Edge off. 3) Aplicaciones instaladas > Edge > Opciones avanzadas > Segundo plano = Nunca. No uses scripts que desinstalan Edge del sistema (rompe WebView2).",
-    "detect": { "kind": "process", "process": "msedge" },
-    "settingsUri": "ms-settings:startupapps"
-  },
-  {
-    "id": "bg.onedrive",
-    "order": 101,
-    "section": "Procesos en segundo plano",
-    "title": "OneDrive (si no lo usas)",
-    "policy": "info",
-    "description": "OneDrive sincroniza y queda residente. Si no lo necesitas, desvincula y quítalo del inicio.",
-    "howTo": "Icono OneDrive > Configuración > Cuenta > Desvincular. Configuración > Aplicaciones > Inicio > OneDrive = Off. Desinstalar solo si no usas archivos en la nube de Microsoft.",
-    "detect": { "kind": "process", "process": "OneDrive" },
-    "settingsUri": "ms-settings:startupapps"
-  },
-  {
-    "id": "bg.widgets-copilot",
-    "order": 102,
-    "section": "Procesos en segundo plano",
-    "title": "Widgets / Copilot / noticias en barra",
-    "policy": "info",
-    "description": "Widgets y feed mantienen procesos y red en idle. Apágalos desde Configuración, no con kill de procesos.",
-    "howTo": "Configuración > Personalización > Barra de tareas > Widgets = Off. Quita icono Copilot si aparece. Privacidad > Diagnósticos: experiencias a medida Off.",
-    "detect": { "kind": "manual" },
-    "settingsUri": "ms-settings:personalization-taskbar"
-  },
-  {
-    "id": "bg.xbox-gamebar",
-    "order": 103,
-    "section": "Procesos en segundo plano",
-    "title": "Xbox Game Bar / capturas (si no las usas)",
-    "policy": "info",
-    "description": "Game Bar puede quedar en segundo plano. Desactívalo si no grabas; no desactives Game Mode si juegas.",
-    "howTo": "Configuración > Juegos > Xbox Game Bar = Off. Capturas: desactiva grabación en segundo plano. Game Mode puede quedar On.",
-    "detect": { "kind": "manual" },
-    "settingsUri": "ms-settings:gaming-gamebar"
-  },
-  {
-    "id": "bg.teams-outlook",
-    "order": 104,
-    "section": "Procesos en segundo plano",
-    "title": "Teams / Outlook new / Phone Link al inicio",
-    "policy": "info",
-    "description": "Apps Store de Microsoft suelen auto-iniciar. Quítalas del inicio si no las usas a diario.",
-    "howTo": "Configuración > Aplicaciones > Inicio: Teams, Outlook, Phone Link, Your Phone = Off.",
-    "detect": { "kind": "manual" },
-    "settingsUri": "ms-settings:startupapps"
-  },
-  {
     "id": "apps.no-irm-iex",
     "order": 99,
     "section": "Programas externos",
@@ -641,7 +586,7 @@
     "section": "No hacer nunca",
     "title": "No aplicar tweaks mutantes en el PC diario",
     "policy": "never",
-    "description": "Beta 0 bloquea apply (exit 13). El host no es el banco de pruebas.",
+    "description": "System apply en host requiere AllowSystemApply o --i-am-on-lab-vm (D020).",
     "howTo": "windowslab tweak simulate. Apply en WindowsLab-Test-25H2.",
     "detect": { "kind": "manual" }
   }

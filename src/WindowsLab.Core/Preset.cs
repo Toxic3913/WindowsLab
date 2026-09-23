@@ -9,6 +9,7 @@ public sealed record PresetDefinition(
     bool IsCustom,
     IReadOnlyList<string> TweakIds,
     IReadOnlyList<string> ChecklistIds,
+    IReadOnlyList<string> ApplicationIds,
     IReadOnlyList<PresetStep> Steps,
     IReadOnlyDictionary<string, string> OpenById);
 

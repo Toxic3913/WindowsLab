@@ -3,18 +3,32 @@ using WindowsLab.Core;
 
 namespace WindowsLab.Tweaks;
 
-/// <summary>Blocked service names — never mutate (AGENTS.md).</summary>
+/// <summary>
+/// Hard-blocked: DiagTrack / SysMain / WSearch.
+/// Defender family: blocked for generic service ops (D021 — use curated registry tweak instead).
+/// </summary>
 public static class ProtectedServices
 {
-    private static readonly HashSet<string> Blocked = new(StringComparer.OrdinalIgnoreCase)
+    private static readonly HashSet<string> HardBlocked = new(StringComparer.OrdinalIgnoreCase)
     {
-        "WinDefend", "Sense", "WdNisSvc", "WdFilter", "WdBoot",
         "DiagTrack", "dmwappushservice",
         "SysMain", "WSearch"
     };
 
+    private static readonly HashSet<string> DefenderFamily = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "WinDefend", "Sense", "WdNisSvc", "WdFilter", "WdBoot"
+    };
+
+    public static bool IsHardBlocked(string serviceName) =>
+        !string.IsNullOrWhiteSpace(serviceName) && HardBlocked.Contains(serviceName.Trim());
+
+    public static bool IsDefenderFamily(string serviceName) =>
+        !string.IsNullOrWhiteSpace(serviceName) && DefenderFamily.Contains(serviceName.Trim());
+
+    /// <summary>True if a generic service op must refuse this name.</summary>
     public static bool IsBlocked(string serviceName) =>
-        !string.IsNullOrWhiteSpace(serviceName) && Blocked.Contains(serviceName.Trim());
+        IsHardBlocked(serviceName) || IsDefenderFamily(serviceName);
 }
 
 public static class ServiceOpExecutor

@@ -24,6 +24,8 @@ public sealed class CliAppTests
         Assert.Contains("windowslab-cli", stdout.ToString(), StringComparison.Ordinal);
         Assert.Contains("app list", stdout.ToString(), StringComparison.Ordinal);
         Assert.Contains("app install", stdout.ToString(), StringComparison.Ordinal);
+        Assert.Contains("i-accept-security-impact", stdout.ToString(), StringComparison.Ordinal);
+        Assert.Contains("live", stdout.ToString(), StringComparison.Ordinal);
     }
 
     [Fact]
@@ -212,6 +214,133 @@ public sealed class CliAppTests
         var text = stdout.ToString();
         Assert.Contains("\"ok\": 1", text, StringComparison.Ordinal);
         Assert.Contains("account.local", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Tweak_apply_security_without_accept_flag_is_policy_blocked()
+    {
+        var tweak = new TweakDefinition(
+            "security.defender-realtime-off",
+            "Defender",
+            "d",
+            "security",
+            RiskLevel.High,
+            EvidenceGrade.Official,
+            [],
+            22000,
+            ["*"],
+            [],
+            [],
+            [],
+            true,
+            true,
+            false,
+            false,
+            new RegistryDetect(
+                "HKLM",
+                @"SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection",
+                "DisableRealtimeMonitoring",
+                "DWord"),
+            "1",
+            [new TweakOp(
+                "registry",
+                "HKLM",
+                @"SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection",
+                "DisableRealtimeMonitoring",
+                "DWord",
+                "1")]);
+        var services = new CliServices { LoadCatalog = () => [tweak] };
+        var stdout = new StringWriter();
+        var stderr = new StringWriter();
+        var code = CliApp.Run(
+            ["tweak", "apply", "security.defender-realtime-off", "--apply", "--yes", "--i-am-on-lab-vm"],
+            stdout,
+            stderr,
+            services: services);
+        Assert.Equal(13, code);
+        Assert.Contains("i-accept-security-impact", stderr.ToString(), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Preset_apply_security_tweak_without_accept_flag_is_policy_blocked()
+    {
+        var defender = new TweakDefinition(
+            "security.defender-realtime-off",
+            "Defender",
+            "d",
+            "security",
+            RiskLevel.High,
+            EvidenceGrade.Official,
+            [],
+            22000,
+            ["*"],
+            [],
+            [],
+            [],
+            true,
+            true,
+            false,
+            false,
+            new RegistryDetect(
+                "HKLM",
+                @"SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection",
+                "DisableRealtimeMonitoring",
+                "DWord"),
+            "1",
+            [new TweakOp(
+                "registry",
+                "HKLM",
+                @"SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection",
+                "DisableRealtimeMonitoring",
+                "DWord",
+                "1")]);
+        var preset = new PresetDefinition(
+            "sec.test",
+            "Sec",
+            "",
+            0,
+            null,
+            true,
+            ["security.defender-realtime-off"],
+            [],
+            [],
+            [],
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase));
+        var services = new CliServices
+        {
+            LoadCatalog = () => [defender],
+            LoadPresets = () => [preset],
+            LoadChecklists = () => [],
+            Registry = () => new EmptyRegistry()
+        };
+        var stdout = new StringWriter();
+        var stderr = new StringWriter();
+        var code = CliApp.Run(
+            ["preset", "apply", "sec.test", "--yes", "--i-am-on-lab-vm"],
+            stdout,
+            stderr,
+            services: services);
+        Assert.Equal(13, code);
+        Assert.Contains("i-accept-security-impact", stderr.ToString(), StringComparison.Ordinal);
+    }
+
+    private sealed class EmptyRegistry : IRegistryReader
+    {
+        public object? GetValue(string hive, string path, string name) => null;
+    }
+
+    [Fact]
+    public void Live_json_includes_cpu_and_disks()
+    {
+        ProcessSampler.ResetCpuHistoryForTests();
+        var stdout = new StringWriter();
+        var stderr = new StringWriter();
+        var code = CliApp.Run(["live", "--output", "json"], stdout, stderr);
+        Assert.Equal(0, code);
+        var text = stdout.ToString();
+        Assert.Contains("\"command\": \"live\"", text, StringComparison.Ordinal);
+        Assert.Contains("cpuPercent", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("disks", text, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

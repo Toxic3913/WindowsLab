@@ -1,3 +1,3 @@
 # WindowsLab.App
 
-Beta **0**. WPF .NET 10 unpackaged shell (D017). Read-only. Calls Core/Audit/Tweaks/Recommendations — no apply.
+WPF .NET 10 unpackaged shell (D017). Product UI: Home stacks, Packs, Apps, Performance, apply with backup. Calls Core / Audit / Tweaks / Recommendations / Applications / Backup / Worker client.

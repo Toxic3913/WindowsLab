@@ -1,12 +1,8 @@
-# schemas/
+# Schemas
 
-JSON Schema (draft 2020-12) for catalog and reports.
+JSON Schema for catalog and audit payloads.
 
-| File | Used by |
+| File | Purpose |
 | --- | --- |
-| `os-identity.schema.json` | Phase 1 CLI / Core |
-| `tweak.schema.json` | Phase 4 catalog |
-| `application.schema.json` | Beta 0.2 Applications (D019) |
-| `backup-manifest.schema.json` | Phase 3 backup store |
-
-Validate catalog JSON against these files before merge. There is **no** `InvokeScript` op kind.
+| `application.schema.json` | Applications catalog (D019) |
+| Other schemas | Audit snapshot, tweak definition, backup manifest as documented in each file |

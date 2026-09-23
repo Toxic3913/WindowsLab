@@ -1,7 +1,7 @@
 # Dashboard architecture
 
 Date: 2026-09-06  
-GUI technology: **WPF .NET 10** for Beta 0 (D017). WinUI 3 remains the later shell (D002). Not a WinUtil clone.
+GUI technology: **WPF .NET 10** for 1.0 (D017). WinUI 3 remains the later shell (D002). Not a WinUtil clone.
 
 
 ## Shell
@@ -14,7 +14,7 @@ NavigationView (left) with the operator-requested destinations. Each destination
 | --- | --- | --- |
 | Dashboard | last audit summary, profile, backup health, C: free space | Low disk warning on this host |
 | Audit | probe tree, export | Unelevated first |
-| Performance | counters + myths panel | Standby RAM explainer |
+| Performance | live CPU/RAM/disk + grouped processes (D022, WPF) | 2s timer; no kill; standby tip |
 | Optimization | recommendations, not a mega-checkbox | Approval cart |
 | Gaming | Game Mode/HAGS/overlays detect | PresentMon opt-in |
 | Security | Defender, VBS, firewall | No "disable all" |
@@ -40,5 +40,5 @@ NavigationView (left) with the operator-requested destinations. Each destination
 1. Apply is a cart with diffs.
 2. CRITICAL items red, require typing the tweak id.
 3. Every row shows evidence grade.
-4. Dark theme default; light + system selectable (Beta 0.2).
+4. Dark theme default; light + system selectable.
 5. No "boost" wording.

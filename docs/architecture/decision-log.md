@@ -165,10 +165,50 @@ Do not change an architectural decision without a new dated entry.
 - **Chosen:**
   - `WindowsLab.Backup` stores named manifests under `%ProgramData%\WindowsLab\backups\<id>\` (exact inverse; D005/D012).
   - `WindowsLab.Worker` elevated named-pipe host; GUI/CLI stay medium integrity and `runas` the Worker when needed (D003).
-  - Eligibility: OFFICIAL|STRONG; CRITICAL not auto-applied; protected services (Defender/DiagTrack/SysMain/Search) refused.
+  - Eligibility: OFFICIAL|STRONG; CRITICAL not auto-applied; hard-blocked services (DiagTrack/SysMain/Search) refused; Defender family blocked for generic service ops (see D021 for curated registry opt-out).
   - Gate: `SystemApplyPolicy` — `AllowSystemApply` setting, `--i-am-on-lab-vm`, or machine name containing `WindowsLab-Test`. Otherwise only lab HKCU (`--lab-apply` / unelevated path).
   - Restore point attempted before elevated jobs; HIGH requires success; LOW/MEDIUM may continue with logical backup if RP fails.
   - `--lab-apply` preserved for unelevated HKCU LOW path (D018).
 - **Reason:** Unblock real prep workflows on the lab VM while keeping the host safe by default.
 - **Trade-offs:** Operator must opt in on non-VM machines; System Restore is best-effort; catalog samples for service/task/power are few and curated.
+
+## D021 — Optional Defender realtime opt-out (gated)
+
+- **Date:** 2026-09-22
+- **Context:** Operator asked to automate reducing MsMpEng RAM and to change product policy that previously forbade any Defender mutation.
+- **Options:** Keep absolute ban; open Settings only; gated HIGH apply for realtime-protection policy.
+- **Chosen:** Allow **one curated path** to turn off **real-time protection via HKLM policy** (`security.defender-realtime-off`), not process kill and not default recommend.
+  - `risk: HIGH`, `affectsSecurity: true`, `requiresReboot: true`.
+  - Never recommended by `RecommendationEngine` (security-affecting skipped).
+  - Apply only via system pipeline with system-apply gate (D020) **and** an extra Yes/No that names the security impact.
+  - `ProtectedServices`: DiagTrack / SysMain / WSearch stay **hard-blocked**. Defender family services (`WinDefend`, `Sense`, `Wd*`) remain blocked for *generic* service ops; the curated tweak uses **registry policy**, not `sc stop`/kill of `MsMpEng.exe`.
+  - If Tamper Protection denies the write, surface the error and offer `ms-settings:windowsdefender` (no silent bypass).
+- **Reason:** Product owner request for lab/prep automation without turning WindowsLab into a silent “disable AV” one-click that kills processes.
+- **Trade-offs:** Leaves the machine less protected when applied; Tamper Protection may still require manual UI steps; not a guarantee MsMpEng RAM drops to zero.
+
+## D022 — Beta 0.4 local live dashboard
+
+- **Date:** 2026-09-22
+- **Context:** Operator wants Resource Monitor–style visibility (CPU/RAM/disk/processes) and later machine stacks; chose **live dashboard first**, **this machine only** (no fleet).
+- **Options:** Expand Resources text only; new Performance page; ship stacks in same beta.
+- **Chosen:** New WPF **Performance** page + Core `LiveDashboardSnapshot` / `ProcessSampler` + CLI `live`.
+  - Groups: Windows / Microsoft / External (path heuristics; no Authenticode every tick).
+  - 2s `DispatcherTimer` while page visible; stop on leave.
+  - Read-only: no process terminate, no standby empty, no protected-service kill.
+  - Machine stacks (empresa/pruebas) **deferred** past 0.4.
+- **Reason:** Reuses `LiveSystemReader`; matches “audit before change”; keeps one engine (GUI + CLI).
+- **Trade-offs:** First CPU sample may be ~0; some `MainModule` paths AccessDenied; not full Resource Monitor (no GPU ETW / SMART).
+
+## D023 — 1.0.0 public product + machine stacks
+
+- **Date:** 2026-09-23
+- **Context:** Operator wants WindowsLab presented as a normal public product (not Beta/read-only), with empresa/pruebas stacks and clearer menus, while keeping host system-apply gated.
+- **Chosen:**
+  - Version **1.0.0** across assemblies, installer, Loc, CLI, README, EULA.
+  - User-facing copy drops “Beta” / “solo lectura as product mode”; product **does apply** (HKCU lab path + system path when D020 allows).
+  - Keep **D020** AllowSystemApply / lab-vm gate for HKLM (choice 1B).
+  - Home modes add **stack.empresa** and **stack.pruebas**; menu bar File/View/Tools/Help; nav grouped CONFIGURE / MONITOR / MAINTAIN.
+  - Preset evaluation includes `applicationIds` install gaps.
+- **Reason:** Promoteable everyday tooling without opening silent system mutation on daily drivers.
+- **Trade-offs:** Host still needs opt-in for system apply; stacks do not auto-install apps without confirmation.
 

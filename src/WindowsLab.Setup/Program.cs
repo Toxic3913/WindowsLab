@@ -33,8 +33,8 @@ internal static class Program
         if (name is null)
         {
             return lang.StartsWith("en", StringComparison.OrdinalIgnoreCase)
-                ? "WindowsLab Beta 0 — accept to continue. See docs/legal/EULA-en.txt."
-                : "WindowsLab Beta 0 — acepte para continuar. Ver docs/legal/EULA-es.txt.";
+                ? "WindowsLab 1.0 — accept to continue. See docs/legal/EULA-en.txt."
+                : "WindowsLab 1.0 — acepte para continuar. Ver docs/legal/EULA-es.txt.";
         }
 
         using var stream = asm.GetManifestResourceStream(name)!;
@@ -74,7 +74,7 @@ internal sealed class SetupWizardForm : Form
     {
         _openPayload = openPayload;
         var es = !uiLang.StartsWith("en", StringComparison.OrdinalIgnoreCase);
-        Text = es ? "WindowsLab Setup — Beta 0" : "WindowsLab Setup — Beta 0";
+        Text = es ? "WindowsLab Setup — 1.0" : "WindowsLab Setup — 1.0";
         Width = 640;
         Height = 480;
         StartPosition = FormStartPosition.CenterScreen;
@@ -98,8 +98,8 @@ internal sealed class SetupWizardForm : Form
         {
             Dock = DockStyle.Fill,
             Text = es
-                ? "Asistente de instalación de WindowsLab\r\n\r\n• Windows 11 x64 (build ≥ 22000)\r\n• Self-contained (sin SDK)\r\n• Beta 0: solo lectura\r\n\r\nFirma: puede faltar Authenticode → SmartScreen/UAC pueden avisar.\r\nTelemetría: en Home/Pro el mínimo es Required (1), no cero.\r\n\r\nPulse Siguiente."
-                : "WindowsLab Setup Wizard\r\n\r\n• Windows 11 x64 (build ≥ 22000)\r\n• Self-contained (no SDK needed)\r\n• Beta 0: read-only\r\n\r\nSigning: Authenticode may be missing → SmartScreen/UAC may warn.\r\nTelemetry: on Home/Pro the floor is Required (1), not zero.\r\n\r\nClick Next.",
+                ? "Asistente de instalación de WindowsLab\r\n\r\n• Windows 11 x64 (build ≥ 22000)\r\n• Self-contained (sin SDK)\r\n• 1.0: auditoría, configuración y apply con backup\r\n\r\nFirma: puede faltar Authenticode → SmartScreen/UAC pueden avisar.\r\nTelemetría: en Home/Pro el mínimo es Required (1), no cero.\r\n\r\nPulse Siguiente."
+                : "WindowsLab Setup Wizard\r\n\r\n• Windows 11 x64 (build ≥ 22000)\r\n• Self-contained (no SDK needed)\r\n• 1.0: audit, configure, and apply with backup\r\n\r\nSigning: Authenticode may be missing → SmartScreen/UAC may warn.\r\nTelemetry: on Home/Pro the floor is Required (1), not zero.\r\n\r\nClick Next.",
             Padding = new Padding(12)
         });
 
@@ -307,7 +307,7 @@ internal sealed class SetupWizardForm : Form
             var shortcut = shell.CreateShortcut(link);
             shortcut.TargetPath = targetExe;
             shortcut.WorkingDirectory = Path.GetDirectoryName(targetExe);
-            shortcut.Description = "WindowsLab Beta 0";
+            shortcut.Description = "WindowsLab 1.0";
             shortcut.Save();
         }
         catch

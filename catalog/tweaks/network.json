@@ -2,7 +2,7 @@
   {
     "id": "network.delivery-opt-lan",
     "title": "Optimización de distribución: solo LAN",
-    "description": "DODownloadMode=1. No desactiva Windows Update. HKLM política: detect-only en Beta 0.",
+    "description": "DODownloadMode=1. No desactiva Windows Update. HKLM política: requiere apply de sistema (opt-in D020).",
     "category": "network",
     "risk": "LOW",
     "evidence": "OFFICIAL",

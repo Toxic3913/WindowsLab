@@ -31,6 +31,12 @@ public static class RecommendationEngine
                 continue;
             }
 
+            // D021: never auto-recommend security-affecting tweaks (e.g. Defender opt-out).
+            if (tweak.AffectsSecurity)
+            {
+                continue;
+            }
+
             if (tweak.MinBuild > inventory.Os.Build)
             {
                 continue;

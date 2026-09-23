@@ -7,7 +7,7 @@ public sealed record ConfigChannel(
     string Title,
     string Path,
     string Role,
-    bool WritableInBeta0);
+    bool Writable);
 
 public sealed record OperatorSettings(
     string Profile,
@@ -39,8 +39,8 @@ public static class ConfigChannels
         return
         [
             new ConfigChannel("user", "Usuario (preferencias)", UserRoot, "Perfil, último pack, operator.json. No es un backup.", true),
-            new ConfigChannel("machine", "Máquina (runtime)", MachineRoot, "Backups, logs y reports (fases 3–4). Beta 0 solo crea la carpeta.", true),
-            new ConfigChannel("catalog", "Catálogo (solo lectura)", catalog, "Tweaks, checklists y packs JSON. No se edita desde la UI.", false),
+            new ConfigChannel("machine", "Máquina (runtime)", MachineRoot, "Backups, logs y reports del producto.", true),
+            new ConfigChannel("catalog", "Catálogo (embebido)", catalog, "Tweaks, checklists y packs JSON. No se edita desde la UI.", false),
             new ConfigChannel("lab", "Laboratorio VM", LabVmRoot, "OVA, VMDK y snapshots. No mezclar con ProgramData.", false)
         ];
     }

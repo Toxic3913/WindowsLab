@@ -40,7 +40,13 @@ public static partial class AppUpdateChecker
 
     public static string GetCurrentVersion()
     {
-        var asm = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
+        var asm = Assembly.GetEntryAssembly();
+        var name = asm?.GetName().Name ?? "";
+        if (asm is null || !name.StartsWith("WindowsLab", StringComparison.OrdinalIgnoreCase))
+        {
+            asm = typeof(AppUpdateChecker).Assembly;
+        }
+
         var info = asm.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
         if (!string.IsNullOrWhiteSpace(info))
         {

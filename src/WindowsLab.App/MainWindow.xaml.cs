@@ -1,12 +1,25 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using WindowsLab.Applications;
 using WindowsLab.Backup;
 using WindowsLab.Core;
 using WindowsLab.Tweaks;
 
 namespace WindowsLab.App;
+
+public sealed class PerfProcessRow
+{
+    public int Id { get; init; }
+    public string Name { get; init; } = "";
+    public string GroupLabel { get; init; } = "";
+    public ProcessGroup Group { get; init; }
+    public string CpuText { get; init; } = "";
+    public string WorkingSetText { get; init; } = "";
+    public string PrivateText { get; init; } = "";
+    public string Path { get; init; } = "";
+}
 
 public sealed class PresetPick
 {
@@ -86,12 +99,16 @@ public partial class MainWindow : Window
     private bool _loading;
     private bool _suppressTheme;
     private int _sessionGeneration;
+    private readonly DispatcherTimer _perfTimer = new() { Interval = TimeSpan.FromSeconds(2) };
+    private IReadOnlyList<PerfProcessRow> _perfRows = [];
+    private bool _perfBusy;
 
     public MainWindow()
     {
         InitializeComponent();
         ConfigChannels.EnsureRuntimeFolders();
         StartupLog.Write("MainWindow.ctor.begin");
+        _perfTimer.Tick += (_, _) => RefreshPerformanceDashboard();
         var saved = OperatorSettingsStore.Load();
         Loc.Language = saved.Language;
         _suppressProfile = true;
@@ -112,6 +129,7 @@ public partial class MainWindow : Window
             RefreshBackupList();
             BeginLoad();
         };
+        Closed += (_, _) => _perfTimer.Stop();
         StartupLog.Write("MainWindow.ctor.end");
     }
 
@@ -276,9 +294,13 @@ public partial class MainWindow : Window
         SubtitleText.Text = Loc.T("subtitle");
         LangLabel.Text = Loc.T("lang.label");
         ProfileLabel.Text = Loc.T("profile");
+        NavPrepHeader.Content = Loc.T("nav.prep");
+        NavAdvHeader.Content = Loc.T("nav.adv");
+        NavMaintainHeader.Content = Loc.T("nav.maintain");
         NavHome.Content = Loc.T("nav.home");
         NavConfig.Content = Loc.T("nav.config");
         NavResources.Content = Loc.T("nav.resources");
+        NavPerformance.Content = Loc.T("nav.performance");
         NavSystem.Content = Loc.T("nav.system");
         NavSecurity.Content = Loc.T("nav.security");
         NavTweaks.Content = Loc.T("nav.tweaks");
@@ -286,6 +308,15 @@ public partial class MainWindow : Window
         NavChecklist.Content = Loc.T("nav.checklist");
         NavApps.Content = Loc.T("nav.apps");
         NavSettings.Content = Loc.T("nav.settings");
+        MenuFile.Header = Loc.T("menu.file");
+        MenuView.Header = Loc.T("menu.view");
+        MenuTools.Header = Loc.T("menu.tools");
+        MenuHelp.Header = Loc.T("menu.help");
+        MenuExit.Header = Loc.T("menu.exit");
+        MenuBackups.Header = Loc.T("menu.backups");
+        MenuUpdates.Header = Loc.T("menu.updates");
+        MenuReleases.Header = Loc.T("menu.releases");
+        MenuAbout.Header = Loc.T("menu.about");
         ThemeLabel.Text = Loc.T("theme.label");
         UpdateThemeBoxLabels();
         HomeModesTitle.Text = Loc.T("home.modes");
@@ -298,6 +329,13 @@ public partial class MainWindow : Window
         BtnModeDevSub.Text = Loc.T("mode.dev.sub");
         BtnModeBalancedTitle.Text = Loc.T("mode.balanced");
         BtnModeBalancedSub.Text = Loc.T("mode.balanced.sub");
+        BtnModeEmpresaTitle.Text = Loc.T("mode.empresa");
+        BtnModeEmpresaSub.Text = Loc.T("mode.empresa.sub");
+        BtnModePruebasTitle.Text = Loc.T("mode.pruebas");
+        BtnModePruebasSub.Text = Loc.T("mode.pruebas.sub");
+        ConfigHint.Text = Loc.T("config.hint");
+        SettingsSystemApplyTitle.Text = Loc.T("settings.systemApply");
+        SettingsSystemApplyHint.Text = Loc.T("settings.systemApplyHint");
         HomeToolsTitle.Text = Loc.T("home.tools");
         HomePacksTitle.Text = Loc.T("home.morePacks");
         HomeProbesTitle.Text = Loc.T("home.details");
@@ -318,6 +356,16 @@ public partial class MainWindow : Window
         TelemetryLimitHint.Text = Loc.T("telemetry.limit");
         ResourcesTitle.Text = Loc.T("resources.title");
         ResourcesHint.Text = Loc.T("resources.hint");
+        BtnOpenPerformance.Content = Loc.T("btn.openPerformance");
+        PerfTitle.Text = Loc.T("perf.title");
+        PerfHint.Text = Loc.T("perf.hint");
+        PerfCpuLabel.Text = Loc.T("perf.cpu");
+        PerfRamLabel.Text = Loc.T("perf.ram");
+        PerfDiskLabel.Text = Loc.T("perf.disk");
+        PerfFilterLabel.Text = Loc.T("perf.filter");
+        PerfSortHint.Text = Loc.T("perf.sortHint");
+        PerfFooter.Text = Loc.T("perf.footer");
+        UpdatePerfFilterLabels();
         BtnDesktopInfo.Content = Loc.T("btn.desktopInfo");
         BtnBgInfo.Content = Loc.T("btn.bginfo.activate");
         BtnBgInfoDocs.Content = Loc.T("btn.bginfo.docs");
@@ -328,6 +376,14 @@ public partial class MainWindow : Window
         BtnDesktopInfoQuick.Content = Loc.T("btn.desktopInfo");
         BtnActivateWindowsRes.Content = Loc.T("btn.activateWindows");
         BtnLibreOfficeRes.Content = Loc.T("btn.libreoffice");
+        BtnWindowsSecurity.Content = Loc.T("btn.windowsSecurity");
+        BtnWindowsSecurity.ToolTip = Loc.T("btn.windowsSecurity.tip");
+        BtnWindowsSecurityRes.Content = Loc.T("btn.windowsSecurity");
+        BtnWindowsSecurityRes.ToolTip = Loc.T("btn.windowsSecurity.tip");
+        BtnDefenderRealtimeOff.Content = Loc.T("btn.defenderRealtimeOff");
+        BtnDefenderRealtimeOff.ToolTip = Loc.T("btn.defenderRealtimeOff.tip");
+        BtnDefenderRealtimeOffRes.Content = Loc.T("btn.defenderRealtimeOff");
+        BtnDefenderRealtimeOffRes.ToolTip = Loc.T("btn.defenderRealtimeOff.tip");
         AdviceHint.Text = Loc.T("advice.hint");
         AdviceBgTitle.Text = Loc.T("advice.bg.title");
         SettingsThemeTitle.Text = Loc.T("theme.label");
@@ -497,7 +553,7 @@ public partial class MainWindow : Window
 
     private void Nav_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (PageHome is null || PageConfig is null || PageResources is null)
+        if (PageHome is null || PageConfig is null || PageResources is null || PagePerformance is null)
         {
             return;
         }
@@ -512,6 +568,16 @@ public partial class MainWindow : Window
         {
             RefreshLivePreview();
         }
+
+        if (tag == "performance")
+        {
+            RefreshPerformanceDashboard();
+            _perfTimer.Start();
+        }
+        else
+        {
+            _perfTimer.Stop();
+        }
     }
 
     private void ShowPage(string tag)
@@ -519,6 +585,7 @@ public partial class MainWindow : Window
         PageHome.Visibility = tag == "home" ? Visibility.Visible : Visibility.Collapsed;
         PageConfig.Visibility = tag == "config" ? Visibility.Visible : Visibility.Collapsed;
         PageResources.Visibility = tag == "resources" ? Visibility.Visible : Visibility.Collapsed;
+        PagePerformance.Visibility = tag == "performance" ? Visibility.Visible : Visibility.Collapsed;
         PageSystem.Visibility = tag == "system" ? Visibility.Visible : Visibility.Collapsed;
         PageSecurity.Visibility = tag == "security" ? Visibility.Visible : Visibility.Collapsed;
         PageTweaks.Visibility = tag == "tweaks" ? Visibility.Visible : Visibility.Collapsed;
@@ -568,6 +635,8 @@ public partial class MainWindow : Window
         UpdateModeButton(BtnModeOptimizedStat, "perf.max");
         UpdateModeButton(BtnModeDevStat, "developer");
         UpdateModeButton(BtnModeBalancedStat, "privacy.lab");
+        UpdateModeButton(BtnModeEmpresaStat, "stack.empresa");
+        UpdateModeButton(BtnModePruebasStat, "stack.pruebas");
 
         HomePresetList.ItemsSource = _session.PresetEvals
             .Where(p => !p.Preset.IsCustom)
@@ -610,10 +679,12 @@ public partial class MainWindow : Window
             "optimized" => (UserProfile.Balanced, "perf.max", "mode.optimized"),
             "developer" => (UserProfile.Developer, "developer", "mode.dev"),
             "balanced" => (UserProfile.Balanced, "privacy.lab", "mode.balanced"),
+            "empresa" => (UserProfile.Balanced, "stack.empresa", "mode.empresa"),
+            "pruebas" => (UserProfile.Developer, "stack.pruebas", "mode.pruebas"),
             _ => (UserProfile.Balanced, "privacy.lab", "mode.balanced")
         };
 
-        if (mode is not ("gaming" or "optimized" or "developer" or "balanced"))
+        if (mode is not ("gaming" or "optimized" or "developer" or "balanced" or "empresa" or "pruebas"))
         {
             HomeModeStatus.Text = "Unknown mode: " + mode;
             return;
@@ -954,7 +1025,7 @@ public partial class MainWindow : Window
             $"Aplicar pack escribe solo HKCU elegibles (con backup).";
     }
 
-    private void ApplyPack_OnClick(object sender, RoutedEventArgs e)
+    private async void ApplyPack_OnClick(object sender, RoutedEventArgs e)
     {
         if (_session is null)
         {
@@ -968,10 +1039,10 @@ public partial class MainWindow : Window
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToArray();
 
-        ApplyTweaksById(ids, status => PresetSimulateText.Text = status);
+        await ApplyTweaksById(ids, status => PresetSimulateText.Text = status).ConfigureAwait(true);
     }
 
-    private void ApplyTweak_OnClick(object sender, RoutedEventArgs e)
+    private async void ApplyTweak_OnClick(object sender, RoutedEventArgs e)
     {
         if (_session is null)
         {
@@ -985,10 +1056,10 @@ public partial class MainWindow : Window
             return;
         }
 
-        ApplyTweaksById([row.Id], status => SimulateText.Text = status);
+        await ApplyTweaksById([row.Id], status => SimulateText.Text = status).ConfigureAwait(true);
     }
 
-    private async void ApplyTweaksById(string[] ids, Action<string> report)
+    private async Task ApplyTweaksById(string[] ids, Action<string> report)
     {
         if (_session is null)
         {
@@ -1046,6 +1117,22 @@ public partial class MainWindow : Window
             return;
         }
 
+        var securityTweaks = tweaks.Where(t => t.AffectsSecurity).ToArray();
+        if (securityTweaks.Length > 0)
+        {
+            var secList = string.Join("\n", securityTweaks.Select(t => "• " + t.Id + " (" + t.Risk + ")"));
+            var confirm2 = MessageBox.Show(
+                Loc.T("security.confirm2") + "\n\n" + secList,
+                "WindowsLab — impacto de seguridad (D021)",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Stop);
+            if (confirm2 != MessageBoxResult.Yes)
+            {
+                report(Loc.T("security.cancelled"));
+                return;
+            }
+        }
+
         var catalogDir = CatalogLocator.FindTweaksDirectory();
         if (catalogDir is null)
         {
@@ -1072,10 +1159,39 @@ public partial class MainWindow : Window
             RefreshBackupList();
             report(job.Message + "\n" + string.Join("\n",
                 job.Results.Select(r => $"{r.Outcome}: {r.Message}")));
+
+            if (job.Succeeded && tweaks.Any(t => t.RequiresReboot))
+            {
+                var reboot = MessageBox.Show(
+                    Loc.T("apply.rebootPrompt"),
+                    "WindowsLab",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+                if (reboot == MessageBoxResult.Yes)
+                {
+                    Launch("ms-settings:recovery", Loc.IsEnglish
+                        ? "Could not open Recovery settings."
+                        : "No se pudo abrir Recuperación.");
+                }
+            }
         }
         catch (Exception ex)
         {
             report("Apply falló: " + ex.Message);
+            if (securityTweaks.Length > 0)
+            {
+                var openSec = MessageBox.Show(
+                    Loc.IsEnglish
+                        ? "Apply failed (Tamper Protection?). Open Windows Security?"
+                        : "Apply falló (¿Tamper Protection?). ¿Abrir Seguridad de Windows?",
+                    "WindowsLab",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+                if (openSec == MessageBoxResult.Yes)
+                {
+                    Launch("ms-settings:windowsdefender", Loc.T("btn.windowsSecurity.fail"));
+                }
+            }
         }
     }
 
@@ -1120,6 +1236,42 @@ public partial class MainWindow : Window
     private void OpenBgInfoOfficial_OnClick(object sender, RoutedEventArgs e)
     {
         Launch("https://learn.microsoft.com/sysinternals/downloads/bginfo", "No se pudo abrir el navegador.");
+    }
+
+    private void OpenWindowsSecurity_OnClick(object sender, RoutedEventArgs e)
+    {
+        HomeQuickStatus.Text = Loc.T("btn.windowsSecurity.status");
+        if (ResourcesStatus is not null)
+        {
+            ResourcesStatus.Text = Loc.T("btn.windowsSecurity.status");
+        }
+
+        Launch("ms-settings:windowsdefender", Loc.T("btn.windowsSecurity.fail"));
+    }
+
+    private async void DefenderRealtimeOff_OnClick(object sender, RoutedEventArgs e)
+    {
+        var c1 = MessageBox.Show(
+            Loc.T("btn.defenderRealtimeOff.confirm1"),
+            "WindowsLab — D021",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Warning);
+        if (c1 != MessageBoxResult.Yes)
+        {
+            SetQuickStatus(Loc.T("btn.defenderRealtimeOff.cancelled"));
+            return;
+        }
+
+        await ApplyTweaksById(
+            ["security.defender-realtime-off"],
+            status =>
+            {
+                SetQuickStatus(Loc.T("btn.defenderRealtimeOff.done").Replace("{0}", Truncate(status, 280), StringComparison.Ordinal));
+                if (ResourcesStatus is not null)
+                {
+                    ResourcesStatus.Text = Truncate(status, 280);
+                }
+            }).ConfigureAwait(true);
     }
 
     private void ActivateWindows_OnClick(object sender, RoutedEventArgs e)
@@ -1186,13 +1338,190 @@ public partial class MainWindow : Window
         ResourcesStatus.Text = text;
     }
 
+    private void MenuExit_OnClick(object sender, RoutedEventArgs e) => Close();
+
+    private void MenuBackups_OnClick(object sender, RoutedEventArgs e)
+    {
+        SelectNav("settings");
+        RefreshBackupList();
+    }
+
+    private void MenuNav_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is MenuItem { Tag: string tag })
+        {
+            SelectNav(tag);
+        }
+    }
+
+    private void MenuAbout_OnClick(object sender, RoutedEventArgs e)
+    {
+        var ver = AppUpdateChecker.GetCurrentVersion();
+        MessageBox.Show(
+            Loc.IsEnglish
+                ? $"WindowsLab {ver}\nConfigure Windows 11 with audit, curated apply, backups, and live Performance.\nSystem apply stays opt-in (D020)."
+                : $"WindowsLab {ver}\nConfigura Windows 11 con auditoría, apply curado, backups y Performance en vivo.\nEl apply de sistema sigue con opt-in (D020).",
+            Loc.T("menu.about"),
+            MessageBoxButton.OK,
+            MessageBoxImage.Information);
+    }
+
+    private void OpenPerformance_OnClick(object sender, RoutedEventArgs e) => SelectNav("performance");
+
+    private void PerfGroupFilter_OnChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (!IsLoaded || PerfProcessGrid is null)
+        {
+            return;
+        }
+
+        ApplyPerfProcessFilter();
+    }
+
+    private void UpdatePerfFilterLabels()
+    {
+        if (PerfGroupFilter is null)
+        {
+            return;
+        }
+
+        foreach (ComboBoxItem item in PerfGroupFilter.Items)
+        {
+            var tag = item.Tag as string ?? "";
+            item.Content = tag switch
+            {
+                "windows" => Loc.T("perf.group.windows"),
+                "microsoft" => Loc.T("perf.group.microsoft"),
+                "external" => Loc.T("perf.group.external"),
+                _ => Loc.T("perf.group.all")
+            };
+        }
+    }
+
+    private void RefreshPerformanceDashboard()
+    {
+        if (_perfBusy || PagePerformance is null || PagePerformance.Visibility != Visibility.Visible)
+        {
+            return;
+        }
+
+        _perfBusy = true;
+        Task.Run(() => LiveSystemReader.ReadDashboard(includeProcesses: true, processTopN: 25)).ContinueWith(t =>
+        {
+            Dispatcher.Invoke(() =>
+            {
+                _perfBusy = false;
+                if (PagePerformance.Visibility != Visibility.Visible)
+                {
+                    return;
+                }
+
+                if (t.IsFaulted)
+                {
+                    PerfMeta.Text = Truncate(t.Exception?.GetBaseException().Message ?? "error", 300);
+                    return;
+                }
+
+                ApplyDashboardToUi(t.Result);
+            });
+        }, TaskScheduler.Default);
+    }
+
+    private void ApplyDashboardToUi(LiveDashboardSnapshot dash)
+    {
+        PerfCpuValue.Text = $"{dash.CpuPercent:0.0}%";
+        var ram = dash.Ram;
+        var commit = ram.CommitPercent is null
+            ? ""
+            : Loc.IsEnglish
+                ? $" · commit {ram.CommitPercent:0.0}%"
+                : $" · commit {ram.CommitPercent:0.0}%";
+        PerfRamValue.Text =
+            $"{ram.UsedGb:0.0}/{ram.TotalGb:0.0} GB ({ram.Percent:0.0}%)" +
+            $"\n{Loc.T("perf.ram.avail")}: {ram.AvailableGb:0.0} GB{commit}";
+
+        PerfDiskValue.Text = dash.Disks.Count == 0
+            ? "—"
+            : string.Join("\n", dash.Disks.Select(d =>
+                $"{d.Root} {d.FreeGb:0.0}/{d.TotalGb:0.0} GB ({d.FreePercent:0.0}% {Loc.T("perf.disk.free")})"));
+
+        var io = dash.DiskIo.PercentDiskTime is null
+            ? ""
+            : $" · disk time {dash.DiskIo.PercentDiskTime:0.0}% q={dash.DiskIo.AvgQueueLength:0.00}";
+        var totals = dash.Processes is null
+            ? ""
+            : string.Join(" · ", dash.Processes.GroupTotals.Select(g =>
+                $"{GroupLabel(g.Group)}={g.Count} ({FormatBytes(g.WorkingSetBytes)})"));
+        PerfMeta.Text = $"{dash.CapturedUtc:HH:mm:ss} · {dash.OsLine} · IP {dash.NetworkLine}{io}\n{totals}";
+
+        _perfRows = (dash.Processes?.TopByWorkingSet ?? [])
+            .Select(r => new PerfProcessRow
+            {
+                Id = r.Id,
+                Name = r.Name,
+                Group = r.Group,
+                GroupLabel = GroupLabel(r.Group),
+                CpuText = $"{r.CpuPercent:0.0}",
+                WorkingSetText = FormatBytes(r.WorkingSetBytes),
+                PrivateText = FormatBytes(r.PrivateBytes),
+                Path = r.Path ?? ""
+            })
+            .ToArray();
+        ApplyPerfProcessFilter();
+    }
+
+    private void ApplyPerfProcessFilter()
+    {
+        var tag = (PerfGroupFilter.SelectedItem as ComboBoxItem)?.Tag as string ?? "all";
+        IEnumerable<PerfProcessRow> rows = _perfRows;
+        rows = tag switch
+        {
+            "windows" => rows.Where(r => r.Group == ProcessGroup.Windows),
+            "microsoft" => rows.Where(r => r.Group == ProcessGroup.Microsoft),
+            "external" => rows.Where(r => r.Group == ProcessGroup.External),
+            _ => rows
+        };
+        PerfProcessGrid.ItemsSource = rows.ToArray();
+    }
+
+    private static string GroupLabel(ProcessGroup g) => g switch
+    {
+        ProcessGroup.Windows => Loc.T("perf.group.windows"),
+        ProcessGroup.Microsoft => Loc.T("perf.group.microsoft"),
+        ProcessGroup.External => Loc.T("perf.group.external"),
+        _ => throw new ArgumentOutOfRangeException(nameof(g), g, null)
+    };
+
+    private static string FormatBytes(long bytes)
+    {
+        if (bytes < 1024)
+        {
+            return bytes + " B";
+        }
+
+        var kb = bytes / 1024d;
+        if (kb < 1024)
+        {
+            return $"{kb:0.0} KB";
+        }
+
+        var mb = kb / 1024d;
+        if (mb < 1024)
+        {
+            return $"{mb:0.0} MB";
+        }
+
+        return $"{mb / 1024d:0.00} GB";
+    }
+
     private void RefreshLivePreview()
     {
         try
         {
             var s = LiveSystemReader.Read();
             LivePreview.Text =
-                $"{s.OsLine}\nCPU {s.CpuLine}\nRAM {s.RamLine}\n{s.DiskLine}\nIP {s.NetworkLine}\nActualizado {s.CapturedUtc:HH:mm:ss}";
+                Loc.T("resources.liveHint") + "\n" +
+                $"{s.OsLine}\nCPU {s.CpuLine}\nRAM {s.RamLine}\n{s.DiskLine}\nIP {s.NetworkLine}\n{s.CapturedUtc:HH:mm:ss}";
         }
         catch (Exception ex)
         {
@@ -1240,7 +1569,9 @@ public partial class MainWindow : Window
         AddLine(SecurityPanel, $"Defender AntivirusEnabled: {Fmt(s.DefenderEnabled)}  RTP: {Fmt(s.RealTimeProtection)}");
         AddLine(SecurityPanel, $"Firewall (perfil estándar): {Fmt(s.FirewallEnabled)}");
         AddLine(SecurityPanel, s.Notes ?? "Sin notas.");
-        AddLine(SecurityPanel, "Beta 0 no recomienda desactivar Defender, HVCI ni Secure Boot.");
+        AddLine(SecurityPanel, Loc.IsEnglish
+            ? "WindowsLab never recommends turning off Defender, HVCI, or Secure Boot by default."
+            : "WindowsLab no recomienda desactivar Defender, HVCI ni Secure Boot por defecto.");
     }
 
     private void RenderTweaks()

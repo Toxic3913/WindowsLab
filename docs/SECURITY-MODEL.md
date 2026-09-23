@@ -24,7 +24,7 @@ We are **not** an EDR. We consume Defender/Firewall/VBS state; we do not replace
 
 ## Default security posture
 
-- Microsoft Defender real-time: **do not disable**
+- Microsoft Defender real-time: **do not disable by default**; optional curated HIGH opt-out only (D021: `security.defender-realtime-off`, never recommended, double confirm + system-apply gate). No process kill of `MsMpEng.exe`.
 - Tamper Protection: recommend **on** if we can detect it (this host: currently False — recommendation, not auto-apply)
 - VBS: this host has VBS **running**. Do not recommend off. Gaming profile may **explain** possible CPU-bound cost with COMMUNITY evidence and require EXPERIMENTAL + benchmark
 - HVCI / memory integrity: currently **not running**. Enabling is a **security increase** with driver-compat risk (OFFICIAL warning on Microsoft Learn). Recommend only in Security profile after driver inventory

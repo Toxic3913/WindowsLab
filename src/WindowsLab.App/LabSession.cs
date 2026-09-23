@@ -33,7 +33,6 @@ public sealed class LabSession
         ChecklistResults = ChecklistEvaluator.Evaluate(Checklist, Inventory, new LiveRegistryReader());
         var presetDir = CatalogLocator.FindPresetsDirectory();
         Presets = presetDir is null ? [] : PresetLoader.LoadDirectory(presetDir);
-        PresetEvals = PresetEvaluator.EvaluateAll(Presets, Catalog, Detections, ChecklistResults);
         var appsDir = CatalogLocator.FindApplicationsDirectory();
         Applications = appsDir is null ? [] : ApplicationCatalogLoader.LoadDirectory(appsDir);
         var facts = InstalledAppDetector.Scan();
@@ -41,6 +40,7 @@ public sealed class LabSession
             .Where(a => InstalledAppDetector.IsInstalled(a, facts))
             .Select(a => a.Id)
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        PresetEvals = PresetEvaluator.EvaluateAll(Presets, Catalog, Detections, ChecklistResults, Applications, installedIds);
         AppRecommendations = AppRecommendationEngine.Rank(Applications, profile, installedIds);
     }
 

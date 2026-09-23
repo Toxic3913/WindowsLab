@@ -1,3 +1,3 @@
 # Tweaks catalog
 
-Beta 0: JSON files in this folder (~36 tweaks). Detect only. No `InvokeScript`. UNKNOWN/EXPERIMENTAL are not recommended.
+Curated JSON tweaks for WindowsLab 1.0. Detect + apply (when eligible). No `InvokeScript`. UNKNOWN/EXPERIMENTAL are not recommended or applied.

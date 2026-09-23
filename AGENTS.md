@@ -1,6 +1,6 @@
 # AGENTS.md
 
-WindowsLab is in **Beta 0.3 (system apply + lab HKCU + apps winget)**. Source lives in `D:\WindowsLab`. The installed program and runtime data live on **C:** (`%ProgramData%\WindowsLab`, `%LocalAppData%\WindowsLab`).
+WindowsLab is **1.0.0** (audit + configure + apply with backup + live Performance). Source lives in `D:\WindowsLab`. Runtime data: `%ProgramData%\WindowsLab`, `%LocalAppData%\WindowsLab`.
 
 Before coding:
 
@@ -9,12 +9,13 @@ Before coding:
 3. Do not add `InvokeScript` to the default catalog.
 4. Do not call `Win32_Product`.
 5. Do not trust `ProductName` / `WindowsProductName` for OS family. Use `CurrentBuild >= 22000`.
-6. Prefer mutating tests on VM `WindowsLab-Test-25H2`. **System apply** (HKLM / Worker) is gated: `AllowSystemApply` in settings, machine name containing `WindowsLab-Test`, or CLI `--i-am-on-lab-vm`. Lab apply HKCU remains available unelevated. Do not kill Defender/DiagTrack/SysMain/Search.
-7. Grade evidence; if UNKNOWN or EXPERIMENTAL, do not recommend or apply/install.
-8. Do not hardcode this PC’s CPU/GPU/RAM. Facts + `requires[]` only.
-9. Do not run `vssadmin` silently on the host. Restore points may be attempted by the elevated Worker on the lab VM (D020).
-10. Prefer cheap models for boilerplate, medium for Windows internals, independent review for tweak handlers.
+6. Prefer mutating tests on VM `WindowsLab-Test-25H2`. **System apply** (HKLM / Worker) is gated: `AllowSystemApply` in settings, machine name containing `WindowsLab-Test`, or CLI `--i-am-on-lab-vm` (D020). Lab apply HKCU remains available unelevated.
+7. **Protected services (hard):** never mutate DiagTrack / SysMain / WSearch (or kill their processes). **Defender:** no process kill of `MsMpEng.exe`; optional curated HIGH tweak `security.defender-realtime-off` only (D021) — registry policy, never recommended, double confirmation + system-apply gate. Generic `sc`/service ops on WinDefend/Sense/Wd* stay blocked.
+8. Grade evidence; if UNKNOWN or EXPERIMENTAL, do not recommend or apply/install. Tweaks with `affectsSecurity: true` must not appear in default recommendations.
+9. Do not hardcode this PC’s CPU/GPU/RAM. Facts + `requires[]` only.
+10. Do not run `vssadmin` silently on the host. Restore points may be attempted by the elevated Worker on the lab VM (D020).
+11. Prefer cheap models for boilerplate, medium for Windows internals, independent review for tweak handlers.
 
-Beta 0.3 scope: Core + Audit + Tweaks detect/apply + **Backup** (`%ProgramData%\WindowsLab\backups`) + **Worker** (named pipe, UAC) + Recommendations + Applications + dual theme + Cli + WPF App. Lab `--lab-apply` = HKCU only. `--apply` / GUI Apply = system pipeline. No WinUI yet.
+1.0 scope: Core + Audit + Tweaks + Backup + Worker + Recommendations + Applications + stacks (empresa/pruebas) + dual theme + Cli + WPF App + Performance live dashboard (D022/D023). Lab `--lab-apply` = HKCU. `--apply` / GUI Apply = system pipeline when allowed. No WinUI yet.
 
-CLI: prefer `--output json`. Executable is `windowslab-cli.exe` (never `windowslab.exe`). `tweak apply` without `--lab-apply` or `--apply` → exit 13. `preset apply` requires `--yes`. `app install` requires `--yes`. `backup list`, `tweak rollback --backup-id` available.
+CLI: prefer `--output json`. Executable is `windowslab-cli.exe` (never `windowslab.exe`). `live [--output json]` metrics. `tweak apply` without `--lab-apply` or `--apply` → exit 13. `preset apply` requires `--yes`. `app install` requires `--yes`. `backup list`, `tweak rollback --backup-id` available.

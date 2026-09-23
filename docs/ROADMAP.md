@@ -1,12 +1,38 @@
 # ROADMAP
 
-Date: 2026-09-05
+Date: 2026-09-23
 
-Phase 0 is **confirmed**. Phase 1 foundation is **done**. **Beta 0.3** (D020) is the current product slice: system apply (Backup + Worker + HKLM) on the lab VM, plus Beta 0.2 features. Mutating tests stay on [testing/vm-lab.md](testing/vm-lab.md).
+**WindowsLab 1.0.0** is the current public product slice: audit, stacks (empresa/pruebas), curated apply with backup, live Performance, apps via winget. System apply on daily hosts stays opt-in (D020). Mutating tests stay on [testing/vm-lab.md](testing/vm-lab.md).
 
 Agent model notes use Cursor's available slugs: cheap `composer-2.5-fast` for boilerplate, `gpt-5.6-sol-medium` for specialized design, current session model for architecture/critical review. Do **not** default to the most expensive model.
 
-## BETA 0.3 — System apply (current)
+## 1.0.0 — Public product (current)
+
+| | |
+| --- | --- |
+| Objective | Ship as everyday Windows 11 configure tool: menus, stacks, live dashboard, apply with gates |
+| Dependencies | Beta 0.4 features |
+| Tasks | Rebrand (no Beta UX), stacks empresa/pruebas, menu bar, version 1.0.0, EULA/README |
+| Deliverables | Installer/portable labeled 1.0; D020/D021 safety retained |
+| Tests | Preset stacks load; CLI/App build; unit suite green |
+| Risks | SmartScreen unsigned; Tamper Protection on Defender tweak |
+| Acceptance | Home shows Empresa/Pruebas; subtitle 1.0; system apply still gated on host |
+| Agent | medium |
+
+## BETA 0.4 — Live dashboard (done)
+
+| | |
+| --- | --- |
+| Objective | Local-only live CPU/RAM/disk + processes grouped Windows/Microsoft/External |
+| Dependencies | Beta 0.3 |
+| Tasks | `LiveDashboardSnapshot`, `ProcessSampler`, WPF Performance page (2s timer), CLI `live` |
+| Deliverables | Nav Performance; `windowslab-cli live --output json`; no process kill UX |
+| Tests | Classify heuristics; live JSON smoke; App build |
+| Risks | AccessDenied on MainModule; first CPU sample ~0 |
+| Acceptance | Open Performance → gauges refresh ~2s; External filter shows third-party; leave page stops timer |
+| Agent | medium |
+
+## BETA 0.3 — System apply (done)
 
 | | |
 | --- | --- |

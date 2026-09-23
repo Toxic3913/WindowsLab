@@ -24,6 +24,26 @@ public sealed class RecommendationEngineTests
     }
 
     [Fact]
+    public void Skips_affects_security_even_when_official()
+    {
+        var defender = Make(
+            "security.defender-realtime-off",
+            EvidenceGrade.Official,
+            RiskLevel.High,
+            ["balanced"],
+            "1",
+            affectsSecurity: true);
+        var detections = new[]
+        {
+            new TweakDetection(defender.Id, ProbeStatus.Ok, "0", "1", false, null)
+        };
+
+        var ranked = RecommendationEngine.Rank([defender], detections, UserProfile.Balanced, FakeInventory());
+
+        Assert.Empty(ranked);
+    }
+
+    [Fact]
     public void Nvidia_require_skips_when_gpu_is_intel_only()
     {
         var hags = Make(
@@ -59,7 +79,8 @@ public sealed class RecommendationEngineTests
         RiskLevel risk,
         string[] profiles,
         string desired,
-        string[]? requires = null) => new(
-        id, id, "", "test", risk, evidence, [], 22000, ["*"], profiles, requires ?? [], [], false, false, false, false,
+        string[]? requires = null,
+        bool affectsSecurity = false) => new(
+        id, id, "", "test", risk, evidence, [], 22000, ["*"], profiles, requires ?? [], [], false, affectsSecurity, false, false,
         new RegistryDetect("HKCU", "p", "n", "DWord"), desired, []);
 }

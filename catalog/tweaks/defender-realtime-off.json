@@ -1,0 +1,40 @@
+[
+  {
+    "id": "security.defender-realtime-off",
+    "title": "Desactivar protección en tiempo real (política)",
+    "description": "D021: DisableRealtimeMonitoring=1 bajo Policies\\Windows Defender\\Real-Time Protection. NO mata MsMpEng.exe ni hace sc stop. Riesgo HIGH: deja el equipo menos protegido. Tamper Protection puede bloquear el write — entonces usa Seguridad de Windows. Requiere apply de sistema + confirmación extra. Nunca recomendado automáticamente.",
+    "category": "security",
+    "risk": "HIGH",
+    "evidence": "OFFICIAL",
+    "evidenceRefs": [
+      "https://learn.microsoft.com/windows/security/threat-protection/microsoft-defender-antivirus/configure-real-time-protection-microsoft-defender-antivirus"
+    ],
+    "minBuild": 22000,
+    "editions": [],
+    "profiles": [],
+    "requires": [],
+    "conflicts": [],
+    "requiresReboot": true,
+    "affectsSecurity": true,
+    "affectsUpdates": false,
+    "affectsCompatibility": false,
+    "detect": {
+      "kind": "registry",
+      "hive": "HKLM",
+      "path": "SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection",
+      "name": "DisableRealtimeMonitoring",
+      "valueKind": "DWord"
+    },
+    "desired": { "equals": "1" },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKLM",
+        "path": "SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection",
+        "name": "DisableRealtimeMonitoring",
+        "valueKind": "DWord",
+        "value": "1"
+      }
+    ]
+  }
+]

@@ -1,3 +1,4 @@
+using WindowsLab.Core;
 using WindowsLab.Tweaks;
 
 namespace WindowsLab.Core.Tests;
@@ -11,6 +12,10 @@ public sealed class TweakCatalogLoaderTests
         var catalog = TweakCatalogLoader.LoadDirectory(dir);
         Assert.True(catalog.Count >= 30, $"expected >= 30 tweaks, got {catalog.Count}");
         Assert.Contains(catalog, t => t.Id == "explorer.show-file-extensions");
+        Assert.Contains(catalog, t => t.Id == "security.defender-realtime-off");
+        var defender = catalog.Single(t => t.Id == "security.defender-realtime-off");
+        Assert.True(defender.AffectsSecurity);
+        Assert.Equal(RiskLevel.High, defender.Risk);
         Assert.DoesNotContain(catalog, t => t.Ops.Any(o =>
             string.Equals(o.Kind, "InvokeScript", StringComparison.OrdinalIgnoreCase)));
     }

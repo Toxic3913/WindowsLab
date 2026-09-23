@@ -1,5 +1,79 @@
 [
   {
+    "id": "stack.empresa",
+    "order": 5,
+    "title": "Stack Empresa",
+    "summary": "Montaje rápido para puesto de oficina: privacidad lab, explorador limpio, navegador + herramientas. Apps se instalan con confirmación. No desactiva Defender.",
+    "settingsUri": "ms-settings:privacy",
+    "tweakIds": [
+      "privacy.allow-telemetry-required",
+      "privacy.advertising-id-off",
+      "privacy.tailored-experiences-off",
+      "privacy.start-suggestions-off",
+      "privacy.content-delivery-off",
+      "explorer.show-file-extensions",
+      "explorer.launch-this-pc",
+      "taskbar.widgets-off",
+      "taskbar.search-icon",
+      "keyboard.stickykeys-hotkey-off"
+    ],
+    "checklistIds": ["account.local", "telemetry.allow-required"],
+    "applicationIds": [
+      "app.browser.edge",
+      "app.tool.libreoffice",
+      "app.tool.7zip"
+    ],
+    "steps": [
+      {
+        "title": "Políticas de empresa",
+        "howTo": "Si hay dominio/MDM, aplica las políticas de tu organización después de este stack. WindowsLab no sustituye GPO.",
+        "settingsUri": null
+      },
+      {
+        "title": "Apply de sistema",
+        "howTo": "HKLM solo con «Permitir apply de sistema» o en VM de lab (D020).",
+        "settingsUri": null
+      }
+    ]
+  },
+  {
+    "id": "stack.pruebas",
+    "order": 6,
+    "title": "Stack Pruebas / Lab",
+    "summary": "Escritorio de laboratorio: explorador, developer desktop, toolchain. Ideal en WindowsLab-Test-*. Snapshot antes de system apply.",
+    "settingsUri": "ms-settings:developers",
+    "tweakIds": [
+      "explorer.show-file-extensions",
+      "explorer.show-hidden-files",
+      "explorer.compact-mode",
+      "explorer.launch-this-pc",
+      "taskbar.widgets-off",
+      "developer.long-paths",
+      "explorer.show-file-extensions",
+      "keyboard.stickykeys-hotkey-off",
+      "power.best-performance"
+    ],
+    "checklistIds": ["explorer.pin-folders", "explorer.shortcuts-keyboard"],
+    "applicationIds": [
+      "app.tool.git",
+      "app.tool.pwsh",
+      "app.tool.7zip",
+      "app.browser.firefox"
+    ],
+    "steps": [
+      {
+        "title": "Snapshot de VM",
+        "howTo": "En VMware/Hyper-V toma un snapshot limpio antes de apply de sistema o tweaks HIGH.",
+        "settingsUri": null
+      },
+      {
+        "title": "Allow system apply",
+        "howTo": "En Ajustes activa «Permitir apply de sistema» solo en la VM de lab, o usa --i-am-on-lab-vm en CLI.",
+        "settingsUri": null
+      }
+    ]
+  },
+  {
     "id": "perf.max",
     "order": 10,
     "title": "Rendimiento máximo",
@@ -212,7 +286,7 @@
     "id": "custom",
     "order": 90,
     "title": "Configuración específica",
-    "summary": "Todos los tweaks del catálogo. Marca los que quieras simular. Apply sigue bloqueado en Beta 0.",
+    "summary": "Todos los tweaks del catálogo. Marca los que quieras; aplica solo los elegibles con confirmación.",
     "custom": true,
     "tweakIds": [],
     "checklistIds": []

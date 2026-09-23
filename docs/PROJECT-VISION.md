@@ -1,11 +1,11 @@
 # PROJECT VISION — WindowsLab
 
-Date: 2026-09-05  
-Status: Phase 0 — approved for documentation only
+Date: 2026-09-23  
+Status: **1.0.0** — public product (audit + configure + apply with gates + live Performance)
 
 ## What we will build
 
-WindowsLab is a **professional, modular, auditable Windows 11 workstation lab**: a GUI + CLI that can inspect a machine, recommend changes based on hardware and role, apply only approved changes through a backup/verify/rollback pipeline, and prove whether a change helped.
+WindowsLab is a **professional, modular, auditable Windows 11 workstation tool**: a GUI + CLI that can inspect a machine, recommend changes based on hardware and role, apply approved changes through a backup/verify/rollback pipeline, install curated apps, and show live resource usage.
 
 It is inspired by tools such as Chris Titus Tech's [winutil](https://github.com/ChrisTitusTech/winutil), but it is **not a clone**. WinUtil is a popular installer/tweaker. WindowsLab is an **evidence-backed operations platform**.
 

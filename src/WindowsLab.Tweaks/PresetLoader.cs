@@ -63,6 +63,7 @@ public static class PresetLoader
             el.TryGetProperty("custom", out var c) && c.ValueKind == JsonValueKind.True,
             ReadArray(el, "tweakIds"),
             ReadArray(el, "checklistIds"),
+            ReadArray(el, "applicationIds"),
             steps,
             open);
     }

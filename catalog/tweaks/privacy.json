@@ -170,7 +170,7 @@
   {
     "id": "privacy.allow-telemetry-required",
     "title": "Diagnóstico Windows: Required (AllowTelemetry=1)",
-    "description": "En Home/Pro el mínimo efectivo es 1. 0 no se honra. HKLM políticas: detect-only en Beta 0.",
+    "description": "En Home/Pro el mínimo efectivo es 1. 0 no se honra. HKLM políticas: requiere apply de sistema (opt-in D020).",
     "category": "privacy",
     "risk": "LOW",
     "evidence": "OFFICIAL",

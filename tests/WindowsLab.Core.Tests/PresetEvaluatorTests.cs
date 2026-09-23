@@ -12,7 +12,10 @@ public sealed class PresetEvaluatorTests
         var packs = PresetLoader.LoadDirectory(dir);
         Assert.True(packs.Count >= 6, $"expected >= 6 presets, got {packs.Count}");
         Assert.Contains(packs, p => p.Id == "perf.max");
+        Assert.Contains(packs, p => p.Id == "stack.empresa");
+        Assert.Contains(packs, p => p.Id == "stack.pruebas");
         Assert.Contains(packs, p => p.Id == "custom" && p.IsCustom);
+        Assert.NotEmpty(packs.First(p => p.Id == "stack.empresa").ApplicationIds);
         Assert.Contains(packs.First(p => p.Id == "perf.max").TweakIds, id => id == "power.best-performance");
     }
 

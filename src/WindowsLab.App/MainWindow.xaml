@@ -7,6 +7,37 @@
         WindowStartupLocation="CenterScreen"
         Background="{DynamicResource BgBrush}">
   <DockPanel>
+    <Menu x:Name="MainMenu" DockPanel.Dock="Top" Background="{DynamicResource PanelBrush}" Padding="4,2">
+      <MenuItem x:Name="MenuFile" Header="Archivo">
+        <MenuItem x:Name="MenuBackups" Header="Respaldos" Click="MenuBackups_OnClick"/>
+        <MenuItem x:Name="MenuUpdates" Header="Buscar actualizaciones" Click="CheckUpdates_OnClick"/>
+        <Separator/>
+        <MenuItem x:Name="MenuExit" Header="Salir" Click="MenuExit_OnClick"/>
+      </MenuItem>
+      <MenuItem x:Name="MenuView" Header="Ver">
+        <MenuItem Header="Inicio" Tag="home" Click="MenuNav_OnClick"/>
+        <MenuItem Header="Packs / stacks" Tag="config" Click="MenuNav_OnClick"/>
+        <MenuItem Header="Aplicaciones" Tag="apps" Click="MenuNav_OnClick"/>
+        <MenuItem Header="Checklist" Tag="checklist" Click="MenuNav_OnClick"/>
+        <MenuItem Header="Performance" Tag="performance" Click="MenuNav_OnClick"/>
+        <MenuItem Header="Sistema" Tag="system" Click="MenuNav_OnClick"/>
+        <MenuItem Header="Seguridad" Tag="security" Click="MenuNav_OnClick"/>
+        <MenuItem Header="Tweaks" Tag="tweaks" Click="MenuNav_OnClick"/>
+        <MenuItem Header="Consejos" Tag="advice" Click="MenuNav_OnClick"/>
+        <MenuItem Header="Herramientas" Tag="resources" Click="MenuNav_OnClick"/>
+        <MenuItem Header="Ajustes" Tag="settings" Click="MenuNav_OnClick"/>
+      </MenuItem>
+      <MenuItem x:Name="MenuTools" Header="Herramientas">
+        <MenuItem Header="DesktopInfo" Click="OpenDesktopInfo_OnClick"/>
+        <MenuItem Header="BGInfo" Click="ActivateBgInfo_OnClick"/>
+        <MenuItem Header="Seguridad de Windows" Click="OpenWindowsSecurity_OnClick"/>
+        <MenuItem Header="Modo Dios" Click="OpenGodMode_OnClick"/>
+      </MenuItem>
+      <MenuItem x:Name="MenuHelp" Header="Ayuda">
+        <MenuItem x:Name="MenuReleases" Header="Releases en GitHub" Click="OpenReleases_OnClick"/>
+        <MenuItem x:Name="MenuAbout" Header="Acerca de WindowsLab" Click="MenuAbout_OnClick"/>
+      </MenuItem>
+    </Menu>
     <Border DockPanel.Dock="Top" Background="{DynamicResource PanelBrush}" Padding="16,12" BorderBrush="{DynamicResource BorderBrushSubtle}" BorderThickness="0,0,0,1">
       <DockPanel>
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -16,7 +47,7 @@
           </Border>
           <TextBlock Text="WindowsLab" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
           <TextBlock x:Name="SubtitleText" Margin="14,0,0,0" Foreground="{DynamicResource MutedBrush}" VerticalAlignment="Center"
-                     Text="Beta 0.3 — quick config + system apply"/>
+                     Text="1.0 — configurar Windows con backup y control"/>
         </StackPanel>
         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
           <TextBlock x:Name="LangLabel" Text="Idioma" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{DynamicResource MutedBrush}"/>
@@ -41,17 +72,19 @@
       </DockPanel>
     </Border>
     <ListBox x:Name="Nav" DockPanel.Dock="Left" Width="188" SelectionChanged="Nav_OnSelectionChanged">
-      <ListBoxItem x:Name="NavPrepHeader" Style="{StaticResource NavHeader}" Content="PREPARAR" IsEnabled="False"/>
+      <ListBoxItem x:Name="NavPrepHeader" Style="{StaticResource NavHeader}" Content="CONFIGURAR" IsEnabled="False"/>
       <ListBoxItem x:Name="NavHome" Content="Inicio" Tag="home" IsSelected="True"/>
-      <ListBoxItem x:Name="NavConfig" Content="Packs" Tag="config"/>
+      <ListBoxItem x:Name="NavConfig" Content="Packs / stacks" Tag="config"/>
       <ListBoxItem x:Name="NavApps" Content="Aplicaciones" Tag="apps"/>
       <ListBoxItem x:Name="NavChecklist" Content="Checklist" Tag="checklist"/>
-      <ListBoxItem x:Name="NavAdvHeader" Style="{StaticResource NavHeader}" Content="AVANZADO" IsEnabled="False"/>
-      <ListBoxItem x:Name="NavAdvice" Content="Consejos" Tag="advice"/>
-      <ListBoxItem x:Name="NavTweaks" Content="Tweaks" Tag="tweaks"/>
-      <ListBoxItem x:Name="NavResources" Content="Recursos" Tag="resources"/>
+      <ListBoxItem x:Name="NavAdvHeader" Style="{StaticResource NavHeader}" Content="SUPERVISAR" IsEnabled="False"/>
+      <ListBoxItem x:Name="NavPerformance" Content="Performance" Tag="performance"/>
       <ListBoxItem x:Name="NavSystem" Content="Sistema" Tag="system"/>
       <ListBoxItem x:Name="NavSecurity" Content="Seguridad" Tag="security"/>
+      <ListBoxItem x:Name="NavMaintainHeader" Style="{StaticResource NavHeader}" Content="MANTENER" IsEnabled="False"/>
+      <ListBoxItem x:Name="NavAdvice" Content="Consejos" Tag="advice"/>
+      <ListBoxItem x:Name="NavTweaks" Content="Tweaks" Tag="tweaks"/>
+      <ListBoxItem x:Name="NavResources" Content="Herramientas" Tag="resources"/>
       <ListBoxItem x:Name="NavSettings" Content="Ajustes" Tag="settings"/>
     </ListBox>
     <Grid Margin="16">
@@ -61,10 +94,10 @@
           <TextBlock x:Name="HomeWarn" Margin="0,8,0,0" Foreground="{DynamicResource WarnBrush}" TextWrapping="Wrap"/>
 
           <TextBlock x:Name="HomeModesTitle" Margin="0,20,0,6" FontSize="18" FontWeight="SemiBold"
-                     Text="Configuración rápida"/>
+                     Text="Montaje rápido"/>
           <TextBlock x:Name="HomeModesHint" Margin="0,0,0,12" Foreground="{DynamicResource MutedBrush}" TextWrapping="Wrap"
-                     Text="Elige un modo. Abre el pack listo para aplicar (HKCU seguro) o revisar. El resto queda agrupado abajo."/>
-          <UniformGrid Columns="2">
+                     Text="Elige un modo o stack. Abre el pack para revisar y aplicar."/>
+          <UniformGrid Columns="3">
             <Button x:Name="BtnModeGaming" Style="{StaticResource ModeButton}" Tag="gaming" Click="QuickMode_OnClick">
               <StackPanel>
                 <TextBlock x:Name="BtnModeGamingTitle" Text="Gaming" FontSize="18" FontWeight="SemiBold"/>
@@ -92,9 +125,25 @@
             <Button x:Name="BtnModeBalanced" Style="{StaticResource ModeButton}" Tag="balanced" Click="QuickMode_OnClick">
               <StackPanel>
                 <TextBlock x:Name="BtnModeBalancedTitle" Text="Equilibrada" FontSize="18" FontWeight="SemiBold"/>
-                <TextBlock x:Name="BtnModeBalancedSub" Text="Privacidad lab + ajustes seguros" Margin="0,6,0,0"
+                <TextBlock x:Name="BtnModeBalancedSub" Text="Privacidad + ajustes seguros" Margin="0,6,0,0"
                            Foreground="{DynamicResource SecondaryTextBrush}" TextWrapping="Wrap"/>
                 <TextBlock x:Name="BtnModeBalancedStat" Margin="0,10,0,0" Foreground="{DynamicResource AccentBrush}" FontSize="12"/>
+              </StackPanel>
+            </Button>
+            <Button x:Name="BtnModeEmpresa" Style="{StaticResource ModeButton}" Tag="empresa" Click="QuickMode_OnClick">
+              <StackPanel>
+                <TextBlock x:Name="BtnModeEmpresaTitle" Text="Empresa" FontSize="18" FontWeight="SemiBold"/>
+                <TextBlock x:Name="BtnModeEmpresaSub" Text="Puesto de oficina: privacidad, Edge, Office" Margin="0,6,0,0"
+                           Foreground="{DynamicResource SecondaryTextBrush}" TextWrapping="Wrap"/>
+                <TextBlock x:Name="BtnModeEmpresaStat" Margin="0,10,0,0" Foreground="{DynamicResource AccentBrush}" FontSize="12"/>
+              </StackPanel>
+            </Button>
+            <Button x:Name="BtnModePruebas" Style="{StaticResource ModeButton}" Tag="pruebas" Click="QuickMode_OnClick">
+              <StackPanel>
+                <TextBlock x:Name="BtnModePruebasTitle" Text="Pruebas / Lab" FontSize="18" FontWeight="SemiBold"/>
+                <TextBlock x:Name="BtnModePruebasSub" Text="Lab VM: explorador, git, PowerShell" Margin="0,6,0,0"
+                           Foreground="{DynamicResource SecondaryTextBrush}" TextWrapping="Wrap"/>
+                <TextBlock x:Name="BtnModePruebasStat" Margin="0,10,0,0" Foreground="{DynamicResource AccentBrush}" FontSize="12"/>
               </StackPanel>
             </Button>
           </UniformGrid>
@@ -119,6 +168,12 @@
               <Button x:Name="BtnCheckUpdates" Style="{StaticResource PrimaryButton}" Height="48" Margin="0,0,8,8"
                       Content="Buscar actualizaciones" Click="CheckUpdates_OnClick"
                       ToolTip="Consulta GitHub Releases (Toxic3913/WindowsLab)"/>
+              <Button x:Name="BtnWindowsSecurity" Height="48" Margin="0,0,8,8"
+                      Content="Seguridad de Windows" Click="OpenWindowsSecurity_OnClick"
+                      ToolTip="Abre Seguridad de Windows (UI)."/>
+              <Button x:Name="BtnDefenderRealtimeOff" Height="48" Margin="0,0,8,8"
+                      Content="Defender tiempo real OFF" Click="DefenderRealtimeOff_OnClick"
+                      ToolTip="D021: política HKLM (HIGH). Doble confirmación. No mata MsMpEng."/>
             </UniformGrid>
           </Expander>
           <TextBlock x:Name="HomeQuickStatus" Margin="0,0,0,8" Foreground="{DynamicResource MutedBrush}" TextWrapping="Wrap"/>
@@ -156,7 +211,7 @@
       </ScrollViewer>
       <DockPanel x:Name="PageConfig" Visibility="Collapsed">
         <TextBlock x:Name="ConfigHint" DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,0,0,8"
-                   Text="Elige un pack. Cada fila abre la página de Windows correspondiente. WindowsLab no escribe el registro en Beta 0: tú confirmas el cambio en Configuración."/>
+                   Text="Elige un pack o stack. Activar abre Windows. Aplicar escribe tweaks elegibles con backup."/>
         <ListBox x:Name="PresetList" DockPanel.Dock="Left" Width="240" DisplayMemberPath="Label"
                  SelectionChanged="PresetList_OnSelectionChanged" Margin="0,0,12,0"/>
         <DockPanel>
@@ -204,11 +259,67 @@
             <Button x:Name="BtnGodMode" Content="Modo Dios" Click="OpenGodMode_OnClick" Padding="12,8" Margin="0,0,8,8"/>
             <Button x:Name="BtnActivateWindowsRes" Content="Activar Windows" Click="ActivateWindows_OnClick" Padding="12,8" Margin="0,0,8,8"/>
             <Button x:Name="BtnLibreOfficeRes" Content="Descargar LibreOffice" Click="DownloadLibreOffice_OnClick" Padding="12,8" Margin="0,0,8,8"/>
+            <Button x:Name="BtnWindowsSecurityRes" Content="Seguridad de Windows" Click="OpenWindowsSecurity_OnClick" Padding="12,8" Margin="0,0,8,8"
+                    ToolTip="Abre Seguridad de Windows (UI)."/>
+            <Button x:Name="BtnDefenderRealtimeOffRes" Content="Defender tiempo real OFF" Click="DefenderRealtimeOff_OnClick" Padding="12,8" Margin="0,0,8,8"
+                    ToolTip="D021: política HKLM (HIGH). Doble confirmación."/>
           </WrapPanel>
           <TextBlock x:Name="ResourcesStatus" Margin="0,0,0,12" Foreground="{DynamicResource MutedBrush}" TextWrapping="Wrap"/>
-          <TextBlock x:Name="LivePreview" FontFamily="Consolas" TextWrapping="Wrap"/>
+          <Button x:Name="BtnOpenPerformance" Content="Abrir Performance (vivo)" Click="OpenPerformance_OnClick"
+                  Padding="12,8" Margin="0,0,0,8" HorizontalAlignment="Left"/>
+          <TextBlock x:Name="LivePreview" FontFamily="Consolas" TextWrapping="Wrap" Foreground="{DynamicResource MutedBrush}"/>
         </StackPanel>
       </ScrollViewer>
+      <DockPanel x:Name="PagePerformance" Visibility="Collapsed">
+        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+          <TextBlock x:Name="PerfTitle" FontSize="18" FontWeight="SemiBold" Text="Performance"/>
+          <TextBlock x:Name="PerfHint" Margin="0,6,0,10" TextWrapping="Wrap" Foreground="{DynamicResource MutedBrush}"/>
+          <UniformGrid Columns="3" Margin="0,0,0,8">
+            <Border Margin="0,0,8,0" Padding="12" Background="{DynamicResource PanelBrush}" BorderBrush="{DynamicResource BorderBrushSubtle}" BorderThickness="1">
+              <StackPanel>
+                <TextBlock x:Name="PerfCpuLabel" Text="CPU" Foreground="{DynamicResource MutedBrush}"/>
+                <TextBlock x:Name="PerfCpuValue" FontSize="28" FontWeight="SemiBold" Text="—"/>
+              </StackPanel>
+            </Border>
+            <Border Margin="0,0,8,0" Padding="12" Background="{DynamicResource PanelBrush}" BorderBrush="{DynamicResource BorderBrushSubtle}" BorderThickness="1">
+              <StackPanel>
+                <TextBlock x:Name="PerfRamLabel" Text="RAM" Foreground="{DynamicResource MutedBrush}"/>
+                <TextBlock x:Name="PerfRamValue" FontSize="22" FontWeight="SemiBold" Text="—" TextWrapping="Wrap"/>
+              </StackPanel>
+            </Border>
+            <Border Padding="12" Background="{DynamicResource PanelBrush}" BorderBrush="{DynamicResource BorderBrushSubtle}" BorderThickness="1">
+              <StackPanel>
+                <TextBlock x:Name="PerfDiskLabel" Text="Disco" Foreground="{DynamicResource MutedBrush}"/>
+                <TextBlock x:Name="PerfDiskValue" FontSize="14" FontWeight="SemiBold" Text="—" TextWrapping="Wrap"/>
+              </StackPanel>
+            </Border>
+          </UniformGrid>
+          <TextBlock x:Name="PerfMeta" Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,0,0,8"/>
+          <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+            <TextBlock x:Name="PerfFilterLabel" Text="Grupo" VerticalAlignment="Center" Margin="0,0,8,0"/>
+            <ComboBox x:Name="PerfGroupFilter" Width="140" SelectionChanged="PerfGroupFilter_OnChanged">
+              <ComboBoxItem Content="All" Tag="all" IsSelected="True"/>
+              <ComboBoxItem Content="Windows" Tag="windows"/>
+              <ComboBoxItem Content="Microsoft" Tag="microsoft"/>
+              <ComboBoxItem Content="External" Tag="external"/>
+            </ComboBox>
+            <TextBlock x:Name="PerfSortHint" Margin="16,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource MutedBrush}" FontSize="12"/>
+          </StackPanel>
+          <TextBlock x:Name="PerfFooter" TextWrapping="Wrap" Foreground="{DynamicResource WarnBrush}" Margin="0,0,0,4"/>
+        </StackPanel>
+        <DataGrid x:Name="PerfProcessGrid" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single"
+                  CanUserAddRows="False" HeadersVisibility="Column">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="160"/>
+            <DataGridTextColumn Header="PID" Binding="{Binding Id}" Width="70"/>
+            <DataGridTextColumn Header="Group" Binding="{Binding GroupLabel}" Width="90"/>
+            <DataGridTextColumn Header="CPU %" Binding="{Binding CpuText}" Width="70"/>
+            <DataGridTextColumn Header="Working set" Binding="{Binding WorkingSetText}" Width="110"/>
+            <DataGridTextColumn Header="Private" Binding="{Binding PrivateText}" Width="110"/>
+            <DataGridTextColumn Header="Path" Binding="{Binding Path}" Width="*"/>
+          </DataGrid.Columns>
+        </DataGrid>
+      </DockPanel>
       <ScrollViewer x:Name="PageSystem" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
         <StackPanel x:Name="SystemPanel"/>
       </ScrollViewer>
@@ -312,7 +423,9 @@
           <Button x:Name="BtnOpenReleases" Content="Abrir releases en GitHub" Click="OpenReleases_OnClick" Padding="12,8"/>
         </StackPanel>
         <TextBlock x:Name="UpdateStatusText" TextWrapping="Wrap" Margin="0,0,0,16" Foreground="{DynamicResource MutedBrush}"/>
-        <TextBlock FontWeight="SemiBold" FontSize="16" Text="Apply de sistema (Beta 0.3)" Margin="0,8,0,8"/>
+        <TextBlock x:Name="SettingsSystemApplyTitle" FontWeight="SemiBold" FontSize="16" Text="Apply de sistema" Margin="0,8,0,8"/>
+        <TextBlock x:Name="SettingsSystemApplyHint" TextWrapping="Wrap" Margin="0,0,0,8" Foreground="{DynamicResource MutedBrush}"
+                   Text="HKLM / Worker requieren opt-in (VM lab o casilla). El apply HKCU sigue disponible."/>
         <CheckBox x:Name="ChkAllowSystemApply" Content="Permitir apply de sistema (solo VM de lab)"
                   Margin="0,0,0,8" Checked="AllowSystemApply_OnChanged" Unchecked="AllowSystemApply_OnChanged"/>
         <TextBlock TextWrapping="Wrap" Margin="0,0,0,16" Foreground="{DynamicResource MutedBrush}"

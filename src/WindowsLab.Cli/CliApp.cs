@@ -50,7 +50,7 @@ public static class CliApp
 
     public const string HelpText =
         """
-        WindowsLab CLI — Beta 0.3 (system apply + lab HKCU + apps)
+        WindowsLab CLI — 1.0.0 (audit · stacks · apply · live · apps)
         Ejecutable: windowslab-cli.exe  (no confundir con WindowsLab.exe = GUI)
 
         Uso:
@@ -58,9 +58,10 @@ public static class CliApp
           windowslab-cli audit
           windowslab-cli audit --os
           windowslab-cli audit --output json
+          windowslab-cli live [--output json]
           windowslab-cli tweak list|detect|simulate <id>
           windowslab-cli tweak apply <id> --lab-apply [--dry-run]
-          windowslab-cli tweak apply <id> --apply [--yes] [--i-am-on-lab-vm] [--dry-run]
+          windowslab-cli tweak apply <id> --apply [--yes] [--i-am-on-lab-vm] [--i-accept-security-impact] [--dry-run]
           windowslab-cli tweak rollback --backup-id <id> [--i-am-on-lab-vm]
           windowslab-cli backup list [--output json]
           windowslab-cli recommend [--profile …]
@@ -69,10 +70,12 @@ public static class CliApp
           windowslab-cli app install <id> --yes
           windowslab-cli checklist
           windowslab-cli preset list|show|simulate <id>
-          windowslab-cli preset apply <id> --yes [--i-am-on-lab-vm]
+          windowslab-cli preset apply <id> --yes [--i-am-on-lab-vm] [--i-accept-security-impact]
 
         --lab-apply = HKCU LOW only (no Worker). --apply = system pipeline (UAC/Worker).
         System apply on host needs AllowSystemApply or --i-am-on-lab-vm (D020).
+        Security-affecting tweaks (D021) also need --i-accept-security-impact.
+        live = one-shot CPU/RAM/disk + top processes (D022).
 
         Código: D:\WindowsLab    Programa: C:\Program Files\WindowsLab
         """;
@@ -137,6 +140,24 @@ public static class CliApp
             else
             {
                 WriteInventory(stdout, inventory);
+            }
+
+            return ExitCodes.Ok;
+        }
+
+        if (EqualsCmd(args, 0, "live"))
+        {
+            // Second sample improves CPU % after first warm-up tick.
+            _ = LiveSystemReader.ReadDashboard(includeProcesses: true, processTopN: 25);
+            Thread.Sleep(500);
+            var dash = LiveSystemReader.ReadDashboard(includeProcesses: true, processTopN: 25);
+            if (json)
+            {
+                WriteJson(stdout, "live", ExitCodes.Ok, dash);
+            }
+            else
+            {
+                WriteLive(stdout, dash);
             }
 
             return ExitCodes.Ok;
@@ -211,6 +232,13 @@ public static class CliApp
             {
                 stderr.WriteLine("System apply requires --yes (and lab-vm opt-in if not on VM).");
                 return ExitCodes.Generic;
+            }
+
+            if (tweak.AffectsSecurity && !HasFlag(args, "--i-accept-security-impact"))
+            {
+                stderr.WriteLine(
+                    "Policy (D021): security-affecting tweak requires --i-accept-security-impact.");
+                return ExitCodes.PolicyBlocked;
             }
 
             if (!TweakApplicator.IsApplyEligible(tweak) && !TweakApplicator.IsLabEligible(tweak))
@@ -342,7 +370,7 @@ public static class CliApp
                 stdout.WriteLine($"actual: {detection.ActualDisplay}");
                 stdout.WriteLine($"desired: {detection.DesiredDisplay}");
                 stdout.WriteLine($"matches: {detection.MatchesDesired}");
-                stdout.WriteLine("simulate: no writes (Beta 0)");
+                stdout.WriteLine("simulate: no writes");
             }
 
             return ExitCodes.Ok;
@@ -521,6 +549,15 @@ public static class CliApp
                 .Where(t => TweakApplicator.IsApplyEligible(t) || TweakApplicator.IsLabEligible(t))
                 .ToArray();
 
+            var securityTweaks = tweaks.Where(t => t.AffectsSecurity).ToArray();
+            if (securityTweaks.Length > 0 && !HasFlag(args, "--i-accept-security-impact"))
+            {
+                stderr.WriteLine(
+                    $"Policy (D021): preset contains {securityTweaks.Length} security-affecting tweak(s). " +
+                    "Add --i-accept-security-impact to proceed.");
+                return ExitCodes.PolicyBlocked;
+            }
+
             if (tweaks.Length == 0)
             {
                 stderr.WriteLine("No eligible pending tweaks in preset.");
@@ -617,7 +654,7 @@ public static class CliApp
                 stdout.WriteLine($"preset: {eval.Preset.Id}");
                 stdout.WriteLine($"title: {eval.Preset.Title}");
                 stdout.WriteLine($"ready: {eval.ReadyCount}/{eval.Total}");
-                stdout.WriteLine("simulate: no writes (Beta 0)");
+                stdout.WriteLine("simulate: no writes");
                 foreach (var item in eval.Items)
                 {
                     stdout.WriteLine($"{item.Estado}\t{item.Title}\tactual={item.Actual}\tdesired={item.Desired}");
@@ -644,13 +681,13 @@ public static class CliApp
                         unknown = results.Count(r => r.Verdict == ChecklistVerdict.Unknown),
                         total = results.Count
                     },
-                    limits = "Windows 11 Home/Pro cannot fully disable telemetry (Required=1). Do not kill Defender/DiagTrack/SysMain/Search. Beta 0 does not apply.",
+                    limits = "Windows 11 Home/Pro cannot fully disable telemetry (Required=1). Do not kill Defender/DiagTrack/SysMain/Search.",
                     results
                 });
             }
             else
             {
-                stdout.WriteLine("checklist: baseline (read-only)");
+                stdout.WriteLine("checklist: baseline");
                 stdout.WriteLine("limits: no telemetry-zero on Pro/Home; do not kill system processes");
                 string? section = null;
                 foreach (var r in results)
@@ -674,6 +711,51 @@ public static class CliApp
 
         stderr.WriteLine("Unknown command. Use windowslab-cli --help.");
         return ExitCodes.Generic;
+    }
+
+    private static void WriteLive(TextWriter stdout, LiveDashboardSnapshot dash)
+    {
+        stdout.WriteLine($"captured: {dash.CapturedUtc:u}");
+        stdout.WriteLine($"host: {dash.ComputerName}");
+        stdout.WriteLine($"user: {dash.UserName}");
+        stdout.WriteLine($"os: {dash.OsLine}");
+        stdout.WriteLine($"cpuPercent: {dash.CpuPercent:0.0}");
+        stdout.WriteLine(
+            $"ram: used={dash.Ram.UsedGb:0.0}GB avail={dash.Ram.AvailableGb:0.0}GB total={dash.Ram.TotalGb:0.0}GB ({dash.Ram.Percent:0.0}%)");
+        if (dash.Ram.CommitPercent is not null)
+        {
+            stdout.WriteLine(
+                $"commit: {dash.Ram.CommitUsedGb:0.0}/{dash.Ram.CommitLimitGb:0.0} GB ({dash.Ram.CommitPercent:0.0}%)");
+        }
+
+        foreach (var d in dash.Disks)
+        {
+            stdout.WriteLine($"disk: {d.Root} free={d.FreeGb:0.0}GB total={d.TotalGb:0.0}GB ({d.FreePercent:0.0}% free)");
+        }
+
+        if (dash.DiskIo.PercentDiskTime is not null)
+        {
+            stdout.WriteLine(
+                $"diskIo: percentTime={dash.DiskIo.PercentDiskTime:0.0} queue={dash.DiskIo.AvgQueueLength:0.00}");
+        }
+
+        stdout.WriteLine($"network: {dash.NetworkLine}");
+        if (dash.Processes is null)
+        {
+            return;
+        }
+
+        foreach (var g in dash.Processes.GroupTotals)
+        {
+            stdout.WriteLine($"group: {g.Group} count={g.Count} workingSetBytes={g.WorkingSetBytes}");
+        }
+
+        stdout.WriteLine("topByWorkingSet:");
+        foreach (var p in dash.Processes.TopByWorkingSet.Take(15))
+        {
+            stdout.WriteLine(
+                $"  {p.Group}\t{p.Name}\tpid={p.Id}\tcpu={p.CpuPercent:0.0}%\tws={p.WorkingSetBytes}\tpriv={p.PrivateBytes}");
+        }
     }
 
     private static string VerdictLabel(ChecklistVerdict verdict) => verdict switch

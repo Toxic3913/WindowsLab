@@ -31,14 +31,18 @@ public static class PresetEvaluator
         IReadOnlyList<PresetDefinition> presets,
         IReadOnlyList<TweakDefinition> catalog,
         IReadOnlyList<TweakDetection> detections,
-        IReadOnlyList<ChecklistResult> checklist) =>
-        presets.Select(p => Evaluate(p, catalog, detections, checklist)).ToArray();
+        IReadOnlyList<ChecklistResult> checklist,
+        IReadOnlyList<ApplicationDefinition>? applications = null,
+        IReadOnlySet<string>? installedAppIds = null) =>
+        presets.Select(p => Evaluate(p, catalog, detections, checklist, applications, installedAppIds)).ToArray();
 
     public static PresetEvaluation Evaluate(
         PresetDefinition preset,
         IReadOnlyList<TweakDefinition> catalog,
         IReadOnlyList<TweakDetection> detections,
-        IReadOnlyList<ChecklistResult> checklist)
+        IReadOnlyList<ChecklistResult> checklist,
+        IReadOnlyList<ApplicationDefinition>? applications = null,
+        IReadOnlySet<string>? installedIds = null)
     {
         var tweakById = catalog.ToDictionary(t => t.Id, StringComparer.OrdinalIgnoreCase);
         var detById = detections.ToDictionary(d => d.TweakId, StringComparer.OrdinalIgnoreCase);
@@ -103,6 +107,31 @@ public static class PresetEvaluator
                 "",
                 step.HowTo,
                 step.SettingsUri ?? preset.SettingsUri));
+        }
+
+        if (applications is { Count: > 0 })
+        {
+            var appById = applications.ToDictionary(a => a.Id, StringComparer.OrdinalIgnoreCase);
+            foreach (var id in preset.ApplicationIds)
+            {
+                if (!appById.TryGetValue(id, out var app))
+                {
+                    items.Add(Row(id, "app", id, false, "?", "(missing in catalog)", "", "Install via Applications page", null));
+                    continue;
+                }
+
+                var installed = installedIds is not null && installedIds.Contains(id);
+                items.Add(Row(
+                    id,
+                    "app",
+                    app.Title,
+                    installed,
+                    installed ? "OK" : "FALTA",
+                    installed ? "installed" : "not installed",
+                    "installed",
+                    "winget: " + app.WingetId,
+                    "ms-settings:appsfeatures"));
+            }
         }
 
         var counted = items.Where(i => i.Kind != "step" && i.Estado is "OK" or "FALTA").ToArray();

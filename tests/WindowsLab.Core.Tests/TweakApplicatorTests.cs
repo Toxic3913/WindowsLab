@@ -32,10 +32,53 @@ public sealed class TweakApplicatorTests
     }
 
     [Fact]
-    public void IsApplyEligible_rejects_experimental()
+    public void IsApplyEligible_allows_high_security_registry_hklm()
     {
-        var experimental = Sample("x.exp", RiskLevel.Low, EvidenceGrade.Experimental, "HKCU");
-        Assert.False(TweakApplicator.IsApplyEligible(experimental));
+        var defender = new TweakDefinition(
+            "security.defender-realtime-off",
+            "Defender realtime off",
+            "test",
+            "security",
+            RiskLevel.High,
+            EvidenceGrade.Official,
+            [],
+            22000,
+            [],
+            [],
+            [],
+            [],
+            RequiresReboot: true,
+            AffectsSecurity: true,
+            AffectsUpdates: false,
+            AffectsCompatibility: false,
+            new RegistryDetect(
+                "HKLM",
+                @"SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection",
+                "DisableRealtimeMonitoring",
+                "DWord"),
+            "1",
+            [new TweakOp(
+                "registry",
+                "HKLM",
+                @"SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection",
+                "DisableRealtimeMonitoring",
+                "DWord",
+                "1")]);
+
+        Assert.False(TweakApplicator.IsLabEligible(defender));
+        Assert.True(TweakApplicator.IsApplyEligible(defender));
+        Assert.True(TweakApplicator.NeedsElevation(defender));
+    }
+
+    [Fact]
+    public void ProtectedServices_hard_blocks_sysmain_not_generic_registry()
+    {
+        Assert.True(ProtectedServices.IsHardBlocked("SysMain"));
+        Assert.True(ProtectedServices.IsHardBlocked("WSearch"));
+        Assert.True(ProtectedServices.IsHardBlocked("DiagTrack"));
+        Assert.True(ProtectedServices.IsDefenderFamily("WinDefend"));
+        Assert.True(ProtectedServices.IsBlocked("WinDefend"));
+        Assert.False(ProtectedServices.IsHardBlocked("WinDefend"));
     }
 
     [Fact]

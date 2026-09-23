@@ -19,11 +19,11 @@ D:\WindowsLab\                              # git repo / source / docs / tests
   docs/                                     # Phase 0 + living design
   schemas/                                  # JSON Schema for catalog + audit
   catalog/
-    tweaks/                                 # Beta 0 catalog (detect-only)
-    checklists/                             # baseline checklist (detect-only; no apply)
-    presets/                                # named packs: perf.max, privacy, desktop, custom
-
-    checks/                                 # audit check defs (empty until Phase 2)
+    tweaks/                                 # curated tweaks (detect + apply when eligible)
+    checklists/                             # baseline checklist
+    presets/                                # packs + stacks (empresa, pruebas, …)
+    applications/                           # winget catalog
+    checks/                                 # audit check defs
     profiles/                               # gaming / developer / balanced
   config/
     defaults.json                           # dataRoot policy (not secrets)
@@ -32,12 +32,15 @@ D:\WindowsLab\                              # git repo / source / docs / tests
     vm-lab-25h2.json
   eng/                                      # scripts, not the product
   src/
-    WindowsLab.Core/                        # models, OS identity, data root
+    WindowsLab.Core/                        # models, OS identity, data root, live metrics
     WindowsLab.Cli/                         # windowslab-cli.exe
-    WindowsLab.Audit/                       # Beta 0 probes
-    WindowsLab.Tweaks/                      # catalog + detect
+    WindowsLab.Audit/                       # probe runner
+    WindowsLab.Tweaks/                      # catalog + detect + apply
     WindowsLab.Recommendations/             # ranking
-    WindowsLab.App/                         # WPF Beta 0
+    WindowsLab.Applications/                # winget apps
+    WindowsLab.Backup/                      # manifests + rollback
+    WindowsLab.Worker/                      # elevated apply
+    WindowsLab.App/                         # WPF 1.0 shell
     WindowsLab.Setup/                       # setup.exe bootstrapper
     WindowsLab.Backup/                      # Phase 3 — placeholder
     WindowsLab.Benchmarks/                  # Phase 6 — placeholder

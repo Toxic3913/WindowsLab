@@ -2,7 +2,7 @@
   {
     "id": "developer.long-paths",
     "title": "Rutas largas (Win32 long paths)",
-    "description": "LongPathsEnabled=1. Oficial; útil con git/node. HKLM: en Beta 0 solo se detecta.",
+    "description": "LongPathsEnabled=1. Oficial; útil con git/node. HKLM: apply de sistema (opt-in D020).",
     "category": "developer",
     "risk": "LOW",
     "evidence": "OFFICIAL",
@@ -191,7 +191,7 @@
   {
     "id": "network.dns-over-https-detect",
     "title": "DoH del sistema (detectar)",
-    "description": "EnableAutoDoh. Solo inventario; no cambia DNS en Beta 0.",
+    "description": "EnableAutoDoh. Solo inventario; apply solo con confirmación.",
     "category": "network",
     "risk": "MEDIUM",
     "evidence": "OFFICIAL",

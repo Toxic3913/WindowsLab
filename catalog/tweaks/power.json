@@ -2,7 +2,7 @@
   {
     "id": "power.best-performance",
     "title": "Modo de energía: Mejor rendimiento",
-    "description": "ActiveOverlayAcPowerScheme = GUID oficial Best Performance. No es el plan Ultimate de foros. Detect-only en Beta 0.",
+    "description": "ActiveOverlayAcPowerScheme = GUID oficial Best Performance. No es el plan Ultimate de foros. Requiere apply de sistema (opt-in D020).",
     "category": "power",
     "risk": "LOW",
     "evidence": "OFFICIAL",

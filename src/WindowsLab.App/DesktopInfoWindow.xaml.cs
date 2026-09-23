@@ -45,7 +45,7 @@ public partial class DesktopInfoWindow : Window
             var s = LiveSystemReader.Read();
             Body.Text =
                 $"""
-                WindowsLab DesktopInfo  (solo lectura)
+                WindowsLab DesktopInfo
                 {s.CapturedUtc:HH:mm:ss}
 
                 Host     {s.ComputerName}
