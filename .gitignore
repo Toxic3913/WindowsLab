@@ -10,4 +10,24 @@ coverage/
 *.log
 artifacts/
 
+# Build / publish leftovers
+*.pdb
+*.msix
+*.msi
+*.nupkg
+publish/
 
+# Accidental binaries (installers live under artifacts/)
+*.exe
+*.dll
+*.zip
+*.7z
+
+# Local / OS junk
+*.suo
+*.userosscache
+*.sln.docstates
+Thumbs.db
+Desktop.ini
+.DS_Store
+*~

@@ -34,5 +34,6 @@ System-wide (HKLM) changes require elevation and **Allow system apply** (or a la
 
 - [Roadmap](docs/ROADMAP.md)
 - [Architecture decisions](docs/architecture/decision-log.md)
+- [Contributing](CONTRIBUTING.md)
 - [EULA (ES)](docs/legal/EULA-es.txt) · [EULA (EN)](docs/legal/EULA-en.txt)
 - [Agents](AGENTS.md)

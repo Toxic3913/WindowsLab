@@ -2,7 +2,23 @@ name: ci
 
 on:
   push:
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "catalog/**"
+      - "eng/**"
+      - "WindowsLab.sln"
+      - "Directory.Build.props"
+      - ".github/workflows/ci.yml"
   pull_request:
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "catalog/**"
+      - "eng/**"
+      - "WindowsLab.sln"
+      - "Directory.Build.props"
+      - ".github/workflows/ci.yml"
 
 jobs:
   test:
@@ -14,6 +30,7 @@ jobs:
           dotnet-version: "10.0.x"
       - name: Test
         run: dotnet test WindowsLab.sln -c Release --nologo
-      - name: Build dashboard
+      - name: Build App
         run: dotnet build src/WindowsLab.App/WindowsLab.App.csproj -c Release --nologo
-
+      - name: Build Setup
+        run: dotnet build src/WindowsLab.Setup/WindowsLab.Setup.csproj -c Release --nologo

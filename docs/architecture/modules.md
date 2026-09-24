@@ -77,7 +77,7 @@ Profile + inventory facts → ranked tweak list. Skips UNKNOWN/EXPERIMENTAL and 
 
 Curated winget catalog loader, installed-app detect (Uninstall registry), install with explicit approval. Logs under ProgramData reports.
 
-### `WindowsLab.Benchmarks` — Phase 6
+### `WindowsLab.Benchmarks` — Phase 6 (planned, no `src/` folder yet)
 
 DiskSpd / CPU protocols. Never invent FPS. GPU benches are host-opt-in later (VM has no RTX).
 
@@ -85,13 +85,13 @@ DiskSpd / CPU protocols. Never invent FPS. GPU benches are host-opt-in later (VM
 
 WPF shell (D017). Home stacks, menu bar, Performance live page (D022), apply with D020/D021 gates. WinUI 3 remains later.
 
-### `WindowsLab.Plugins.Abstractions` — Phase 10
+### `WindowsLab.Plugins.Abstractions` — Phase 10 (planned, no `src/` folder yet)
 
 First-party ALC; third-party out-of-process fail-closed (D013).
 
 ### `catalog/`
 
-JSON only. Validated against `schemas/`. Empty objects until Phase 2/4.
+JSON only. Validated against `schemas/`.
 
 ### `schemas/`
 
