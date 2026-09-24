@@ -1,7 +1,7 @@
 # PROJECT VISION — WindowsLab
 
 Date: 2026-09-23  
-Status: **1.0.0** — public product (audit + configure + apply with gates + live Performance)
+Status: **1.1.0** — public product (audit + configure + apply with gates + live Performance)
 
 ## What we will build
 

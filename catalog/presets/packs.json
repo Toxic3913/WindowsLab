@@ -15,7 +15,9 @@
       "explorer.launch-this-pc",
       "taskbar.widgets-off",
       "taskbar.search-icon",
-      "keyboard.stickykeys-hotkey-off"
+      "keyboard.stickykeys-hotkey-off",
+      "privacy.bing-search-off",
+      "privacy.consumer-features-off"
     ],
     "checklistIds": ["account.local", "telemetry.allow-required"],
     "applicationIds": [
@@ -49,9 +51,11 @@
       "explorer.launch-this-pc",
       "taskbar.widgets-off",
       "developer.long-paths",
-      "explorer.show-file-extensions",
       "keyboard.stickykeys-hotkey-off",
-      "power.best-performance"
+      "power.best-performance",
+      "explorer.classic-context-menu",
+      "system.verbose-logon",
+      "desktop.numlock-on-startup"
     ],
     "checklistIds": ["explorer.pin-folders", "explorer.shortcuts-keyboard"],
     "applicationIds": [
@@ -83,9 +87,9 @@
       "power.best-performance",
       "gaming.game-mode-on",
       "gaming.game-dvr-off",
-      "gaming.allow-game-dvr-off",
       "gaming.hags-on",
       "gaming.gamebar-tips-off",
+      "gaming.mouse-accel-off",
       "desktop.visual-fx-performance",
       "taskbar.widgets-off",
       "keyboard.stickykeys-hotkey-off"
@@ -115,7 +119,10 @@
       "privacy.restrict-implicit-text",
       "privacy.content-delivery-off",
       "privacy.silent-installed-apps-off",
-      "privacy.start-suggestions-off"
+      "privacy.start-suggestions-off",
+      "privacy.bing-search-off",
+      "privacy.activity-history-off",
+      "privacy.consumer-features-off"
     ],
     "checklistIds": ["account.local", "telemetry.allow-required"]
   },
@@ -136,7 +143,9 @@
       "taskbar.widgets-off",
       "taskbar.search-icon",
       "taskbar.hide-task-view",
-      "keyboard.stickykeys-hotkey-off"
+      "keyboard.stickykeys-hotkey-off",
+      "desktop.scrollbars-always",
+      "desktop.numlock-on-startup"
     ],
     "checklistIds": ["explorer.pin-folders", "explorer.shortcuts-keyboard"]
   },
@@ -150,9 +159,9 @@
       "power.best-performance",
       "gaming.game-mode-on",
       "gaming.game-dvr-off",
-      "gaming.allow-game-dvr-off",
       "gaming.hags-on",
       "gaming.gamebar-tips-off",
+      "gaming.mouse-accel-off",
       "keyboard.stickykeys-hotkey-off"
     ],
     "checklistIds": ["apps.gpu", "apps.steam"]
@@ -171,7 +180,11 @@
       "explorer.show-full-path",
       "explorer.compact-mode",
       "desktop.alttab-windows-only",
-      "developer.appmodel-unlock"
+      "developer.appmodel-unlock",
+      "explorer.classic-context-menu",
+      "desktop.numlock-on-startup",
+      "system.verbose-logon",
+      "taskbar.end-task"
     ],
     "checklistIds": ["apps.git", "apps.dotnet", "apps.cursor", "apps.pwsh"]
   },
@@ -215,7 +228,9 @@
       "explorer.compact-mode",
       "explorer.show-full-path",
       "taskbar.widgets-off",
-      "keyboard.stickykeys-hotkey-off"
+      "keyboard.stickykeys-hotkey-off",
+      "desktop.scrollbars-always",
+      "desktop.numlock-on-startup"
     ],
     "checklistIds": ["explorer.pin-folders", "explorer.shortcuts-keyboard"],
     "steps": [

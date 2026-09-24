@@ -1,57 +1,62 @@
 # Source tree
 
-Date: 2026-09-06  
-Status: **created in Phase 1**. Placeholder modules have a README and no production code until their phase.
+Date: 2026-09-24  
+Status: **1.0 product tree** (no empty phase stubs in `src/` / `tests/`).
 
 Per-module requirements: [modules.md](modules.md). Data root: [data-root.md](data-root.md). Lab VM: [../testing/vm-lab.md](../testing/vm-lab.md).
 
 ```
 D:\WindowsLab\                              # git repo / source / docs / tests
-  AGENTS.md
+  CONTRIBUTING.md
+  SECURITY.md
   README.md
+  LICENSE
   WindowsLab.sln
   global.json                               # pin .NET 10 SDK
   Directory.Build.props                     # net10.0-windows, nullable, warnings
   .editorconfig
   .gitignore
-  .github/workflows/ci.yml                  # unit tests only (no nested Hyper-V)
-
-  docs/                                     # Phase 0 + living design
+  .gitattributes
+  .github/
+    workflows/ci.yml                        # test + App + Setup (path-filtered)
+    workflows/release.yml                   # tag v* → portable zip (+ Setup)
+    ISSUE_TEMPLATE/                         # bug + feature
+    PULL_REQUEST_TEMPLATE.md
+    dependabot.yml
+  docs/
+    QUICKSTART.md
+    SECURITY-MODEL.md
+    # … living design
   schemas/                                  # JSON Schema for catalog + audit
   catalog/
-    tweaks/                                 # curated tweaks (detect + apply when eligible)
-    checklists/                             # baseline checklist
+    tweaks/
+    checklists/
     presets/                                # packs + stacks (empresa, pruebas, …)
-    applications/                           # winget catalog
-    checks/                                 # audit check defs
-    profiles/                               # gaming / developer / balanced
+    applications/
+    checks/
+    profiles/
   config/
-    defaults.json                           # dataRoot policy (not secrets)
-  fixtures/                                 # canned inventories for tests
+    defaults.json
+  fixtures/
     host-pchugo.json
     vm-lab-25h2.json
-  eng/                                      # scripts, not the product
+  eng/                                      # publish / Inno / scripts
+  assets/                                   # icon only (no installers)
   src/
-    WindowsLab.Core/                        # models, OS identity, data root, live metrics
+    WindowsLab.Core/
     WindowsLab.Cli/                         # windowslab-cli.exe
-    WindowsLab.Audit/                       # probe runner
-    WindowsLab.Tweaks/                      # catalog + detect + apply
-    WindowsLab.Recommendations/             # ranking
-    WindowsLab.Applications/                # winget apps
-    WindowsLab.Backup/                      # manifests + rollback
-    WindowsLab.Worker/                      # elevated apply
-    WindowsLab.App/                         # WPF 1.0 shell
-    WindowsLab.Setup/                       # setup.exe bootstrapper
-    WindowsLab.Backup/                      # Phase 3 — placeholder
-    WindowsLab.Benchmarks/                  # Phase 6 — placeholder
-    WindowsLab.Worker/                      # Phase 3–4 — placeholder
-    WindowsLab.Plugins.Abstractions/        # Phase 10 — placeholder
+    WindowsLab.Audit/
+    WindowsLab.Tweaks/
+    WindowsLab.Recommendations/
+    WindowsLab.Applications/
+    WindowsLab.Backup/
+    WindowsLab.Worker/
+    WindowsLab.App/                         # WPF shell
+    WindowsLab.Setup/                       # setup bootstrapper
   tests/
-    WindowsLab.Core.Tests/                  # Phase 1
-    WindowsLab.Audit.Tests/                 # Phase 2 — placeholder
-    WindowsLab.Backup.Tests/                # Phase 3 — placeholder
-    WindowsLab.Tweaks.Tests/                # Phase 4 — placeholder
-    WindowsLab.Cli.Tests/                   # Phase 1 help/OS smoke
+    WindowsLab.Core.Tests/                  # includes Audit/Tweaks coverage
+    WindowsLab.Backup.Tests/
+    WindowsLab.Cli.Tests/
 
 %ProgramData%\WindowsLab\                   # runtime on C: (NOT the git repo)
   backups\
@@ -60,6 +65,6 @@ D:\WindowsLab\                              # git repo / source / docs / tests
   tmp\
 ```
 
-**Do not** put backup blobs or SQLite logs inside `D:\WindowsLab`. VM disks stay under `D:\VM\`.
+**Do not** put backup blobs, installers, or SQLite logs inside `D:\WindowsLab`. VM disks stay under `D:\VM\`. Publish output goes to `artifacts/` (gitignored).
 
-**Do not** add WinUI / Worker / tweak apply code until the matching phase. Empty folders + README are the contract.
+Planned modules (no folders until started): Benchmarks (Phase 6), Plugins.Abstractions (Phase 10) — see [modules.md](modules.md).

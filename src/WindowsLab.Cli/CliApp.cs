@@ -50,7 +50,7 @@ public static class CliApp
 
     public const string HelpText =
         """
-        WindowsLab CLI — 1.0.0 (audit · stacks · apply · live · apps)
+        WindowsLab CLI — 1.1.0 (audit · stacks · apply · live · apps)
         Ejecutable: windowslab-cli.exe  (no confundir con WindowsLab.exe = GUI)
 
         Uso:

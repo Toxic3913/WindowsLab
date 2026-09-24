@@ -212,3 +212,38 @@ Do not change an architectural decision without a new dated entry.
 - **Reason:** Promoteable everyday tooling without opening silent system mutation on daily drivers.
 - **Trade-offs:** Host still needs opt-in for system apply; stacks do not auto-install apps without confirmation.
 
+## D024 — Five-destination UI (winutil UX patterns, not catalog)
+
+- **Date:** 2026-09-24
+- **Context:** Eleven overlapping pages (packs, tweaks, advice, checklist, system, security, tools) made discovery slow. Local study of ChrisTitusTech/winutil UI patterns (checkbox multi-select, presets as selection helpers, search, few tabs) without importing their JSON or InvokeScript.
+- **Chosen:**
+  - Nav collapses to **Inicio · Ajustes · Apps · Rendimiento · Más**.
+  - Montajes (presets/stacks) **check** tweaks on Ajustes; user reviews then **Aplicar seleccionados** once (existing apply + D020/D021).
+  - Ajustes groups by catalog `category` with search + filter (Todos / Desalineados / Recomendados).
+  - Inicio shows status + montaje shortcuts + Pendientes (checklist gaps + recommendations).
+  - Más holds operator settings, backups, tools, system/security expanders.
+  - `winutil-main/` gitignored — competitor clone is local study only.
+- **Reason:** Match competitor discoverability while keeping WindowsLab safety model.
+- **Trade-offs:** No separate expert “packs” page; custom preset still via montage bar / last selection.
+
+## D025 — Public repo packaging (learn from winutil, keep safety)
+
+- **Date:** 2026-09-24
+- **Context:** winutil’s GitHub surface (issue templates, PR template, SECURITY, badges, clear Quick Start, release automation) is easier for newcomers than a code-only tree.
+- **Chosen:**
+  - Root `SECURITY.md`, issue/PR templates, Dependabot for Actions, `docs/QUICKSTART.md`, README badges.
+  - Tag-triggered `release.yml` runs `eng/publish.ps1` and attaches portable zip (+ Setup when produced).
+  - Still no `irm | iex`; delivery remains GitHub Releases / local publish.
+- **Reason:** Match competitor discoverability of the *repository*, not their mutation model.
+- **Trade-offs:** Release job needs a `v*` tag; Authenticode still later.
+
+## D026 — Catalog curation vs winutil (ideas only)
+
+- **Date:** 2026-09-24
+- **Context:** Operator asked to compare winutil tweaks/advice with WindowsLab and prune/add.
+- **Removed:** `task.ceip-consolidator-disabled` (fake detect), `power.high-performance-scheme` (redundant sample), `network.dns-over-https-detect` (apply disguised as detect + affectsSecurity), duplicate `gaming.allow-game-dvr-off` (merged into `gaming.game-dvr-off`).
+- **Added (registry-only, no InvokeScript):** activity history policies, Bing search off, consumer features off, background apps off, NumLock, scrollbars, battery %, mouse accel off, classic context menu, verbose logon, WPBT off; renamed `services-sample` → `services.json`.
+- **Rejected from winutil:** DiagTrack/services Essential, Disable Updates, Remove Edge/OneDrive, BitLocker off, IPv6/Teredo, Delivery Optimization fully off (we keep LAN-only), OOSU, DNS force, Adobe/Razer blocks via hosts scripts.
+- **Reason:** Keep evidence-backed HKCU/HKLM ops; borrow useful *ideas*, never their JSON/scripts.
+- **Trade-offs:** COMMUNITY items stay out of default recommendations; several HKLM adds need D020.
+
