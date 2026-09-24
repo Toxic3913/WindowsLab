@@ -2,11 +2,24 @@
 
 Date: 2026-09-23
 
-**WindowsLab 1.0.0** is the current public product slice: audit, stacks (empresa/pruebas), curated apply with backup, live Performance, apps via winget. System apply on daily hosts stays opt-in (D020). Mutating tests stay on [testing/vm-lab.md](testing/vm-lab.md).
+**WindowsLab 1.1.0** is the current public product slice: audit, stacks (empresa/pruebas), curated apply with backup, live Performance, five-destination UI, apps via winget. System apply on daily hosts stays opt-in (D020). Mutating tests stay on [testing/vm-lab.md](testing/vm-lab.md).
 
 Agent model notes use Cursor's available slugs: cheap `composer-2.5-fast` for boilerplate, `gpt-5.6-sol-medium` for specialized design, current session model for architecture/critical review. Do **not** default to the most expensive model.
 
-## 1.0.0 — Public product (current)
+## 1.1.0 — Five-destination UI + catalog curation (current)
+
+| | |
+| --- | --- |
+| Objective | Discoverable IA (Inicio/Ajustes/Apps/Rendimiento/Más), repo packaging, curated registry catalog |
+| Dependencies | 1.0.0 |
+| Tasks | D024 UI, D025 GitHub surface, D026 catalog prune/add; version 1.1.0 |
+| Deliverables | Installer/portable labeled 1.1; release on `v*` tags |
+| Tests | Unit suite green; presets resolve; App build |
+| Risks | SmartScreen unsigned |
+| Acceptance | Five nav destinations; montaje → check → apply; GitHub Release assets |
+| Agent | medium |
+
+## 1.0.0 — Public product (done)
 
 | | |
 | --- | --- |
