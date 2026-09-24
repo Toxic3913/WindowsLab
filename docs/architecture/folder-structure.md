@@ -7,8 +7,8 @@ Per-module requirements: [modules.md](modules.md). Data root: [data-root.md](dat
 
 ```
 D:\WindowsLab\                              # git repo / source / docs / tests
-  AGENTS.md
   CONTRIBUTING.md
+  SECURITY.md
   README.md
   LICENSE
   WindowsLab.sln
@@ -16,9 +16,17 @@ D:\WindowsLab\                              # git repo / source / docs / tests
   Directory.Build.props                     # net10.0-windows, nullable, warnings
   .editorconfig
   .gitignore
-  .github/workflows/ci.yml                  # test + App + Setup (path-filtered)
-
-  docs/                                     # living design
+  .gitattributes
+  .github/
+    workflows/ci.yml                        # test + App + Setup (path-filtered)
+    workflows/release.yml                   # tag v* → portable zip (+ Setup)
+    ISSUE_TEMPLATE/                         # bug + feature
+    PULL_REQUEST_TEMPLATE.md
+    dependabot.yml
+  docs/
+    QUICKSTART.md
+    SECURITY-MODEL.md
+    # … living design
   schemas/                                  # JSON Schema for catalog + audit
   catalog/
     tweaks/

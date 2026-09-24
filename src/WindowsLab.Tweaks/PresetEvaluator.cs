@@ -9,22 +9,32 @@ public static class PresetEvaluator
         {
             ["gaming.game-mode-on"] = "ms-settings:gaming-gamemode",
             ["gaming.game-dvr-off"] = "ms-settings:gaming-gamedvr",
-            ["gaming.allow-game-dvr-off"] = "ms-settings:gaming-gamedvr",
             ["gaming.hags-on"] = "ms-settings:display-advancedgraphics",
             ["gaming.gamebar-tips-off"] = "ms-settings:gaming-gamebar",
+            ["gaming.mouse-accel-off"] = "ms-settings:mousetouchpad",
             ["power.best-performance"] = "ms-settings:powersleep",
             ["desktop.visual-fx-performance"] = "SystemPropertiesPerformance.exe",
+            ["desktop.numlock-on-startup"] = "ms-settings:easeofaccess-keyboard",
+            ["desktop.scrollbars-always"] = "ms-settings:easeofaccess-display",
+            ["desktop.battery-percentage"] = "ms-settings:powersleep",
             ["taskbar.widgets-off"] = "ms-settings:taskbar",
             ["taskbar.search-icon"] = "ms-settings:taskbar",
             ["taskbar.hide-task-view"] = "ms-settings:taskbar",
+            ["taskbar.end-task"] = "ms-settings:taskbar",
             ["keyboard.stickykeys-hotkey-off"] = "ms-settings:easeofaccess-keyboard",
             ["privacy.advertising-id-off"] = "ms-settings:privacy-general",
             ["privacy.tailored-experiences-off"] = "ms-settings:privacy-feedback",
             ["privacy.allow-telemetry-required"] = "ms-settings:privacy-feedback",
             ["privacy.search-highlights-off"] = "ms-settings:search",
             ["privacy.start-suggestions-off"] = "ms-settings:personalization-start",
+            ["privacy.bing-search-off"] = "ms-settings:search",
+            ["privacy.activity-history-off"] = "ms-settings:privacy-activityhistory",
+            ["privacy.consumer-features-off"] = "ms-settings:privacy-general",
+            ["privacy.background-apps-off"] = "ms-settings:privacy",
             ["network.delivery-opt-lan"] = "ms-settings:delivery-optimization",
-            ["developer.long-paths"] = "ms-settings:developers"
+            ["developer.long-paths"] = "ms-settings:developers",
+            ["explorer.classic-context-menu"] = "ms-settings:personalization-taskbar",
+            ["system.verbose-logon"] = "ms-settings:signinoptions"
         };
 
     public static IReadOnlyList<PresetEvaluation> EvaluateAll(

@@ -114,13 +114,19 @@ public partial class MainWindow : Window
     private void ApplySession(LabSession session, string? selectPresetId = null)
     {
         _session = session;
+        if (!string.IsNullOrWhiteSpace(selectPresetId))
+        {
+            _lastMontageId = selectPresetId;
+        }
+        else if (string.IsNullOrWhiteSpace(_lastMontageId))
+        {
+            _lastMontageId = OperatorSettingsStore.Load().LastPresetId;
+        }
+
         RenderHome();
-        RenderPresets(selectPresetId);
         RenderSystem();
         RenderSecurity();
         RenderTweaks();
-        RenderAdvice();
-        RenderChecklist();
         RenderApps();
         RenderChannels();
         Persist();
@@ -186,11 +192,6 @@ public partial class MainWindow : Window
         Loc.Language = lang.StartsWith("en", StringComparison.Ordinal) ? "en" : "es";
         ApplyUiLanguage();
         Persist();
-        if (Nav.SelectedItem is ListBoxItem navItem &&
-            string.Equals(navItem.Tag as string, "resources", StringComparison.OrdinalIgnoreCase))
-        {
-            RefreshLivePreview();
-        }
     }
 
     private void SelectLangBox(string language)
@@ -211,20 +212,16 @@ public partial class MainWindow : Window
         SubtitleText.Text = Loc.T("subtitle");
         LangLabel.Text = Loc.T("lang.label");
         ProfileLabel.Text = Loc.T("profile");
-        NavPrepHeader.Content = Loc.T("nav.prep");
-        NavAdvHeader.Content = Loc.T("nav.adv");
-        NavMaintainHeader.Content = Loc.T("nav.maintain");
         NavHome.Content = Loc.T("nav.home");
-        NavConfig.Content = Loc.T("nav.config");
-        NavResources.Content = Loc.T("nav.resources");
-        NavPerformance.Content = Loc.T("nav.performance");
-        NavSystem.Content = Loc.T("nav.system");
-        NavSecurity.Content = Loc.T("nav.security");
-        NavTweaks.Content = Loc.T("nav.tweaks");
-        NavAdvice.Content = Loc.T("nav.advice");
-        NavChecklist.Content = Loc.T("nav.checklist");
+        NavAdjust.Content = Loc.T("nav.adjust");
         NavApps.Content = Loc.T("nav.apps");
-        NavSettings.Content = Loc.T("nav.settings");
+        NavPerformance.Content = Loc.T("nav.performance");
+        NavMore.Content = Loc.T("nav.more");
+        MenuNavHome.Header = Loc.T("nav.home");
+        MenuNavAdjust.Header = Loc.T("nav.adjust");
+        MenuNavApps.Header = Loc.T("nav.apps");
+        MenuNavPerf.Header = Loc.T("nav.performance");
+        MenuNavMore.Header = Loc.T("nav.more");
         MenuFile.Header = Loc.T("menu.file");
         MenuView.Header = Loc.T("menu.view");
         MenuTools.Header = Loc.T("menu.tools");
@@ -238,6 +235,9 @@ public partial class MainWindow : Window
         UpdateThemeBoxLabels();
         HomeModesTitle.Text = Loc.T("home.modes");
         HomeModesHint.Text = Loc.T("home.modesHint");
+        HomePendingTitle.Text = Loc.T("home.pending");
+        HomePendingHint.Text = Loc.T("home.pendingHint");
+        HomeProbesTitle.Text = Loc.T("home.probes");
         BtnModeGamingTitle.Text = Loc.T("mode.gaming");
         BtnModeGamingSub.Text = Loc.T("mode.gaming.sub");
         BtnModeOptimizedTitle.Text = Loc.T("mode.optimized");
@@ -250,30 +250,41 @@ public partial class MainWindow : Window
         BtnModeEmpresaSub.Text = Loc.T("mode.empresa.sub");
         BtnModePruebasTitle.Text = Loc.T("mode.pruebas");
         BtnModePruebasSub.Text = Loc.T("mode.pruebas.sub");
-        ConfigHint.Text = Loc.T("config.hint");
+        AdjustHint.Text = Loc.T("adjust.hint");
+        AdjustPresetsLabel.Text = Loc.T("adjust.presets");
+        AdjustFilterLabel.Text = Loc.T("adjust.filter");
+        AdjustSearchBox.ToolTip = Loc.T("adjust.search");
+        BtnAdjustClear.Content = Loc.T("adjust.clear");
+        BtnAdjustSimulate.Content = Loc.T("adjust.simulate");
+        BtnAdjustApply.Content = Loc.T("adjust.apply");
+        BtnAdjustApply.ToolTip = Loc.T("btn.applyDisabled");
+        foreach (ComboBoxItem item in AdjustFilterBox.Items)
+        {
+            item.Content = (item.Tag?.ToString()) switch
+            {
+                "gaps" => Loc.T("adjust.filter.gaps"),
+                "recommended" => Loc.T("adjust.filter.recommended"),
+                _ => Loc.T("adjust.filter.all")
+            };
+        }
+
         SettingsSystemApplyTitle.Text = Loc.T("settings.systemApply");
         SettingsSystemApplyHint.Text = Loc.T("settings.systemApplyHint");
-        HomeToolsTitle.Text = Loc.T("home.tools");
-        HomePacksTitle.Text = Loc.T("home.morePacks");
-        HomeProbesTitle.Text = Loc.T("home.details");
-        ConfigHint.Text = Loc.T("config.hint");
-        BtnActivatePack.Content = Loc.T("btn.activatePack");
-        BtnSimulatePack.Content = Loc.T("btn.simulatePack");
-        BtnActivateRow.Content = Loc.T("btn.activateRow");
-        BtnApplyPack.Content = Loc.T("btn.applyPack");
-        BtnApplyPack.ToolTip = Loc.T("btn.applyDisabled");
-        BtnApplyTweak.Content = Loc.T("btn.applyTweak");
-        BtnApplyTweak.ToolTip = Loc.T("btn.applyDisabled");
-        TweaksHint.Text = Loc.T("tweaks.hint");
-        ChecklistHint.Text = Loc.T("checklist.hint");
+        SettingsThemeTitle.Text = Loc.T("theme.label");
+        SettingsThemeHint.Text = Loc.T("theme.hint");
+        SettingsChannelsTitle.Text = Loc.T("settings.channels");
+        SettingsChannelsHint.Text = Loc.T("settings.channelsHint");
+        MoreBackupsTitle.Text = Loc.T("more.backups");
+        MoreSystemTitle.Text = Loc.T("more.system");
+        MoreSecurityTitle.Text = Loc.T("more.security");
+        MoreToolsTitle.Text = Loc.T("more.tools");
+        BtnOpenUser.Content = Loc.T("btn.openUser");
+        BtnOpenMachine.Content = Loc.T("btn.openMachine");
         AppsHint.Text = Loc.T("apps.hint");
         AppsFilterLabel.Text = Loc.T("apps.filter");
+        AppsSearchBox.ToolTip = Loc.T("apps.search");
         BtnInstallApp.Content = Loc.T("apps.install");
         BtnDefaultApps.Content = Loc.T("apps.defaults");
-        TelemetryLimitHint.Text = Loc.T("telemetry.limit");
-        ResourcesTitle.Text = Loc.T("resources.title");
-        ResourcesHint.Text = Loc.T("resources.hint");
-        BtnOpenPerformance.Content = Loc.T("btn.openPerformance");
         PerfTitle.Text = Loc.T("perf.title");
         PerfHint.Text = Loc.T("perf.hint");
         PerfCpuLabel.Text = Loc.T("perf.cpu");
@@ -289,38 +300,22 @@ public partial class MainWindow : Window
         BtnGodMode.Content = Loc.T("tools.godmode");
         BtnActivateWindows.Content = Loc.T("btn.activateWindows");
         BtnLibreOffice.Content = Loc.T("btn.libreoffice");
-        BtnBgInfoQuick.Content = Loc.T("btn.bginfo.activate");
-        BtnDesktopInfoQuick.Content = Loc.T("btn.desktopInfo");
-        BtnActivateWindowsRes.Content = Loc.T("btn.activateWindows");
-        BtnLibreOfficeRes.Content = Loc.T("btn.libreoffice");
         BtnWindowsSecurity.Content = Loc.T("btn.windowsSecurity");
         BtnWindowsSecurity.ToolTip = Loc.T("btn.windowsSecurity.tip");
-        BtnWindowsSecurityRes.Content = Loc.T("btn.windowsSecurity");
-        BtnWindowsSecurityRes.ToolTip = Loc.T("btn.windowsSecurity.tip");
         BtnDefenderRealtimeOff.Content = Loc.T("btn.defenderRealtimeOff");
         BtnDefenderRealtimeOff.ToolTip = Loc.T("btn.defenderRealtimeOff.tip");
-        BtnDefenderRealtimeOffRes.Content = Loc.T("btn.defenderRealtimeOff");
-        BtnDefenderRealtimeOffRes.ToolTip = Loc.T("btn.defenderRealtimeOff.tip");
-        AdviceHint.Text = Loc.T("advice.hint");
-        AdviceBgTitle.Text = Loc.T("advice.bg.title");
-        SettingsThemeTitle.Text = Loc.T("theme.label");
-        SettingsChannelsTitle.Text = Loc.T("settings.channels");
-        SettingsChannelsHint.Text = Loc.T("settings.channelsHint");
-        BtnOpenUser.Content = Loc.T("btn.openUser");
-        BtnOpenMachine.Content = Loc.T("btn.openMachine");
         SettingsUpdateTitle.Text = Loc.T("update.title");
-        BtnCheckUpdates.Content = Loc.T("update.check");
         BtnCheckUpdatesSettings.Content = Loc.T("update.check");
         BtnOpenReleases.Content = Loc.T("update.open");
-        SettingsVersionText.Text = Loc.IsEnglish
-            ? "Installed version: " + AppUpdateChecker.GetCurrentVersion()
-            : "Versión instalada: " + AppUpdateChecker.GetCurrentVersion();
+        SettingsVersionText.Text = Loc.T("update.version").Replace("{0}", AppUpdateChecker.GetCurrentVersion(), StringComparison.Ordinal);
         SettingsInstallPath.Text = Loc.IsEnglish
-            ? "Setup: D:\\WindowsLab\\artifacts\\installer\\WindowsLab-Setup.exe  ·  Inno: WindowsLab-Setup-Inno.exe  ·  Zip: artifacts\\zip\\WindowsLab-portable-win-x64.zip"
-            : "Instalador: D:\\WindowsLab\\artifacts\\installer\\WindowsLab-Setup.exe  ·  Inno: WindowsLab-Setup-Inno.exe  ·  Zip: artifacts\\zip\\WindowsLab-portable-win-x64.zip";
+            ? "Setup: artifacts\\installer\\WindowsLab-Setup.exe  ·  Zip: artifacts\\zip\\WindowsLab-portable-win-x64.zip"
+            : "Instalador: artifacts\\installer\\WindowsLab-Setup.exe  ·  Zip: artifacts\\zip\\WindowsLab-portable-win-x64.zip";
         if (_session is not null)
         {
             RenderHome();
+            BuildAdjustPresetBar();
+            RefreshTweakCategoryView();
         }
     }
 
@@ -377,7 +372,6 @@ public partial class MainWindow : Window
     {
         UpdateStatusText.Text = Loc.T("update.checking");
         HomeQuickStatus.Text = Loc.T("update.checking");
-        BtnCheckUpdates.IsEnabled = false;
         BtnCheckUpdatesSettings.IsEnabled = false;
         try
         {
@@ -428,7 +422,6 @@ public partial class MainWindow : Window
         }
         finally
         {
-            BtnCheckUpdates.IsEnabled = true;
             BtnCheckUpdatesSettings.IsEnabled = true;
         }
     }

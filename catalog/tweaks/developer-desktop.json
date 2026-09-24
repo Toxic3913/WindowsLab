@@ -187,26 +187,5 @@
     "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "name": "SystemUsesLightTheme", "valueKind": "DWord" },
     "desired": { "equals": 0 },
     "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "name": "SystemUsesLightTheme", "valueKind": "DWord", "value": "0" }]
-  },
-  {
-    "id": "network.dns-over-https-detect",
-    "title": "DoH del sistema (detectar)",
-    "description": "EnableAutoDoh. Solo inventario; apply solo con confirmación.",
-    "category": "network",
-    "risk": "MEDIUM",
-    "evidence": "OFFICIAL",
-    "evidenceRefs": ["https://learn.microsoft.com/windows-server/networking/dns/doh-client-support"],
-    "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["balanced"],
-    "requires": [],
-    "conflicts": [],
-    "requiresReboot": false,
-    "affectsSecurity": true,
-    "affectsUpdates": false,
-    "affectsCompatibility": true,
-    "detect": { "kind": "registry", "hive": "HKLM", "path": "SYSTEM\\CurrentControlSet\\Services\\Dnscache\\Parameters", "name": "EnableAutoDoh", "valueKind": "DWord" },
-    "desired": { "equals": 2 },
-    "ops": [{ "kind": "registry", "hive": "HKLM", "path": "SYSTEM\\CurrentControlSet\\Services\\Dnscache\\Parameters", "name": "EnableAutoDoh", "valueKind": "DWord", "value": "2" }]
   }
 ]

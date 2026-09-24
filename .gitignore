@@ -31,3 +31,6 @@ Thumbs.db
 Desktop.ini
 .DS_Store
 *~
+
+# Competitor clone for local UX study only (never commit)
+winutil-main/

@@ -68,81 +68,6 @@ public partial class MainWindow
     private void OpenMachineChannel_OnClick(object sender, RoutedEventArgs e) =>
         Launch(ConfigChannels.MachineRoot, "No hay carpeta de máquina.");
 
-    private IEnumerable<PresetItemRow> SelectedRows() =>
-        PresetGrid.Items.OfType<PresetItemRow>().Where(r => r.Include);
-
-    private void OpenPresetSettings_OnClick(object sender, RoutedEventArgs e)
-    {
-        var uri = (PresetList.SelectedItem as PresetPick)?.Eval.Preset.SettingsUri;
-        if (string.IsNullOrWhiteSpace(uri))
-        {
-            uri = SelectedRows().Select(r => r.SettingsUri).FirstOrDefault(u => !string.IsNullOrWhiteSpace(u));
-        }
-
-        Launch(uri, "Este pack no tiene página de Configuración asociada.");
-    }
-
-    private void OpenSelectedSetting_OnClick(object sender, RoutedEventArgs e)
-    {
-        if (PresetGrid.SelectedItem is PresetItemRow row)
-        {
-            Launch(row.SettingsUri, "Esta fila no tiene enlace. Sigue la columna Cómo.");
-            return;
-        }
-
-        PresetSimulateText.Text = "Selecciona una fila de la tabla.";
-    }
-
-    private void SimulatePreset_OnClick(object sender, RoutedEventArgs e)
-    {
-        var rows = SelectedRows().ToArray();
-        if (rows.Length == 0)
-        {
-            PresetSimulateText.Text = "Marca al menos un ítem (columna Incluir).";
-            return;
-        }
-
-        var ready = rows.Count(r => r.Estado == "OK");
-        var gap = rows.Count(r => r.Estado == "FALTA");
-        PresetSimulateText.Text =
-            $"Simulación (0 escrituras): {rows.Length} ítems, {ready} ya coinciden, {gap} pendientes. " +
-            $"Aplicar pack escribe solo HKCU elegibles (con backup).";
-    }
-
-    private async void ApplyPack_OnClick(object sender, RoutedEventArgs e)
-    {
-        if (_session is null)
-        {
-            PresetSimulateText.Text = "Aún cargando.";
-            return;
-        }
-
-        var ids = SelectedRows()
-            .Where(r => r.Estado == "FALTA")
-            .Select(r => r.Id)
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .ToArray();
-
-        await ApplyTweaksById(ids, status => PresetSimulateText.Text = status).ConfigureAwait(true);
-    }
-
-    private async void ApplyTweak_OnClick(object sender, RoutedEventArgs e)
-    {
-        if (_session is null)
-        {
-            SimulateText.Text = "Aún cargando.";
-            return;
-        }
-
-        if (TweakGrid.SelectedItem is not TweakRow row)
-        {
-            SimulateText.Text = "Selecciona un tweak.";
-            return;
-        }
-
-        await ApplyTweaksById([row.Id], status => SimulateText.Text = status).ConfigureAwait(true);
-    }
-
     private async Task ApplyTweaksById(string[] ids, Action<string> report)
     {
         if (_session is null)
@@ -287,8 +212,7 @@ public partial class MainWindow
         }
 
         var profile = ParseProfile((ProfileBox.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "balanced");
-        var presetId = (PresetList.SelectedItem as PresetPick)?.Eval.Preset.Id
-                       ?? OperatorSettingsStore.Load().LastPresetId;
+        var presetId = _lastMontageId ?? OperatorSettingsStore.Load().LastPresetId;
         Reload(profile, presetId);
     }
 
@@ -296,18 +220,18 @@ public partial class MainWindow
     {
         if (string.IsNullOrWhiteSpace(target))
         {
-            PresetSimulateText.Text = ifMissing;
+            SetQuickStatus(ifMissing);
             return;
         }
 
         try
         {
             Process.Start(new ProcessStartInfo { FileName = target, UseShellExecute = true });
-            PresetSimulateText.Text = "Abierto: " + target;
+            SetQuickStatus((Loc.IsEnglish ? "Opened: " : "Abierto: ") + target);
         }
         catch (Exception ex)
         {
-            PresetSimulateText.Text = "No se pudo abrir " + target + ": " + ex.Message;
+            SetQuickStatus((Loc.IsEnglish ? "Could not open " : "No se pudo abrir ") + target + ": " + ex.Message);
         }
     }
 
@@ -324,12 +248,7 @@ public partial class MainWindow
 
     private void OpenWindowsSecurity_OnClick(object sender, RoutedEventArgs e)
     {
-        HomeQuickStatus.Text = Loc.T("btn.windowsSecurity.status");
-        if (ResourcesStatus is not null)
-        {
-            ResourcesStatus.Text = Loc.T("btn.windowsSecurity.status");
-        }
-
+        SetQuickStatus(Loc.T("btn.windowsSecurity.status"));
         Launch("ms-settings:windowsdefender", Loc.T("btn.windowsSecurity.fail"));
     }
 
@@ -348,14 +267,7 @@ public partial class MainWindow
 
         await ApplyTweaksById(
             ["security.defender-realtime-off"],
-            status =>
-            {
-                SetQuickStatus(Loc.T("btn.defenderRealtimeOff.done").Replace("{0}", Truncate(status, 280), StringComparison.Ordinal));
-                if (ResourcesStatus is not null)
-                {
-                    ResourcesStatus.Text = Truncate(status, 280);
-                }
-            }).ConfigureAwait(true);
+            status => SetQuickStatus(Loc.T("btn.defenderRealtimeOff.done").Replace("{0}", Truncate(status, 280), StringComparison.Ordinal))).ConfigureAwait(true);
     }
 
     private void ActivateWindows_OnClick(object sender, RoutedEventArgs e)
@@ -372,13 +284,11 @@ public partial class MainWindow
     {
         SetQuickStatus(Loc.IsEnglish ? "BGInfo…" : "BGInfo…");
         BtnBgInfo.IsEnabled = false;
-        BtnBgInfoQuick.IsEnabled = false;
         Task.Run(QuickTools.LaunchOrInstallBgInfo).ContinueWith(t =>
         {
             Dispatcher.Invoke(() =>
             {
                 BtnBgInfo.IsEnabled = true;
-                BtnBgInfoQuick.IsEnabled = true;
                 if (t.IsFaulted)
                 {
                     SetQuickStatus(Truncate(t.Exception?.GetBaseException().Message ?? "error", 300));
@@ -399,7 +309,6 @@ public partial class MainWindow
     {
         SetQuickStatus(Loc.IsEnglish ? "Downloading LibreOffice…" : "Descargando LibreOffice…");
         BtnLibreOffice.IsEnabled = false;
-        BtnLibreOfficeRes.IsEnabled = false;
         try
         {
             var (ok, msg) = await QuickTools.DownloadLibreOfficeAsync().ConfigureAwait(true);
@@ -412,21 +321,19 @@ public partial class MainWindow
         finally
         {
             BtnLibreOffice.IsEnabled = true;
-            BtnLibreOfficeRes.IsEnabled = true;
         }
     }
 
     private void SetQuickStatus(string text)
     {
         HomeQuickStatus.Text = text;
-        ResourcesStatus.Text = text;
     }
 
     private void MenuExit_OnClick(object sender, RoutedEventArgs e) => Close();
 
     private void MenuBackups_OnClick(object sender, RoutedEventArgs e)
     {
-        SelectNav("settings");
+        SelectNav("more");
         RefreshBackupList();
     }
 

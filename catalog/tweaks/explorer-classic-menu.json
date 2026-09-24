@@ -1,0 +1,23 @@
+[
+  {
+    "id": "explorer.classic-context-menu",
+    "title": "Menú contextual clásico (Windows 11)",
+    "description": "CLSID {86ca1aa0-…} InprocServer32 vacío. COMMUNITY; restaura el menú clásico al clic derecho en el Explorador.",
+    "category": "explorer",
+    "risk": "LOW",
+    "evidence": "COMMUNITY",
+    "evidenceRefs": [],
+    "minBuild": 22000,
+    "editions": ["*"],
+    "profiles": ["developer", "balanced"],
+    "requires": [],
+    "conflicts": [],
+    "requiresReboot": false,
+    "affectsSecurity": false,
+    "affectsUpdates": false,
+    "affectsCompatibility": true,
+    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c741a7b5f8}\\InprocServer32", "name": "", "valueKind": "String" },
+    "desired": { "equals": "" },
+    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c741a7b5f8}\\InprocServer32", "name": "", "valueKind": "String", "value": "" }]
+  }
+]

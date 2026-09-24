@@ -11,6 +11,8 @@ pwsh -File eng/publish.ps1
 
 CLI binary name is `windowslab-cli.exe` (never `windowslab.exe`). Prefer `--output json` for automation.
 
+See [docs/QUICKSTART.md](docs/QUICKSTART.md) for user vs developer install paths.
+
 ## Product rules (non-negotiable)
 
 See [AGENTS.md](AGENTS.md) and [docs/architecture/decision-log.md](docs/architecture/decision-log.md).
@@ -24,10 +26,15 @@ See [AGENTS.md](AGENTS.md) and [docs/architecture/decision-log.md](docs/architec
 
 ## Git hygiene
 
-- Do not commit `artifacts/`, `bin/`, `obj/`, installers, zips, PDBs, or local logs.
+- Do not commit `artifacts/`, `bin/`, `obj/`, installers, zips, PDBs, local logs, or `winutil-main/`.
 - Keep catalogs under `catalog/` declarative and reviewed.
 
 ## Pull requests
 
-- Prefer small PRs with `dotnet test` green.
-- Mutating system tests: VM `WindowsLab-Test-25H2` when possible.
+Use the PR template checklist. Prefer small PRs with `dotnet test` green.
+
+Mutating system tests: VM `WindowsLab-Test-25H2` when possible.
+
+## Issues
+
+Use Bug / Feature templates under `.github/ISSUE_TEMPLATE/`. Security: [SECURITY.md](SECURITY.md).

@@ -1,11 +1,7 @@
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Threading;
 using WindowsLab.Applications;
-using WindowsLab.Backup;
 using WindowsLab.Core;
-using WindowsLab.Tweaks;
 
 namespace WindowsLab.App;
 
@@ -29,10 +25,17 @@ public partial class MainWindow
             return;
         }
 
-        var category = (AppsCategoryBox.SelectedItem as ComboBoxItem)?.Content?.ToString();
+        var category = (AppsCategoryBox.SelectedItem as ComboBoxItem)?.Tag?.ToString()
+                       ?? (AppsCategoryBox.SelectedItem as ComboBoxItem)?.Content?.ToString();
         var filter = string.Equals(category, "all", StringComparison.OrdinalIgnoreCase) ? null : category;
+        var search = AppsSearchBox?.Text?.Trim() ?? "";
+
         var rows = _session.AppRecommendations
             .Where(r => filter is null || string.Equals(r.Category, filter, StringComparison.OrdinalIgnoreCase))
+            .Where(r => string.IsNullOrWhiteSpace(search)
+                        || r.Title.Contains(search, StringComparison.OrdinalIgnoreCase)
+                        || r.WingetId.Contains(search, StringComparison.OrdinalIgnoreCase)
+                        || r.AppId.Contains(search, StringComparison.OrdinalIgnoreCase))
             .Select(r => new AppRow
             {
                 Id = r.AppId,
@@ -51,10 +54,20 @@ public partial class MainWindow
             })
             .ToList();
         AppsGrid.ItemsSource = rows;
-        AppsStatusText.Text = $"{rows.Count} apps · perfil {_session.Profile}";
+        AppsStatusText.Text = $"{rows.Count} apps · {_session.Profile}";
     }
 
     private void AppsCategoryBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (!IsLoaded || _session is null)
+        {
+            return;
+        }
+
+        RenderApps();
+    }
+
+    private void AppsSearch_OnChanged(object sender, TextChangedEventArgs e)
     {
         if (!IsLoaded || _session is null)
         {
@@ -136,8 +149,7 @@ public partial class MainWindow
         var profile = (ProfileBox.SelectedItem as ComboBoxItem)?.Content?.ToString()
                       ?? _session?.Profile.ToString().ToLowerInvariant()
                       ?? "balanced";
-        var preset = (PresetList.SelectedItem as PresetPick)?.Eval.Preset.Id
-                     ?? OperatorSettingsStore.Load().LastPresetId;
+        var preset = _lastMontageId ?? OperatorSettingsStore.Load().LastPresetId;
         var lang = Loc.Language;
         var theme = (ThemeBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "dark";
         var allowSystem = ChkAllowSystemApply.IsChecked == true;
@@ -152,5 +164,9 @@ public partial class MainWindow
         }
 
         Persist();
+        if (_session is not null)
+        {
+            RenderHome();
+        }
     }
 }

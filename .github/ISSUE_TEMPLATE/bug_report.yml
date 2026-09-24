@@ -1,0 +1,67 @@
+name: Bug report
+description: Report a bug in WindowsLab (Windows 11).
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Supported: **Windows 11** (`CurrentBuild >= 22000`). Read [AGENTS.md](https://github.com/Toxic3913/WindowsLab/blob/main/AGENTS.md) and [SECURITY-MODEL](https://github.com/Toxic3913/WindowsLab/blob/main/docs/SECURITY-MODEL.md) before filing.
+
+  - type: input
+    id: version
+    attributes:
+      label: WindowsLab version
+      description: Help → About, or `windowslab-cli.exe --version` / FileVersion of WindowsLab.exe
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Inicio / montajes
+        - Ajustes (tweaks apply)
+        - Apps (winget)
+        - Rendimiento
+        - Más / backups / system apply
+        - CLI
+        - Setup / installer
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened
+      description: Clear steps to reproduce. Do not paste secrets or full registry dumps.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs (optional)
+      description: "%LocalAppData%\\WindowsLab\\crash.log / startup.log — redact paths if needed"
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety
+      options:
+        - label: I did not import winutil / third-party InvokeScript catalog into WindowsLab
+          required: true
+        - label: I understand system apply (HKLM) is gated (D020) and Defender opt-out is D021 only
+          required: true

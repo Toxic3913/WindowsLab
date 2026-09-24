@@ -2,7 +2,7 @@
   {
     "id": "service.remote-registry-disabled",
     "title": "Desactivar Remote Registry",
-    "description": "Start=4 (disabled). Reduce superficie remota. No toca Defender/SysMain/Search. Requiere elevación.",
+    "description": "Start=4 (disabled). Reduce superficie remota. No toca Defender/SysMain/Search. Requiere elevación / apply de sistema (D020).",
     "category": "security",
     "risk": "LOW",
     "evidence": "OFFICIAL",

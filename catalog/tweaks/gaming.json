@@ -18,12 +18,15 @@
     "affectsCompatibility": false,
     "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\GameBar", "name": "AutoGameModeEnabled", "valueKind": "DWord" },
     "desired": { "equals": 1 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\GameBar", "name": "AutoGameModeEnabled", "valueKind": "DWord", "value": "1" }]
+    "ops": [
+      { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\GameBar", "name": "AutoGameModeEnabled", "valueKind": "DWord", "value": "1" },
+      { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\GameBar", "name": "AllowAutoGameMode", "valueKind": "DWord", "value": "1" }
+    ]
   },
   {
     "id": "gaming.game-dvr-off",
     "title": "Game DVR / captura en segundo plano off",
-    "description": "AppCaptureEnabled=0. COMMUNITY: puede reducir overhead; no se afirma FPS.",
+    "description": "AppCaptureEnabled=0 y GameDVR_Enabled=0. COMMUNITY: puede reducir overhead; no se afirma FPS.",
     "category": "gaming",
     "risk": "LOW",
     "evidence": "COMMUNITY",
@@ -39,33 +42,15 @@
     "affectsCompatibility": true,
     "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR", "name": "AppCaptureEnabled", "valueKind": "DWord" },
     "desired": { "equals": 0 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR", "name": "AppCaptureEnabled", "valueKind": "DWord", "value": "0" }]
-  },
-  {
-    "id": "gaming.allow-game-dvr-off",
-    "title": "AllowGameDVR=0 (política de captura)",
-    "description": "HKCU System GameDVR AllowGameDVR.",
-    "category": "gaming",
-    "risk": "LOW",
-    "evidence": "COMMUNITY",
-    "evidenceRefs": [],
-    "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["gaming"],
-    "requires": [],
-    "conflicts": [],
-    "requiresReboot": false,
-    "affectsSecurity": false,
-    "affectsUpdates": false,
-    "affectsCompatibility": true,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "System\\GameDVR", "name": "GameDVR_Enabled", "valueKind": "DWord" },
-    "desired": { "equals": 0 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "System\\GameDVR", "name": "GameDVR_Enabled", "valueKind": "DWord", "value": "0" }]
+    "ops": [
+      { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR", "name": "AppCaptureEnabled", "valueKind": "DWord", "value": "0" },
+      { "kind": "registry", "hive": "HKCU", "path": "System\\GameDVR", "name": "GameDVR_Enabled", "valueKind": "DWord", "value": "0" }
+    ]
   },
   {
     "id": "gaming.hags-on",
     "title": "Programación de GPU acelerada por hardware (HAGS)",
-    "description": "HwSchMode=2. COMMUNITY; requiere GPU reciente. Apply con evidencia COMMUNITY; no recomendado por defecto.",
+    "description": "HwSchMode=2. COMMUNITY; requiere GPU reciente. No recomendado por defecto.",
     "category": "gaming",
     "risk": "MEDIUM",
     "evidence": "COMMUNITY",
@@ -103,5 +88,30 @@
     "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\GameBar", "name": "ShowStartupPanel", "valueKind": "DWord" },
     "desired": { "equals": 0 },
     "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\GameBar", "name": "ShowStartupPanel", "valueKind": "DWord", "value": "0" }]
+  },
+  {
+    "id": "gaming.mouse-accel-off",
+    "title": "Aceleración del ratón desactivada",
+    "description": "MouseSpeed/Thresholds=0 (puntero 1:1). Preferido en muchos juegos; no es un boost de FPS.",
+    "category": "gaming",
+    "risk": "LOW",
+    "evidence": "COMMUNITY",
+    "evidenceRefs": [],
+    "minBuild": 22000,
+    "editions": ["*"],
+    "profiles": ["gaming"],
+    "requires": [],
+    "conflicts": [],
+    "requiresReboot": false,
+    "affectsSecurity": false,
+    "affectsUpdates": false,
+    "affectsCompatibility": true,
+    "detect": { "kind": "registry", "hive": "HKCU", "path": "Control Panel\\Mouse", "name": "MouseSpeed", "valueKind": "String" },
+    "desired": { "equals": "0" },
+    "ops": [
+      { "kind": "registry", "hive": "HKCU", "path": "Control Panel\\Mouse", "name": "MouseSpeed", "valueKind": "String", "value": "0" },
+      { "kind": "registry", "hive": "HKCU", "path": "Control Panel\\Mouse", "name": "MouseThreshold1", "valueKind": "String", "value": "0" },
+      { "kind": "registry", "hive": "HKCU", "path": "Control Panel\\Mouse", "name": "MouseThreshold2", "valueKind": "String", "value": "0" }
+    ]
   }
 ]

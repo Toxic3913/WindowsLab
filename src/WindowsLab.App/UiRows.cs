@@ -20,24 +20,13 @@ public sealed class PresetPick
     public required PresetEvaluation Eval { get; init; }
 
     public string Label => Eval.Total == 0
-        ? $"{Eval.Preset.Title}  (elige ítems)"
-        : $"{Eval.Preset.Title}  ({Eval.ReadyCount}/{Eval.Total} listos)";
-}
-
-public sealed class PresetItemRow
-{
-    public bool Include { get; set; }
-    public string Id { get; init; } = "";
-    public string Estado { get; init; } = "";
-    public string Title { get; init; } = "";
-    public string Actual { get; init; } = "";
-    public string Desired { get; init; } = "";
-    public string HowTo { get; init; } = "";
-    public string? SettingsUri { get; init; }
+        ? Eval.Preset.Title
+        : $"{Eval.Preset.Title}  ({Eval.ReadyCount}/{Eval.Total})";
 }
 
 public sealed class TweakRow
 {
+    public bool IsSelected { get; set; }
     public required string Id { get; init; }
     public required string Title { get; init; }
     public required string Category { get; init; }
@@ -47,6 +36,15 @@ public sealed class TweakRow
     public string? Desired { get; init; }
     public bool? Match { get; init; }
     public string? Status { get; init; }
+    public string MatchLabel => Match is true ? "✓" : Match is false ? "—" : "?";
+    public bool IsRecommended { get; init; }
+}
+
+public sealed class TweakCategoryGroup
+{
+    public required string Category { get; init; }
+    public required string Header { get; init; }
+    public required IReadOnlyList<TweakRow> Rows { get; init; }
 }
 
 public sealed class AppRow
@@ -77,11 +75,4 @@ public sealed class ChecklistRow
     public required ChecklistVerdict Verdict { get; init; }
     public required ChecklistPolicy Policy { get; init; }
     public bool CanActivate => Policy != ChecklistPolicy.NeverDisable;
-}
-
-public sealed class AdviceTip
-{
-    public required string Title { get; init; }
-    public required string Body { get; init; }
-    public required string Uri { get; init; }
 }
