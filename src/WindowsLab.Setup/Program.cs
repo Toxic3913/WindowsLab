@@ -99,6 +99,8 @@ internal static class Program
                 return 3;
             }
 
+            RegisterInstallation(dir);
+
             if (HasFlag(args, "--launch"))
             {
                 System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
@@ -146,6 +148,19 @@ internal static class Program
         var name = asm.GetManifestResourceNames().FirstOrDefault(n =>
             n.EndsWith(ResourceName, StringComparison.OrdinalIgnoreCase) || n == ResourceName);
         return name is null ? null : asm.GetManifestResourceStream(name);
+    }
+
+    internal static void RegisterInstallation(string installDir)
+    {
+        var uninstall = Path.Combine(installDir, "WindowsLab-Uninstall.exe");
+        if (!File.Exists(uninstall))
+        {
+            throw new InvalidOperationException(
+                "Falta WindowsLab-Uninstall.exe en el paquete. Vuelva a publicar con eng/publish.ps1.");
+        }
+
+        var version = InstallRegistration.ReadProductVersion(installDir);
+        InstallRegistration.Register(installDir, version, uninstall);
     }
 }
 
@@ -196,8 +211,8 @@ internal sealed class SetupWizardForm : Form
         {
             Dock = DockStyle.Fill,
             Text = es
-                ? "Asistente de instalación de WindowsLab\r\n\r\n• Windows 11 x64 (build ≥ 22000)\r\n• Self-contained (sin SDK)\r\n• 1.0: auditoría, configuración y apply con backup\r\n\r\nFirma: puede faltar Authenticode → SmartScreen/UAC pueden avisar.\r\nTelemetría: en Home/Pro el mínimo es Required (1), no cero.\r\n\r\nPulse Siguiente."
-                : "WindowsLab Setup Wizard\r\n\r\n• Windows 11 x64 (build ≥ 22000)\r\n• Self-contained (no SDK needed)\r\n• 1.0: audit, configure, and apply with backup\r\n\r\nSigning: Authenticode may be missing → SmartScreen/UAC may warn.\r\nTelemetry: on Home/Pro the floor is Required (1), not zero.\r\n\r\nClick Next.",
+                ? "Asistente de instalación de WindowsLab\r\n\r\n• Windows 11 x64 (build ≥ 22000)\r\n• Self-contained (sin SDK)\r\n• Aparece en Aplicaciones instaladas + desinstalador\r\n\r\nFirma: puede faltar Authenticode → SmartScreen/UAC pueden avisar.\r\n\r\nPulse Siguiente."
+                : "WindowsLab Setup Wizard\r\n\r\n• Windows 11 x64 (build ≥ 22000)\r\n• Self-contained (no SDK needed)\r\n• Shows in Installed apps + uninstaller\r\n\r\nSigning: Authenticode may be missing → SmartScreen/UAC may warn.\r\n\r\nClick Next.",
             Padding = new Padding(12)
         });
 
@@ -242,7 +257,7 @@ internal sealed class SetupWizardForm : Form
         installPanel.Controls.Add(new Label
         {
             Dock = DockStyle.Fill,
-            Text = "Pulse Instalar para copiar WindowsLab y crear accesos directos.\r\nNo se aplican tweaks ni se modifica el registro de Windows."
+            Text = "Pulse Instalar para copiar WindowsLab, registrar el desinstalador en Windows y crear accesos directos.\r\nNo se aplican tweaks automáticamente."
         });
         installPanel.Controls.Add(_status);
         install.Controls.Add(installPanel);
@@ -252,7 +267,7 @@ internal sealed class SetupWizardForm : Form
         {
             Dock = DockStyle.Fill,
             Padding = new Padding(12),
-            Text = "Instalación completada.\r\n\r\nPuede abrir WindowsLab desde el menú Inicio.\r\nEn la app: Recursos → DesktopInfo (overlay) o BGInfo oficial de Sysinternals."
+            Text = "Instalación completada.\r\n\r\nPuede abrir WindowsLab desde el menú Inicio.\r\nPara quitarlo: Configuración → Aplicaciones → WindowsLab, o «Desinstalar WindowsLab» en el menú Inicio."
         });
 
         _tabs.Appearance = TabAppearance.FlatButtons;
@@ -356,14 +371,29 @@ internal sealed class SetupWizardForm : Form
                     throw new InvalidOperationException("Falta WindowsLab.exe en el paquete.");
                 }
 
+                WindowsLab.Setup.Program.RegisterInstallation(dest);
+
                 if (_startMenu.Checked)
                 {
-                    CreateShortcut(exe, Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), "WindowsLab.lnk");
+                    InstallRegistration.CreateShortcut(
+                        exe,
+                        Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms),
+                        "WindowsLab.lnk",
+                        "WindowsLab");
+                    var uninstall = Path.Combine(dest, "WindowsLab-Uninstall.exe");
+                    if (File.Exists(uninstall))
+                    {
+                        InstallRegistration.CreateUninstallShortcut(uninstall, spanish: true);
+                    }
                 }
 
                 if (_desktopIcon.Checked)
                 {
-                    CreateShortcut(exe, Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory), "WindowsLab.lnk");
+                    InstallRegistration.CreateShortcut(
+                        exe,
+                        Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory),
+                        "WindowsLab.lnk",
+                        "WindowsLab");
                 }
             });
 
@@ -386,31 +416,6 @@ internal sealed class SetupWizardForm : Form
         {
             _progress.Visible = false;
             _next.Enabled = true;
-        }
-    }
-
-    private static void CreateShortcut(string targetExe, string folder, string linkName)
-    {
-        try
-        {
-            Directory.CreateDirectory(folder);
-            var link = Path.Combine(folder, linkName);
-            var shellType = Type.GetTypeFromProgID("WScript.Shell");
-            if (shellType is null)
-            {
-                return;
-            }
-
-            dynamic shell = Activator.CreateInstance(shellType)!;
-            var shortcut = shell.CreateShortcut(link);
-            shortcut.TargetPath = targetExe;
-            shortcut.WorkingDirectory = Path.GetDirectoryName(targetExe);
-            shortcut.Description = "WindowsLab 1.2";
-            shortcut.Save();
-        }
-        catch
-        {
-            // non-fatal
         }
     }
 }

@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <AssemblyName>WindowsLab-Uninstall</AssemblyName>
+    <RootNamespace>WindowsLab.Uninstall</RootNamespace>
+    <ApplicationManifest>..\WindowsLab.Setup\app.manifest</ApplicationManifest>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\WindowsLab.Setup\InstallRegistration.cs" Link="InstallRegistration.cs" />
+  </ItemGroup>
+</Project>

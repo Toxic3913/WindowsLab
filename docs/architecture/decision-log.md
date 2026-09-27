@@ -282,3 +282,15 @@ Do not change an architectural decision without a new dated entry.
 - **Reason:** Match production expectation without embedding a permanent token in the binary.
 - **Trade-offs:** Private repos need a token or a public repo; SmartScreen may still warn on unsigned Setup.
 
+## D030 — Add/Remove Programs + Uninstall.exe
+
+- **Date:** 2026-09-27
+- **Context:** C# `WindowsLab-Setup` extracted files and shortcuts but did not register in Windows Installed apps, so there was no official uninstall entry.
+- **Chosen:**
+  - Ship `WindowsLab-Uninstall.exe` in the portable payload (`eng/publish.ps1`).
+  - On install/update, write `HKLM\...\Uninstall\WindowsLab` (DisplayName, UninstallString, EstimatedSize, …).
+  - Uninstaller confirms, removes shortcuts + ARP key, relocates self to TEMP, deletes install folder.
+  - Does **not** delete `%LocalAppData%\WindowsLab` / `%ProgramData%\WindowsLab` by default (backups/settings).
+- **Reason:** Match normal Windows desktop product expectations.
+- **Trade-offs:** Elevated uninstall (UAC); leftover user/runtime data must be removed manually if desired.
+

@@ -44,6 +44,8 @@ Optional but recommended: Settings → Code security → enable **Secret scannin
 
 The app looks for a release asset whose name contains `Setup` and ends with `.exe` (e.g. `WindowsLab-Setup.exe`). Do not rename that file in the release.
 
+The portable payload must include **`WindowsLab-Uninstall.exe`**. Setup registers it in **Aplicaciones instaladas** (`HKLM\...\Uninstall\WindowsLab`).
+
 ## Local smoke test (optional)
 
 ```powershell
