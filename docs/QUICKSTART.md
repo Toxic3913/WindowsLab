@@ -28,6 +28,11 @@ Outputs under `artifacts/` (gitignored): portable zip, `WindowsLab-Setup.exe`.
 
 1. Open [Releases](https://github.com/Toxic3913/WindowsLab/releases).
 2. Download **Setup** (`WindowsLab-Setup.exe`) or the **portable zip**.
+3. Run Setup (UAC) or extract the zip and run `WindowsLab.exe`.
+4. Later: in the app **Más → Buscar e instalar actualización** (public repo = no token).
+
+Publishing new versions: [docs/UPDATES.md](UPDATES.md).
+
 3. Run the GUI unelevated. HKCU apply works without admin; HKLM needs **Allow system apply** (or a lab VM) and UAC (D020).
 
 WindowsLab does **not** use `irm | iex`. Prefer GitHub Releases with checksums when published.

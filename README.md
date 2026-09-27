@@ -10,7 +10,7 @@ Inspired by popular Windows utilities (e.g. [winutil](https://github.com/ChrisTi
 
 ## Quick start
 
-- Users: [docs/QUICKSTART.md](docs/QUICKSTART.md) · [Releases](https://github.com/Toxic3913/WindowsLab/releases)
+- Users: [docs/QUICKSTART.md](docs/QUICKSTART.md) · [Releases](https://github.com/Toxic3913/WindowsLab/releases) · [Updates](docs/UPDATES.md)
 - From source:
 
 ```text
