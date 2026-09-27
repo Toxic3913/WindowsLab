@@ -1,3 +1,5 @@
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using WindowsLab.Core;
 using WindowsLab.Tweaks;
 
@@ -24,9 +26,25 @@ public sealed class PresetPick
         : $"{Eval.Preset.Title}  ({Eval.ReadyCount}/{Eval.Total})";
 }
 
-public sealed class TweakRow
+public sealed class TweakRow : INotifyPropertyChanged
 {
-    public bool IsSelected { get; set; }
+    private bool _isSelected;
+
+    public bool IsSelected
+    {
+        get => _isSelected;
+        set
+        {
+            if (_isSelected == value)
+            {
+                return;
+            }
+
+            _isSelected = value;
+            OnPropertyChanged();
+        }
+    }
+
     public required string Id { get; init; }
     public required string Title { get; init; }
     public required string Category { get; init; }
@@ -37,7 +55,15 @@ public sealed class TweakRow
     public bool? Match { get; init; }
     public string? Status { get; init; }
     public string MatchLabel => Match is true ? "✓" : Match is false ? "—" : "?";
+    public string StateText => $"{Actual ?? "?"} → {Desired ?? "?"}";
+    public string DetailTip => $"{Id} · {Evidence} · {Risk}";
     public bool IsRecommended { get; init; }
+    public bool IsGap => Match is not true;
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    private void OnPropertyChanged([CallerMemberName] string? name = null) =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
 
 public sealed class TweakCategoryGroup

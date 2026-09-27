@@ -1,0 +1,86 @@
+[
+    {
+        "id":  "app.backup.duplicati",
+        "title":  "Duplicati",
+        "description":  "Copias cifradas a disco/nube (gratis).",
+        "wingetId":  "Duplicati.Duplicati",
+        "category":  "backup",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://www.duplicati.com/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.9,
+                     "telemetry":  0.9,
+                     "security":  0.9,
+                     "performance":  0.7,
+                     "ecosystem":  0.7
+                 },
+        "profiles":  [
+                         "balanced",
+                         "developer",
+                         "virtualization"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "Duplicati"
+                        ]
+    },
+    {
+        "id":  "app.backup.freefilesync",
+        "title":  "FreeFileSync",
+        "description":  "Sincronizar carpetas / espejo local o NAS.",
+        "wingetId":  "FreeFileSync.FreeFileSync",
+        "category":  "backup",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://freefilesync.org/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.85,
+                     "telemetry":  0.9,
+                     "security":  0.75,
+                     "performance":  0.8,
+                     "ecosystem":  0.7
+                 },
+        "profiles":  [
+                         "balanced",
+                         "developer",
+                         "virtualization"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "FreeFileSync"
+                        ]
+    },
+    {
+        "id":  "app.backup.kopia",
+        "title":  "Kopia",
+        "description":  "Backup incremental cifrado (UI).",
+        "wingetId":  "Kopia.KopiaUI",
+        "category":  "backup",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://kopia.io/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.9,
+                     "telemetry":  0.9,
+                     "security":  0.9,
+                     "performance":  0.8,
+                     "ecosystem":  0.65
+                 },
+        "profiles":  [
+                         "developer",
+                         "virtualization",
+                         "balanced"
+                     ],
+        "scopePreference":  "user",
+        "detectNames":  [
+                            "Kopia"
+                        ]
+    }
+]

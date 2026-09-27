@@ -50,7 +50,7 @@ public static class CliApp
 
     public const string HelpText =
         """
-        WindowsLab CLI — 1.1.0 (audit · stacks · apply · live · apps)
+        WindowsLab CLI — 1.2.0 (audit · stacks · apply · live · apps · workloads)
         Ejecutable: windowslab-cli.exe  (no confundir con WindowsLab.exe = GUI)
 
         Uso:
@@ -59,13 +59,15 @@ public static class CliApp
           windowslab-cli audit --os
           windowslab-cli audit --output json
           windowslab-cli live [--output json]
+          windowslab-cli workload list [--output json]
+          windowslab-cli workload stop <id> --yes
           windowslab-cli tweak list|detect|simulate <id>
           windowslab-cli tweak apply <id> --lab-apply [--dry-run]
           windowslab-cli tweak apply <id> --apply [--yes] [--i-am-on-lab-vm] [--i-accept-security-impact] [--dry-run]
           windowslab-cli tweak rollback --backup-id <id> [--i-am-on-lab-vm]
           windowslab-cli backup list [--output json]
           windowslab-cli recommend [--profile …]
-          windowslab-cli app list [--category browser|tool]
+          windowslab-cli app list [--category browser|tool|…]
           windowslab-cli app recommend [--profile …]
           windowslab-cli app install <id> --yes
           windowslab-cli checklist
@@ -76,6 +78,7 @@ public static class CliApp
         System apply on host needs AllowSystemApply or --i-am-on-lab-vm (D020).
         Security-affecting tweaks (D021) also need --i-accept-security-impact.
         live = one-shot CPU/RAM/disk + top processes (D022).
+        workload stop = curated Steam/Riot/Overwolf/… runtime stop (D028); never Defender/Search/SysMain.
 
         Código: D:\WindowsLab    Programa: C:\Program Files\WindowsLab
         """;
@@ -161,6 +164,11 @@ public static class CliApp
             }
 
             return ExitCodes.Ok;
+        }
+
+        if (EqualsCmd(args, 0, "workload"))
+        {
+            return RunWorkload(args, stdout, stderr, json);
         }
 
         if (EqualsCmd(args, 0, "tweak") && EqualsCmd(args, 1, "apply"))
@@ -710,6 +718,103 @@ public static class CliApp
         }
 
         stderr.WriteLine("Unknown command. Use windowslab-cli --help.");
+        return ExitCodes.Generic;
+    }
+
+    private static int RunWorkload(IReadOnlyList<string> args, TextWriter stdout, TextWriter stderr, bool json)
+    {
+        var dir = CatalogLocator.FindWorkloadsDirectory();
+        if (dir is null)
+        {
+            stderr.WriteLine("No catalog/workloads found.");
+            return ExitCodes.Generic;
+        }
+
+        IReadOnlyList<ExternalWorkloadDefinition> catalog;
+        try
+        {
+            catalog = ExternalWorkloadCatalog.LoadDirectory(dir);
+        }
+        catch (Exception ex)
+        {
+            stderr.WriteLine(ex.Message);
+            return ExitCodes.Generic;
+        }
+
+        if (EqualsCmd(args, 1, "list") || args.Count == 1)
+        {
+            var rows = catalog.Select(w =>
+            {
+                var s = ExternalWorkloadController.Detect(w);
+                return new
+                {
+                    w.Id,
+                    w.Title,
+                    s.Present,
+                    s.Active,
+                    s.ProcessCount,
+                    workingSetMb = Math.Round(s.WorkingSetBytes / (1024d * 1024), 1),
+                    s.RunningProcesses,
+                    s.RunningServices,
+                    s.Summary
+                };
+            }).ToArray();
+
+            if (json)
+            {
+                WriteJson(stdout, "workload list", ExitCodes.Ok, rows);
+            }
+            else
+            {
+                foreach (var r in rows)
+                {
+                    stdout.WriteLine($"{(r.Active ? "ACTIVE" : r.Present ? "idle  " : "absent")}\t{r.Id}\t{r.Title}\t{r.Summary}");
+                }
+            }
+
+            return ExitCodes.Ok;
+        }
+
+        if (EqualsCmd(args, 1, "stop"))
+        {
+            if (!HasFlag(args, "--yes"))
+            {
+                stderr.WriteLine("workload stop requires --yes");
+                return ExitCodes.PolicyBlocked;
+            }
+
+            if (args.Count < 3 || args[2].StartsWith('-'))
+            {
+                stderr.WriteLine("Usage: windowslab-cli workload stop <id> --yes");
+                return ExitCodes.Generic;
+            }
+
+            var id = args[2];
+            var def = catalog.FirstOrDefault(w => string.Equals(w.Id, id, StringComparison.OrdinalIgnoreCase));
+            if (def is null)
+            {
+                stderr.WriteLine("Unknown workload id: " + id);
+                return ExitCodes.Generic;
+            }
+
+            var result = ExternalWorkloadController.Stop(def);
+            if (json)
+            {
+                WriteJson(stdout, "workload stop", result.Ok ? ExitCodes.Ok : ExitCodes.Generic, result);
+            }
+            else
+            {
+                stdout.WriteLine($"{(result.Ok ? "ok" : "fail")}\tproc={result.ProcessesStopped}\tsvc={result.ServicesStopped}");
+                foreach (var m in result.Messages)
+                {
+                    stdout.WriteLine("  " + m);
+                }
+            }
+
+            return result.Ok ? ExitCodes.Ok : ExitCodes.Generic;
+        }
+
+        stderr.WriteLine("Usage: windowslab-cli workload list|stop <id> --yes");
         return ExitCodes.Generic;
     }
 

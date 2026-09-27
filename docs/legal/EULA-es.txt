@@ -1,8 +1,8 @@
-WindowsLab — Contrato de licencia (1.0)
+WindowsLab — Contrato de licencia (1.2)
 =======================================
 
 Producto: WindowsLab (auditoría, configuración y mantenimiento de Windows 11)
-Versión: 1.1.0
+Versión: 1.2.0
 Editor: WindowsLab / operador del repositorio
 
 AL INSTALAR O USAR ESTE SOFTWARE USTED ACEPTA LO SIGUIENTE:

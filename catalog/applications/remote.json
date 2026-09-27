@@ -1,0 +1,113 @@
+[
+    {
+        "id":  "app.remote.rustdesk",
+        "title":  "RustDesk",
+        "description":  "Escritorio remoto open-source (teletrabajo).",
+        "wingetId":  "RustDesk.RustDesk",
+        "category":  "remote",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://rustdesk.com/"
+                         ],
+        "risk":  "MEDIUM",
+        "axes":  {
+                     "privacy":  0.8,
+                     "telemetry":  0.85,
+                     "security":  0.75,
+                     "performance":  0.8,
+                     "ecosystem":  0.7
+                 },
+        "profiles":  [
+                         "balanced",
+                         "developer",
+                         "virtualization"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "RustDesk"
+                        ]
+    },
+    {
+        "id":  "app.remote.winscp",
+        "title":  "WinSCP",
+        "description":  "SFTP/SCP con UI (servidores y VPS).",
+        "wingetId":  "WinSCP.WinSCP",
+        "category":  "remote",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://winscp.net/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.85,
+                     "telemetry":  0.9,
+                     "security":  0.85,
+                     "performance":  0.8,
+                     "ecosystem":  0.75
+                 },
+        "profiles":  [
+                         "developer",
+                         "virtualization",
+                         "balanced"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "WinSCP"
+                        ]
+    },
+    {
+        "id":  "app.remote.putty",
+        "title":  "PuTTY",
+        "description":  "SSH/Telnet clásico.",
+        "wingetId":  "PuTTY.PuTTY",
+        "category":  "remote",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://www.chiark.greenend.org.uk/~sgtatham/putty/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.9,
+                     "telemetry":  0.95,
+                     "security":  0.85,
+                     "performance":  0.8,
+                     "ecosystem":  0.7
+                 },
+        "profiles":  [
+                         "developer",
+                         "virtualization",
+                         "balanced"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "PuTTY"
+                        ]
+    },
+    {
+        "id":  "app.remote.wireshark",
+        "title":  "Wireshark",
+        "description":  "Captura y análisis de red.",
+        "wingetId":  "WiresharkFoundation.Wireshark",
+        "category":  "remote",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://www.wireshark.org/"
+                         ],
+        "risk":  "MEDIUM",
+        "axes":  {
+                     "privacy":  0.8,
+                     "telemetry":  0.85,
+                     "security":  0.85,
+                     "performance":  0.75,
+                     "ecosystem":  0.8
+                 },
+        "profiles":  [
+                         "developer",
+                         "virtualization"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "Wireshark"
+                        ]
+    }
+]

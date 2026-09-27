@@ -1,0 +1,115 @@
+[
+    {
+        "id":  "app.security.keepassxc",
+        "title":  "KeePassXC",
+        "description":  "Gestor de contraseñas offline (gratis, open-source).",
+        "wingetId":  "KeePassXCTeam.KeePassXC",
+        "category":  "security",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://keepassxc.org/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.95,
+                     "telemetry":  0.95,
+                     "security":  0.95,
+                     "performance":  0.75,
+                     "ecosystem":  0.7
+                 },
+        "profiles":  [
+                         "balanced",
+                         "developer",
+                         "virtualization",
+                         "gaming"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "KeePassXC"
+                        ]
+    },
+    {
+        "id":  "app.security.bitwarden",
+        "title":  "Bitwarden",
+        "description":  "Gestor de contraseñas con sync (gratis en nube propia/hosteada).",
+        "wingetId":  "Bitwarden.Bitwarden",
+        "category":  "security",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://bitwarden.com/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.85,
+                     "telemetry":  0.75,
+                     "security":  0.9,
+                     "performance":  0.75,
+                     "ecosystem":  0.85
+                 },
+        "profiles":  [
+                         "balanced",
+                         "developer",
+                         "virtualization"
+                     ],
+        "scopePreference":  "user",
+        "detectNames":  [
+                            "Bitwarden"
+                        ]
+    },
+    {
+        "id":  "app.security.wireguard",
+        "title":  "WireGuard",
+        "description":  "VPN moderna y ligera (cliente).",
+        "wingetId":  "WireGuard.WireGuard",
+        "category":  "security",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://www.wireguard.com/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.9,
+                     "telemetry":  0.9,
+                     "security":  0.9,
+                     "performance":  0.9,
+                     "ecosystem":  0.7
+                 },
+        "profiles":  [
+                         "balanced",
+                         "developer",
+                         "virtualization"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "WireGuard"
+                        ]
+    },
+    {
+        "id":  "app.security.protonvpn",
+        "title":  "Proton VPN",
+        "description":  "VPN con plan gratuito limitado.",
+        "wingetId":  "Proton.ProtonVPN",
+        "category":  "security",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://protonvpn.com/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.85,
+                     "telemetry":  0.8,
+                     "security":  0.85,
+                     "performance":  0.75,
+                     "ecosystem":  0.75
+                 },
+        "profiles":  [
+                         "balanced",
+                         "developer",
+                         "virtualization"
+                     ],
+        "scopePreference":  "user",
+        "detectNames":  [
+                            "Proton VPN"
+                        ]
+    }
+]

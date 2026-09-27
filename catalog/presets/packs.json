@@ -22,8 +22,10 @@
     "checklistIds": ["account.local", "telemetry.allow-required"],
     "applicationIds": [
       "app.browser.edge",
-      "app.tool.libreoffice",
-      "app.tool.7zip"
+      "app.office.libreoffice",
+      "app.tool.7zip",
+      "app.security.keepassxc",
+      "app.tool.everything"
     ],
     "steps": [
       {
@@ -62,7 +64,10 @@
       "app.tool.git",
       "app.tool.pwsh",
       "app.tool.7zip",
-      "app.browser.firefox"
+      "app.browser.firefox",
+      "app.dev.vscode",
+      "app.tool.terminal",
+      "app.system.hwinfo"
     ],
     "steps": [
       {
@@ -74,6 +79,42 @@
         "title": "Allow system apply",
         "howTo": "En Ajustes activa «Permitir apply de sistema» solo en la VM de lab, o usa --i-am-on-lab-vm en CLI.",
         "settingsUri": null
+      }
+    ]
+  },
+  {
+    "id": "work.focus",
+    "order": 7,
+    "title": "Trabajo / VM (pausar Xbox)",
+    "summary": "Pausa servicios Xbox/Gaming opcionales para liberar recursos al teletrabajar o usar VMs. Puede romper Game Bar y juegos Store/Game Pass. Reactiva (rollback o reaplicar al revés) cuando vuelvas a jugar. Requiere apply de sistema (D020). No toca Defender/SysMain/Search.",
+    "settingsUri": "ms-settings:gaming-gamebar",
+    "tweakIds": [
+      "gaming.game-dvr-off",
+      "gaming.gamebar-tips-off",
+      "gaming.xbox-auth-disabled",
+      "gaming.xbox-net-api-disabled",
+      "gaming.xbox-game-save-disabled",
+      "power.best-performance",
+      "taskbar.widgets-off"
+    ],
+    "checklistIds": [],
+    "applicationIds": [
+      "app.security.keepassxc",
+      "app.system.hwinfo",
+      "app.tool.everything",
+      "app.backup.duplicati",
+      "app.remote.rustdesk"
+    ],
+    "steps": [
+      {
+        "title": "Antes de pausar Xbox",
+        "howTo": "Cierra juegos y Xbox apps. Si usas Game Pass a diario, no apliques Gaming Services (HIGH) — el montaje marca solo Auth/Net/Save por defecto; revisa checks.",
+        "settingsUri": null
+      },
+      {
+        "title": "Volver a jugar",
+        "howTo": "Usa Respaldos → rollback del apply, o pon los servicios en manual/auto desde services.msc. El montaje «Juegos» no reactiva estos servicios.",
+        "settingsUri": "ms-settings:gaming-gamemode"
       }
     ]
   },
@@ -164,7 +205,13 @@
       "gaming.mouse-accel-off",
       "keyboard.stickykeys-hotkey-off"
     ],
-    "checklistIds": ["apps.gpu", "apps.steam"]
+    "checklistIds": ["apps.gpu", "apps.steam"],
+    "applicationIds": [
+      "app.gaming.steam",
+      "app.gaming.discord",
+      "app.media.obs",
+      "app.system.hwinfo"
+    ]
   },
   {
     "id": "developer",
@@ -186,7 +233,15 @@
       "system.verbose-logon",
       "taskbar.end-task"
     ],
-    "checklistIds": ["apps.git", "apps.dotnet", "apps.cursor", "apps.pwsh"]
+    "checklistIds": ["apps.git", "apps.dotnet", "apps.cursor", "apps.pwsh"],
+    "applicationIds": [
+      "app.tool.git",
+      "app.tool.pwsh",
+      "app.dev.vscode",
+      "app.tool.terminal",
+      "app.dev.gh",
+      "app.tool.everything"
+    ]
   },
   {
     "id": "offline",

@@ -1,0 +1,118 @@
+[
+    {
+        "id":  "app.system.hwinfo",
+        "title":  "HWiNFO",
+        "description":  "Sensores, temperatura, inventario hardware. Lo usas en COMPARTIDO.",
+        "wingetId":  "REALiX.HWiNFO",
+        "category":  "system",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://www.hwinfo.com/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.75,
+                     "telemetry":  0.7,
+                     "security":  0.8,
+                     "performance":  0.9,
+                     "ecosystem":  0.8
+                 },
+        "profiles":  [
+                         "balanced",
+                         "developer",
+                         "gaming",
+                         "virtualization"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "HWiNFO"
+                        ]
+    },
+    {
+        "id":  "app.system.crystaldiskinfo",
+        "title":  "CrystalDiskInfo",
+        "description":  "Salud S.M.A.R.T. de discos.",
+        "wingetId":  "CrystalDewWorld.CrystalDiskInfo",
+        "category":  "system",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://crystalmark.info/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.85,
+                     "telemetry":  0.9,
+                     "security":  0.8,
+                     "performance":  0.75,
+                     "ecosystem":  0.7
+                 },
+        "profiles":  [
+                         "balanced",
+                         "developer",
+                         "gaming",
+                         "virtualization"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "CrystalDiskInfo"
+                        ]
+    },
+    {
+        "id":  "app.system.cpuz",
+        "title":  "CPU-Z",
+        "description":  "Identidad CPU/placa/RAM rápida.",
+        "wingetId":  "CPUID.CPU-Z",
+        "category":  "system",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://www.cpuid.com/softwares/cpu-z.html"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.8,
+                     "telemetry":  0.85,
+                     "security":  0.7,
+                     "performance":  0.75,
+                     "ecosystem":  0.75
+                 },
+        "profiles":  [
+                         "balanced",
+                         "developer",
+                         "gaming",
+                         "virtualization"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "CPU-Z"
+                        ]
+    },
+    {
+        "id":  "app.system.sysinternals",
+        "title":  "Sysinternals Suite",
+        "description":  "Process Explorer, Autoruns, Procmon (Microsoft).",
+        "wingetId":  "Microsoft.Sysinternals.Suite",
+        "category":  "system",
+        "evidence":  "OFFICIAL",
+        "evidenceRefs":  [
+                             "https://learn.microsoft.com/sysinternals/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.75,
+                     "telemetry":  0.7,
+                     "security":  0.9,
+                     "performance":  0.8,
+                     "ecosystem":  0.85
+                 },
+        "profiles":  [
+                         "developer",
+                         "virtualization",
+                         "balanced"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "Sysinternals",
+                            "Process Explorer"
+                        ]
+    }
+]

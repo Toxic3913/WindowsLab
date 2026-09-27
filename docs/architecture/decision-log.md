@@ -247,3 +247,27 @@ Do not change an architectural decision without a new dated entry.
 - **Reason:** Keep evidence-backed HKCU/HKLM ops; borrow useful *ideas*, never their JSON/scripts.
 - **Trade-offs:** COMMUNITY items stay out of default recommendations; several HKLM adds need D020.
 
+## D027 — Apps catalog for IT telework + optional Xbox pause
+
+- **Date:** 2026-09-25
+- **Context:** Operator wants a fuller free/winget app set (work, study, gaming, telework) informed by local tool folders (`Herramientas-W`, `VM\COMPARTIDO`) plus a way to know and optionally pause Xbox/Gaming services when using VMs.
+- **Chosen:**
+  - Expand `catalog/applications/` by domain (system/security/backup/developer/virt/remote/office/media/gaming) — winget-only, no WinUtil import.
+  - Preset **`work.focus`** (“Trabajo / VM”) selects Xbox Auth/Net/Save disable + Game DVR off; GamingServices* tweaks exist as optional HIGH checks, not in the default montage.
+  - Home mode button maps to `work.focus` with profile Virtualization.
+  - Still never mutate DiagTrack / SysMain / WSearch / Defender family.
+- **Reason:** Match real workstation needs without mass-disabling Xbox by default (see gaming-module.md).
+- **Trade-offs:** Pausing Xbox breaks Game Bar / some Store titles until rollback; installs still need user confirm / `--yes`.
+
+## D028 — Curated external workload stop (real PC)
+
+- **Date:** 2026-09-27
+- **Context:** On PC-HUGO, Steam / Riot Client / Overwolf / LibreOffice leave services and heavy helpers running when idle. Operator wants detect + stop buttons (not permanent disable by default) for telework / VM focus, without a generic process killer.
+- **Chosen:**
+  - `catalog/workloads/*.json` allowlist (process + service names).
+  - `ExternalWorkloadController` runtime stop (`CloseMainWindow`/`Kill` + `ServiceController.Stop`) with hard blocks for DiagTrack/SysMain/WSearch/Defender and critical system processes.
+  - UI on **Más → Cargas externas**; CLI `workload list|stop --yes`.
+  - Performance page stays sample-only (D022); this is an explicit operator action with confirmation.
+- **Reason:** Free RAM/CPU on daily drivers without mass-disabling Xbox at boot or killing protected OS services.
+- **Trade-offs:** Some services need elevation; apps may respawn (Steam auto-start); Vanguard stop is MEDIUM and separate from Riot Client.
+

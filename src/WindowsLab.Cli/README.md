@@ -1,10 +1,13 @@
 # WindowsLab.Cli
 
-Phase **1**. Console host `windowslab-cli.exe` (distinct from GUI `WindowsLab.exe` on case-insensitive Windows).
+Production CLI host: `windowslab-cli.exe` (distinct from GUI `WindowsLab.exe` on case-insensitive Windows).
 
 ```text
-windowslab --help
-windowslab audit --os
+windowslab-cli --help
+windowslab-cli audit --os
+windowslab-cli live --output json
+windowslab-cli workload list
+windowslab-cli app list
 ```
 
-Read-only. No UAC prompt. Later commands stay stubs until their phase.
+Prefer `--output json` for scripting. Mutating commands require explicit flags (`--lab-apply` / `--apply` / `--yes`).

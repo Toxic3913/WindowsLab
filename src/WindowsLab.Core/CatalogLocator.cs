@@ -14,6 +14,9 @@ public static class CatalogLocator
     public static string? FindApplicationsDirectory(string? startDirectory = null) =>
         FindCatalogSubdirectory("applications", startDirectory);
 
+    public static string? FindWorkloadsDirectory(string? startDirectory = null) =>
+        FindCatalogSubdirectory("workloads", startDirectory);
+
     private static string? FindCatalogSubdirectory(string name, string? startDirectory)
     {
         var current = new DirectoryInfo(startDirectory ?? AppContext.BaseDirectory);

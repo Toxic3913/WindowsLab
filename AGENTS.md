@@ -1,6 +1,6 @@
 # AGENTS.md
 
-WindowsLab is **1.1.0** (audit + configure + apply with backup + live Performance). Source lives in `D:\WindowsLab`. Runtime data: `%ProgramData%\WindowsLab`, `%LocalAppData%\WindowsLab`.
+WindowsLab is **1.2.0** (audit + configure + apply with backup + live Performance + external workloads). Source lives in `D:\WindowsLab`. Runtime data: `%ProgramData%\WindowsLab`, `%LocalAppData%\WindowsLab`.
 
 Before coding:
 
@@ -16,6 +16,6 @@ Before coding:
 10. Do not run `vssadmin` silently on the host. Restore points may be attempted by the elevated Worker on the lab VM (D020).
 11. Prefer cheap models for boilerplate, medium for Windows internals, independent review for tweak handlers.
 
-1.0 scope: Core + Audit + Tweaks + Backup + Worker + Recommendations + Applications + stacks (empresa/pruebas) + dual theme + Cli + WPF App (5 destinations: Inicio/Ajustes/Apps/Rendimiento/Más, D024) + Performance live dashboard (D022/D023). Lab `--lab-apply` = HKCU. `--apply` / GUI Apply = system pipeline when allowed. No WinUI yet.
+1.0 scope: Core + Audit + Tweaks + Backup + Worker + Recommendations + Applications + stacks (empresa/pruebas) + dual theme + Cli + WPF App (5 destinations: Inicio/Ajustes/Apps/Rendimiento/Más, D024) + Performance live dashboard (D022/D023) + curated external workload stop (D028). Lab `--lab-apply` = HKCU. `--apply` / GUI Apply = system pipeline when allowed. No WinUI yet.
 
-CLI: prefer `--output json`. Executable is `windowslab-cli.exe` (never `windowslab.exe`). `live [--output json]` metrics. `tweak apply` without `--lab-apply` or `--apply` → exit 13. `preset apply` requires `--yes`. `app install` requires `--yes`. `backup list`, `tweak rollback --backup-id` available.
+CLI: prefer `--output json`. Executable is `windowslab-cli.exe` (never `windowslab.exe`). `live [--output json]` metrics. `workload list|stop --yes`. `tweak apply` without `--lab-apply` or `--apply` → exit 13. `preset apply` requires `--yes`. `app install` requires `--yes`. `backup list`, `tweak rollback --backup-id` available.

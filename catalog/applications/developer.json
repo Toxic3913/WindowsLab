@@ -1,0 +1,141 @@
+[
+    {
+        "id":  "app.dev.vscode",
+        "title":  "Visual Studio Code",
+        "description":  "Editor/IDE ligero con extensiones.",
+        "wingetId":  "Microsoft.VisualStudioCode",
+        "category":  "developer",
+        "evidence":  "OFFICIAL",
+        "evidenceRefs":  [
+                             "https://code.visualstudio.com/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.55,
+                     "telemetry":  0.45,
+                     "security":  0.8,
+                     "performance":  0.8,
+                     "ecosystem":  0.95
+                 },
+        "profiles":  [
+                         "developer",
+                         "balanced",
+                         "virtualization"
+                     ],
+        "scopePreference":  "user",
+        "detectNames":  [
+                            "Microsoft Visual Studio Code",
+                            "Visual Studio Code"
+                        ]
+    },
+    {
+        "id":  "app.dev.gh",
+        "title":  "GitHub CLI",
+        "description":  "gh: PRs, issues y auth desde terminal.",
+        "wingetId":  "GitHub.cli",
+        "category":  "developer",
+        "evidence":  "OFFICIAL",
+        "evidenceRefs":  [
+                             "https://cli.github.com/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.7,
+                     "telemetry":  0.65,
+                     "security":  0.85,
+                     "performance":  0.85,
+                     "ecosystem":  0.9
+                 },
+        "profiles":  [
+                         "developer",
+                         "virtualization"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "GitHub CLI"
+                        ]
+    },
+    {
+        "id":  "app.dev.node",
+        "title":  "Node.js LTS",
+        "description":  "Runtime JS LTS para front/tooling.",
+        "wingetId":  "OpenJS.NodeJS.LTS",
+        "category":  "developer",
+        "evidence":  "OFFICIAL",
+        "evidenceRefs":  [
+                             "https://nodejs.org/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.7,
+                     "telemetry":  0.7,
+                     "security":  0.8,
+                     "performance":  0.8,
+                     "ecosystem":  0.9
+                 },
+        "profiles":  [
+                         "developer",
+                         "virtualization"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "Node.js"
+                        ]
+    },
+    {
+        "id":  "app.dev.python",
+        "title":  "Python 3.12",
+        "description":  "Python oficial (winget LTS-ish 3.12).",
+        "wingetId":  "Python.Python.3.12",
+        "category":  "developer",
+        "evidence":  "OFFICIAL",
+        "evidenceRefs":  [
+                             "https://www.python.org/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.75,
+                     "telemetry":  0.75,
+                     "security":  0.8,
+                     "performance":  0.8,
+                     "ecosystem":  0.9
+                 },
+        "profiles":  [
+                         "developer",
+                         "virtualization",
+                         "balanced"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "Python 3.12"
+                        ]
+    },
+    {
+        "id":  "app.dev.dotnet8",
+        "title":  ".NET SDK 8",
+        "description":  "SDK .NET 8 para apps y CLI.",
+        "wingetId":  "Microsoft.DotNet.SDK.8",
+        "category":  "developer",
+        "evidence":  "OFFICIAL",
+        "evidenceRefs":  [
+                             "https://dotnet.microsoft.com/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.7,
+                     "telemetry":  0.55,
+                     "security":  0.85,
+                     "performance":  0.85,
+                     "ecosystem":  0.9
+                 },
+        "profiles":  [
+                         "developer",
+                         "virtualization"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            ".NET SDK 8",
+                            "Microsoft .NET SDK 8"
+                        ]
+    }
+]

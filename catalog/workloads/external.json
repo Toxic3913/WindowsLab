@@ -1,0 +1,74 @@
+[
+  {
+    "id": "workload.steam",
+    "title": "Steam",
+    "description": "Cliente Steam y Steam Client Service. Detener cuando no juegues libera RAM/CPU (steamwebhelper suele pesar mucho).",
+    "risk": "LOW",
+    "processNames": ["steam", "steamwebhelper", "steamservice", "GameOverlayUI"],
+    "serviceNames": ["Steam Client Service"]
+  },
+  {
+    "id": "workload.riot",
+    "title": "Riot Client",
+    "description": "Riot Client (LoL / Valorant launcher). No detiene Vanguard (vgc) aquí: usa el botón Vanguard si quieres.",
+    "risk": "LOW",
+    "processNames": ["RiotClientServices", "RiotClientCrashHandler", "RiotClientUx", "LeagueClient", "LeagueClientUx"],
+    "serviceNames": []
+  },
+  {
+    "id": "workload.vanguard",
+    "title": "Riot Vanguard (vgc)",
+    "description": "Anti-cheat Vanguard (servicio vgc). Solo cuando no juegues Valorant. Puede pedir elevación. No toca el driver vgk.",
+    "risk": "MEDIUM",
+    "processNames": ["vgc"],
+    "serviceNames": ["vgc"]
+  },
+  {
+    "id": "workload.overwolf",
+    "title": "Overwolf",
+    "description": "Overlays Overwolf (stats en Riot, etc.). Pesado en segundo plano; detener fuera de partidas.",
+    "risk": "LOW",
+    "processNames": ["Overwolf", "OverwolfBrowser", "OverwolfHelper", "OverwolfHelper64", "OverwolfStore"],
+    "serviceNames": ["OverwolfUpdater"]
+  },
+  {
+    "id": "workload.libreoffice",
+    "title": "LibreOffice",
+    "description": "Procesos soffice y servicio de mantenimiento. Útil cerrar tras editar docs.",
+    "risk": "LOW",
+    "processNames": ["soffice", "soffice.bin", "scalc", "swriter", "simpress"],
+    "serviceNames": ["LibreOfficeMaintenance"]
+  },
+  {
+    "id": "workload.discord",
+    "title": "Discord",
+    "description": "Discord y helper de sistema. Overlay/voz en segundo plano.",
+    "risk": "LOW",
+    "processNames": ["Discord", "DiscordPTB", "DiscordCanary"],
+    "serviceNames": ["DiscordSystemHelper"]
+  },
+  {
+    "id": "workload.epic",
+    "title": "Epic Games Launcher",
+    "description": "Launcher Epic en segundo plano.",
+    "risk": "LOW",
+    "processNames": ["EpicGamesLauncher", "EpicWebHelper", "EpicOnlineServicesUserHelper"],
+    "serviceNames": []
+  },
+  {
+    "id": "workload.ubisoft",
+    "title": "Ubisoft Connect",
+    "description": "Ubisoft Connect / UPC elevation service.",
+    "risk": "LOW",
+    "processNames": ["upc", "UbisoftGameLauncher", "UbisoftGameLauncher64"],
+    "serviceNames": ["UpcElevationService"]
+  },
+  {
+    "id": "workload.xbox-gaming",
+    "title": "Xbox Gaming Services",
+    "description": "Detiene GamingServices en runtime (no cambia el Start type). Para desactivar al arranque usa el montaje Trabajo/VM. Puede pedir elevación.",
+    "risk": "MEDIUM",
+    "processNames": ["GamingServices", "GamingServicesNet"],
+    "serviceNames": ["GamingServices", "GamingServicesNet"]
+  }
+]

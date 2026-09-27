@@ -31,7 +31,7 @@ Inventory gaming-related OS/GPU settings and measure **frame time**, not market 
 | DirectStorage | `fsutil bypassIo state`; game must opt in | never “enable DS” OS tweak | OFFICIAL |
 | Timer resolution | ETW of `timeBeginPeriod` requesters | **never** force 0.5 ms globally | OFFICIAL per-process since 2004; MYTH as FPS pack |
 | Fullscreen optimizations | per-app Graphics / compatibility | detect; disable only for proven regression | OFFICIAL UI; global `GameDVR_FSEBehavior` UNVERIFIED |
-| Xbox services | service list | do not mass-disable | may break Game Bar |
+| Xbox services | service list | **optional** curated disable via `work.focus` / Ajustes (Auth, Net, Save; GamingServices = HIGH opt-in). Do not mass-disable by default | may break Game Bar / Game Pass |
 | GPU scheduling | see HAGS | | |
 | Power plan | powercfg | Gaming profile may **recommend keeping** current Máximo rendimiento; do not assume SCHEME_MIN is better than a custom GUID (this host uses custom) | |
 | Overlays | process list: Discord, NVIDIA App, Xbox Game Bar | recommend measure with/without | STRONG as interference hypothesis |

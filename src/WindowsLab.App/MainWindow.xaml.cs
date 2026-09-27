@@ -244,6 +244,8 @@ public partial class MainWindow : Window
         BtnModeOptimizedSub.Text = Loc.T("mode.optimized.sub");
         BtnModeDevTitle.Text = Loc.T("mode.dev");
         BtnModeDevSub.Text = Loc.T("mode.dev.sub");
+        BtnModeWorkTitle.Text = Loc.T("mode.work");
+        BtnModeWorkSub.Text = Loc.T("mode.work.sub");
         BtnModeBalancedTitle.Text = Loc.T("mode.balanced");
         BtnModeBalancedSub.Text = Loc.T("mode.balanced.sub");
         BtnModeEmpresaTitle.Text = Loc.T("mode.empresa");
@@ -270,6 +272,11 @@ public partial class MainWindow : Window
 
         SettingsSystemApplyTitle.Text = Loc.T("settings.systemApply");
         SettingsSystemApplyHint.Text = Loc.T("settings.systemApplyHint");
+        ChkAllowSystemApply.Content = Loc.T("settings.allowSystemApply");
+        MoreWorkloadsTitle.Text = Loc.T("more.workloads");
+        MoreWorkloadsHint.Text = Loc.T("more.workloadsHint");
+        BtnWorkloadRefresh.Content = Loc.T("workload.refresh");
+        BtnWorkloadStopAll.Content = Loc.T("workload.stopAll");
         SettingsThemeTitle.Text = Loc.T("theme.label");
         SettingsThemeHint.Text = Loc.T("theme.hint");
         SettingsChannelsTitle.Text = Loc.T("settings.channels");

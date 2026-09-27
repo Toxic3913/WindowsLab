@@ -1,0 +1,116 @@
+[
+    {
+        "id":  "app.media.vlc",
+        "title":  "VLC",
+        "description":  "Reproductor multimedia todo-terreno.",
+        "wingetId":  "VideoLAN.VLC",
+        "category":  "media",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://www.videolan.org/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.85,
+                     "telemetry":  0.9,
+                     "security":  0.75,
+                     "performance":  0.85,
+                     "ecosystem":  0.85
+                 },
+        "profiles":  [
+                         "balanced",
+                         "gaming",
+                         "developer",
+                         "virtualization"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "VLC media player",
+                            "VLC"
+                        ]
+    },
+    {
+        "id":  "app.media.gimp",
+        "title":  "GIMP",
+        "description":  "Edición de imagen (alternativa a Photoshop).",
+        "wingetId":  "GIMP.GIMP",
+        "category":  "media",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://www.gimp.org/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.85,
+                     "telemetry":  0.9,
+                     "security":  0.7,
+                     "performance":  0.7,
+                     "ecosystem":  0.75
+                 },
+        "profiles":  [
+                         "balanced",
+                         "developer",
+                         "gaming"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "GIMP"
+                        ]
+    },
+    {
+        "id":  "app.media.audacity",
+        "title":  "Audacity",
+        "description":  "Edición de audio gratis.",
+        "wingetId":  "Audacity.Audacity",
+        "category":  "media",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://www.audacityteam.org/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.8,
+                     "telemetry":  0.8,
+                     "security":  0.7,
+                     "performance":  0.75,
+                     "ecosystem":  0.75
+                 },
+        "profiles":  [
+                         "balanced",
+                         "developer",
+                         "gaming"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "Audacity"
+                        ]
+    },
+    {
+        "id":  "app.media.obs",
+        "title":  "OBS Studio",
+        "description":  "Streaming / grabación de pantalla.",
+        "wingetId":  "OBSProject.OBSStudio",
+        "category":  "media",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://obsproject.com/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.8,
+                     "telemetry":  0.85,
+                     "security":  0.75,
+                     "performance":  0.85,
+                     "ecosystem":  0.85
+                 },
+        "profiles":  [
+                         "gaming",
+                         "developer",
+                         "balanced"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "OBS Studio"
+                        ]
+    }
+]

@@ -1,0 +1,57 @@
+[
+    {
+        "id":  "app.virt.docker",
+        "title":  "Docker Desktop",
+        "description":  "Contenedores en Windows (WSL2/Hyper-V).",
+        "wingetId":  "Docker.DockerDesktop",
+        "category":  "virt",
+        "evidence":  "OFFICIAL",
+        "evidenceRefs":  [
+                             "https://docs.docker.com/desktop/"
+                         ],
+        "risk":  "MEDIUM",
+        "axes":  {
+                     "privacy":  0.55,
+                     "telemetry":  0.5,
+                     "security":  0.75,
+                     "performance":  0.7,
+                     "ecosystem":  0.9
+                 },
+        "profiles":  [
+                         "developer",
+                         "virtualization"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "Docker Desktop"
+                        ]
+    },
+    {
+        "id":  "app.virt.virtualbox",
+        "title":  "VirtualBox",
+        "description":  "Hipervisor tipo 2 gratuito (Oracle).",
+        "wingetId":  "Oracle.VirtualBox",
+        "category":  "virt",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://www.virtualbox.org/"
+                         ],
+        "risk":  "MEDIUM",
+        "axes":  {
+                     "privacy":  0.7,
+                     "telemetry":  0.75,
+                     "security":  0.7,
+                     "performance":  0.65,
+                     "ecosystem":  0.8
+                 },
+        "profiles":  [
+                         "virtualization",
+                         "developer"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "Oracle VirtualBox",
+                            "VirtualBox"
+                        ]
+    }
+]

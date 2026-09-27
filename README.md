@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/Toxic3913/WindowsLab?display_name=tag)](https://github.com/Toxic3913/WindowsLab/releases)
 
-**WindowsLab 1.1** — configure and care for Windows 11 workstations with audit, curated apply, backup/rollback, and a live performance view.
+**WindowsLab 1.2** — configure and care for Windows 11 workstations with audit, curated apply, backup/rollback, live performance, and stoppable external workloads (Steam/Riot/Overwolf…).
 
 Inspired by popular Windows utilities (e.g. [winutil](https://github.com/ChrisTitusTech/winutil)) for **UX density**, but **not a clone**: typed C# engine, evidence grades, no `irm | iex`, no default `InvokeScript` catalog.
 
@@ -28,7 +28,7 @@ pwsh -File eng/publish.ps1
 | Ajustes | Montaje marca checks → revisar → aplicar una vez (backup) |
 | Apps | winget curado con búsqueda y confirmación |
 | Rendimiento | CPU / RAM / disco / procesos en vivo |
-| Más | Respaldos, apply de sistema, herramientas, sistema/seguridad |
+| Más | Respaldos, apply de sistema, **cargas externas** (detener Steam/Riot/Overwolf…), herramientas, sistema/seguridad |
 
 System-wide (HKLM) changes require elevation and **Allow system apply** (or a lab VM). Defender realtime opt-out needs an extra confirmation (D021).
 

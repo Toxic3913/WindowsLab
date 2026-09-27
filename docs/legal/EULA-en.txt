@@ -1,8 +1,8 @@
-WindowsLab — End-User License Agreement (1.0)
+WindowsLab — End-User License Agreement (1.2)
 =============================================
 
 Product: WindowsLab (Windows 11 audit, configure, and maintain)
-Version: 1.1.0
+Version: 1.2.0
 Publisher: WindowsLab / repository operator
 
 BY INSTALLING OR USING THIS SOFTWARE YOU AGREE TO THE FOLLOWING:

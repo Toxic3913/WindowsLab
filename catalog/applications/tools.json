@@ -1,82 +1,370 @@
 [
-  {
-    "id": "app.tool.git",
-    "title": "Git",
-    "description": "Distributed version control. Recommended for developer and lab baselines.",
-    "wingetId": "Git.Git",
-    "category": "tool",
-    "evidence": "OFFICIAL",
-    "evidenceRefs": ["https://git-scm.com/"],
-    "risk": "LOW",
-    "axes": {
-      "privacy": 0.7,
-      "telemetry": 0.75,
-      "security": 0.85,
-      "performance": 0.8,
-      "ecosystem": 0.9
+    {
+        "id":  "app.tool.git",
+        "title":  "Git",
+        "description":  "Control de versiones. Base para desarrollo y lab.",
+        "wingetId":  "Git.Git",
+        "category":  "tool",
+        "evidence":  "OFFICIAL",
+        "evidenceRefs":  [
+                             "https://git-scm.com/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.7,
+                     "telemetry":  0.75,
+                     "security":  0.85,
+                     "performance":  0.8,
+                     "ecosystem":  0.9
+                 },
+        "profiles":  [
+                         "developer",
+                         "balanced",
+                         "virtualization"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "Git",
+                            "Git for Windows"
+                        ]
     },
-    "profiles": ["developer", "balanced", "virtualization"],
-    "scopePreference": "machine",
-    "detectNames": ["Git", "Git for Windows"]
-  },
-  {
-    "id": "app.tool.pwsh",
-    "title": "PowerShell 7",
-    "description": "Cross-platform PowerShell (pwsh). Preferred over Windows PowerShell 5.1 for scripts.",
-    "wingetId": "Microsoft.PowerShell",
-    "category": "tool",
-    "evidence": "OFFICIAL",
-    "evidenceRefs": ["https://learn.microsoft.com/powershell/"],
-    "risk": "LOW",
-    "axes": {
-      "privacy": 0.65,
-      "telemetry": 0.55,
-      "security": 0.85,
-      "performance": 0.8,
-      "ecosystem": 0.85
+    {
+        "id":  "app.tool.pwsh",
+        "title":  "PowerShell 7",
+        "description":  "pwsh moderno. Preferible a Windows PowerShell 5.1.",
+        "wingetId":  "Microsoft.PowerShell",
+        "category":  "tool",
+        "evidence":  "OFFICIAL",
+        "evidenceRefs":  [
+                             "https://learn.microsoft.com/powershell/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.65,
+                     "telemetry":  0.55,
+                     "security":  0.85,
+                     "performance":  0.8,
+                     "ecosystem":  0.85
+                 },
+        "profiles":  [
+                         "developer",
+                         "balanced",
+                         "virtualization"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "PowerShell 7"
+                        ]
     },
-    "profiles": ["developer", "balanced", "virtualization"],
-    "scopePreference": "machine",
-    "detectNames": ["PowerShell 7"]
-  },
-  {
-    "id": "app.tool.7zip",
-    "title": "7-Zip",
-    "description": "Open-source archiver. Low telemetry footprint.",
-    "wingetId": "7zip.7zip",
-    "category": "tool",
-    "evidence": "STRONG",
-    "evidenceRefs": ["https://www.7-zip.org/"],
-    "risk": "LOW",
-    "axes": {
-      "privacy": 0.85,
-      "telemetry": 0.9,
-      "security": 0.75,
-      "performance": 0.8,
-      "ecosystem": 0.7
+    {
+        "id":  "app.tool.7zip",
+        "title":  "7-Zip",
+        "description":  "Archivador open-source con poca telemetría.",
+        "wingetId":  "7zip.7zip",
+        "category":  "tool",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://www.7-zip.org/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.85,
+                     "telemetry":  0.9,
+                     "security":  0.75,
+                     "performance":  0.8,
+                     "ecosystem":  0.7
+                 },
+        "profiles":  [
+                         "balanced",
+                         "developer",
+                         "gaming",
+                         "virtualization"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "7-Zip"
+                        ]
     },
-    "profiles": ["balanced", "developer", "gaming", "virtualization"],
-    "scopePreference": "machine",
-    "detectNames": ["7-Zip"]
-  },
-  {
-    "id": "app.tool.libreoffice",
-    "title": "LibreOffice",
-    "description": "Suite ofimática libre. Preferible descargar el instalador a Descargas y revisar antes de instalar.",
-    "wingetId": "TheDocumentFoundation.LibreOffice",
-    "category": "tool",
-    "evidence": "STRONG",
-    "evidenceRefs": ["https://www.libreoffice.org/"],
-    "risk": "LOW",
-    "axes": {
-      "privacy": 0.85,
-      "telemetry": 0.9,
-      "security": 0.75,
-      "performance": 0.65,
-      "ecosystem": 0.7
+    {
+        "id":  "app.tool.everything",
+        "title":  "Everything",
+        "description":  "Búsqueda de archivos instantánea por nombre (voidtools).",
+        "wingetId":  "voidtools.Everything",
+        "category":  "tool",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://www.voidtools.com/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.8,
+                     "telemetry":  0.85,
+                     "security":  0.75,
+                     "performance":  0.95,
+                     "ecosystem":  0.7
+                 },
+        "profiles":  [
+                         "balanced",
+                         "developer",
+                         "gaming",
+                         "virtualization"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "Everything"
+                        ]
     },
-    "profiles": ["balanced", "developer", "virtualization"],
-    "scopePreference": "machine",
-    "detectNames": ["LibreOffice"]
-  }
+    {
+        "id":  "app.tool.powertoys",
+        "title":  "PowerToys",
+        "description":  "Utilidades oficiales Microsoft (FancyZones, Run, etc.).",
+        "wingetId":  "Microsoft.PowerToys",
+        "category":  "tool",
+        "evidence":  "OFFICIAL",
+        "evidenceRefs":  [
+                             "https://learn.microsoft.com/windows/powertoys/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.7,
+                     "telemetry":  0.55,
+                     "security":  0.8,
+                     "performance":  0.75,
+                     "ecosystem":  0.85
+                 },
+        "profiles":  [
+                         "balanced",
+                         "developer",
+                         "virtualization"
+                     ],
+        "scopePreference":  "user",
+        "detectNames":  [
+                            "PowerToys"
+                        ]
+    },
+    {
+        "id":  "app.tool.notepadpp",
+        "title":  "Notepad++",
+        "description":  "Editor de texto ligero para configs y logs.",
+        "wingetId":  "Notepad++.Notepad++",
+        "category":  "tool",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://notepad-plus-plus.org/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.85,
+                     "telemetry":  0.9,
+                     "security":  0.75,
+                     "performance":  0.85,
+                     "ecosystem":  0.75
+                 },
+        "profiles":  [
+                         "balanced",
+                         "developer",
+                         "virtualization"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "Notepad++"
+                        ]
+    },
+    {
+        "id":  "app.tool.terminal",
+        "title":  "Windows Terminal",
+        "description":  "Terminal moderna (pestañas, GPU text).",
+        "wingetId":  "Microsoft.WindowsTerminal",
+        "category":  "tool",
+        "evidence":  "OFFICIAL",
+        "evidenceRefs":  [
+                             "https://learn.microsoft.com/windows/terminal/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.7,
+                     "telemetry":  0.55,
+                     "security":  0.85,
+                     "performance":  0.85,
+                     "ecosystem":  0.9
+                 },
+        "profiles":  [
+                         "developer",
+                         "balanced",
+                         "virtualization"
+                     ],
+        "scopePreference":  "user",
+        "detectNames":  [
+                            "Windows Terminal"
+                        ]
+    },
+    {
+        "id":  "app.tool.sharex",
+        "title":  "ShareX",
+        "description":  "Capturas, GIF y subida. Ideal teletrabajo / docs.",
+        "wingetId":  "ShareX.ShareX",
+        "category":  "tool",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://getsharex.com/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.8,
+                     "telemetry":  0.85,
+                     "security":  0.75,
+                     "performance":  0.8,
+                     "ecosystem":  0.7
+                 },
+        "profiles":  [
+                         "balanced",
+                         "developer",
+                         "virtualization"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "ShareX"
+                        ]
+    },
+    {
+        "id":  "app.tool.localsend",
+        "title":  "LocalSend",
+        "description":  "Enviar archivos en LAN sin cuenta (alternativa a AirDrop).",
+        "wingetId":  "LocalSend.LocalSend",
+        "category":  "tool",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://localsend.org/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.9,
+                     "telemetry":  0.95,
+                     "security":  0.75,
+                     "performance":  0.8,
+                     "ecosystem":  0.65
+                 },
+        "profiles":  [
+                         "balanced",
+                         "developer",
+                         "virtualization"
+                     ],
+        "scopePreference":  "user",
+        "detectNames":  [
+                            "LocalSend"
+                        ]
+    },
+    {
+        "id":  "app.tool.rufus",
+        "title":  "Rufus",
+        "description":  "Crear USB booteable (ISO Windows/Linux).",
+        "wingetId":  "Rufus.Rufus",
+        "category":  "tool",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://rufus.ie/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.85,
+                     "telemetry":  0.9,
+                     "security":  0.8,
+                     "performance":  0.85,
+                     "ecosystem":  0.75
+                 },
+        "profiles":  [
+                         "developer",
+                         "virtualization",
+                         "balanced"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "Rufus"
+                        ]
+    },
+    {
+        "id":  "app.tool.ventoy",
+        "title":  "Ventoy",
+        "description":  "USB multi-ISO sin reformatear cada vez.",
+        "wingetId":  "Ventoy.Ventoy",
+        "category":  "tool",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://www.ventoy.net/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.85,
+                     "telemetry":  0.9,
+                     "security":  0.75,
+                     "performance":  0.85,
+                     "ecosystem":  0.7
+                 },
+        "profiles":  [
+                         "developer",
+                         "virtualization",
+                         "balanced"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "Ventoy"
+                        ]
+    },
+    {
+        "id":  "app.tool.wiztree",
+        "title":  "WizTree",
+        "description":  "Qué ocupa disco (muy rápido en NTFS).",
+        "wingetId":  "AntibodySoftware.WizTree",
+        "category":  "tool",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://diskanalyzer.com/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.8,
+                     "telemetry":  0.85,
+                     "security":  0.7,
+                     "performance":  0.9,
+                     "ecosystem":  0.65
+                 },
+        "profiles":  [
+                         "balanced",
+                         "developer",
+                         "gaming",
+                         "virtualization"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "WizTree"
+                        ]
+    },
+    {
+        "id":  "app.tool.wintoys",
+        "title":  "WinToys",
+        "description":  "Panel amigable de ajustes Windows (complemento, no sustituye WindowsLab).",
+        "wingetId":  "WinToys.WinToys",
+        "category":  "tool",
+        "evidence":  "COMMUNITY",
+        "evidenceRefs":  [
+                             "https://apps.microsoft.com/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.6,
+                     "telemetry":  0.55,
+                     "security":  0.65,
+                     "performance":  0.7,
+                     "ecosystem":  0.7
+                 },
+        "profiles":  [
+                         "balanced",
+                         "developer",
+                         "gaming"
+                     ],
+        "scopePreference":  "user",
+        "detectNames":  [
+                            "WinToys"
+                        ]
+    }
 ]

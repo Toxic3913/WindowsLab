@@ -1,5 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Threading;
 using WindowsLab.Core;
 using WindowsLab.Tweaks;
 
@@ -42,6 +44,15 @@ public partial class MainWindow
         PageApps.Visibility = tag == "apps" ? Visibility.Visible : Visibility.Collapsed;
         PagePerformance.Visibility = tag == "performance" ? Visibility.Visible : Visibility.Collapsed;
         PageMore.Visibility = tag == "more" ? Visibility.Visible : Visibility.Collapsed;
+        if (tag == "adjust")
+        {
+            Dispatcher.BeginInvoke(UpdateAdjustCategoryColumns, DispatcherPriority.Loaded);
+        }
+
+        if (tag == "more")
+        {
+            RenderWorkloads();
+        }
     }
 
     private void SelectNav(string tag)
@@ -88,6 +99,7 @@ public partial class MainWindow
         UpdateModeButton(BtnModeGamingStat, "gaming");
         UpdateModeButton(BtnModeOptimizedStat, "perf.max");
         UpdateModeButton(BtnModeDevStat, "developer");
+        UpdateModeButton(BtnModeWorkStat, "work.focus");
         UpdateModeButton(BtnModeBalancedStat, "privacy.lab");
         UpdateModeButton(BtnModeEmpresaStat, "stack.empresa");
         UpdateModeButton(BtnModePruebasStat, "stack.pruebas");
@@ -129,6 +141,7 @@ public partial class MainWindow
             "gaming" => (UserProfile.Gaming, "gaming", "mode.gaming"),
             "optimized" => (UserProfile.Balanced, "perf.max", "mode.optimized"),
             "developer" => (UserProfile.Developer, "developer", "mode.dev"),
+            "work" => (UserProfile.Virtualization, "work.focus", "mode.work"),
             "balanced" => (UserProfile.Balanced, "privacy.lab", "mode.balanced"),
             "empresa" => (UserProfile.Balanced, "stack.empresa", "mode.empresa"),
             "pruebas" => (UserProfile.Developer, "stack.pruebas", "mode.pruebas"),
@@ -288,22 +301,95 @@ public partial class MainWindow
         var groups = q
             .GroupBy(r => r.Category, StringComparer.OrdinalIgnoreCase)
             .OrderBy(g => CategorySortKey(g.Key))
-            .Select(g => new TweakCategoryGroup
+            .Select(g =>
             {
-                Category = g.Key,
-                Header = $"{CategoryLabel(g.Key)} ({g.Count()})",
-                Rows = g.OrderBy(r => r.Title, StringComparer.OrdinalIgnoreCase).ToList()
+                var rows = g.OrderBy(r => r.Title, StringComparer.OrdinalIgnoreCase).ToList();
+                return new TweakCategoryGroup
+                {
+                    Category = g.Key,
+                    Header = $"{CategoryLabel(g.Key)} ({rows.Count})",
+                    Rows = rows
+                };
             })
             .ToList();
 
         TweakCategoryList.ItemsSource = groups;
-        var selected = _allTweakRows.Count(r => r.IsSelected);
-        if (string.IsNullOrWhiteSpace(AdjustStatus.Text) || AdjustStatus.Text.StartsWith("Simul", StringComparison.OrdinalIgnoreCase)
-            || AdjustStatus.Text.Contains("seleccion", StringComparison.OrdinalIgnoreCase)
-            || AdjustStatus.Text.Contains("selected", StringComparison.OrdinalIgnoreCase))
+        TweakCategoryList.Dispatcher.BeginInvoke(UpdateAdjustCategoryColumns, DispatcherPriority.Loaded);
+        UpdateAdjustSelectionStatus();
+    }
+
+    private void TweakSelect_OnChanged(object sender, RoutedEventArgs e)
+    {
+        if (!IsLoaded)
         {
-            AdjustStatus.Text = Loc.T("adjust.selected").Replace("{0}", selected.ToString(System.Globalization.CultureInfo.InvariantCulture), StringComparison.Ordinal);
+            return;
         }
+
+        CaptureSelectionsFromUi();
+        UpdateAdjustSelectionStatus();
+    }
+
+    private void UpdateAdjustSelectionStatus()
+    {
+        var selectedTotal = _allTweakRows.Count(r => r.IsSelected);
+        AdjustStatus.Text = Loc.T("adjust.selected").Replace(
+            "{0}",
+            selectedTotal.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            StringComparison.Ordinal);
+    }
+
+    private void PageAdjust_OnSizeChanged(object sender, SizeChangedEventArgs e) =>
+        Dispatcher.BeginInvoke(UpdateAdjustCategoryColumns, DispatcherPriority.Background);
+
+    private void UpdateAdjustCategoryColumns()
+    {
+        if (TweakCategoryList is null || PageAdjust is null || PageAdjust.ActualWidth <= 0)
+        {
+            return;
+        }
+
+        var panel = FindVisualDescendant<WrapPanel>(TweakCategoryList);
+        if (panel is null)
+        {
+            return;
+        }
+
+        // Two cards across on ~1080p content; one column when the pane is narrow.
+        // Card Border already has 10px right/bottom margin for gutters.
+        var available = Math.Max(280, PageAdjust.ActualWidth - 20);
+        var columns = available >= 980 ? 2 : 1;
+        var cardWidth = columns == 1
+            ? available
+            : Math.Floor(available / 2);
+
+        foreach (UIElement child in panel.Children)
+        {
+            if (child is FrameworkElement fe)
+            {
+                fe.Width = cardWidth;
+            }
+        }
+    }
+
+    private static T? FindVisualDescendant<T>(DependencyObject root) where T : DependencyObject
+    {
+        var count = VisualTreeHelper.GetChildrenCount(root);
+        for (var i = 0; i < count; i++)
+        {
+            var child = VisualTreeHelper.GetChild(root, i);
+            if (child is T match)
+            {
+                return match;
+            }
+
+            var nested = FindVisualDescendant<T>(child);
+            if (nested is not null)
+            {
+                return nested;
+            }
+        }
+
+        return null;
     }
 
     private static int CategorySortKey(string category) => category.ToLowerInvariant() switch

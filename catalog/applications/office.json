@@ -1,0 +1,115 @@
+[
+    {
+        "id":  "app.office.libreoffice",
+        "title":  "LibreOffice",
+        "description":  "Suite ofimática libre (docs/hojas/presentaciones).",
+        "wingetId":  "TheDocumentFoundation.LibreOffice",
+        "category":  "office",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://www.libreoffice.org/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.85,
+                     "telemetry":  0.9,
+                     "security":  0.75,
+                     "performance":  0.65,
+                     "ecosystem":  0.7
+                 },
+        "profiles":  [
+                         "balanced",
+                         "developer",
+                         "virtualization"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "LibreOffice"
+                        ]
+    },
+    {
+        "id":  "app.office.thunderbird",
+        "title":  "Thunderbird",
+        "description":  "Cliente de correo (Mozilla).",
+        "wingetId":  "Mozilla.Thunderbird",
+        "category":  "office",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://www.thunderbird.net/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.85,
+                     "telemetry":  0.85,
+                     "security":  0.8,
+                     "performance":  0.7,
+                     "ecosystem":  0.75
+                 },
+        "profiles":  [
+                         "balanced",
+                         "developer",
+                         "virtualization"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "Mozilla Thunderbird",
+                            "Thunderbird"
+                        ]
+    },
+    {
+        "id":  "app.office.obsidian",
+        "title":  "Obsidian",
+        "description":  "Notas Markdown locales (estudio / segundo cerebro).",
+        "wingetId":  "Obsidian.Obsidian",
+        "category":  "office",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://obsidian.md/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.9,
+                     "telemetry":  0.85,
+                     "security":  0.8,
+                     "performance":  0.8,
+                     "ecosystem":  0.8
+                 },
+        "profiles":  [
+                         "balanced",
+                         "developer",
+                         "virtualization"
+                     ],
+        "scopePreference":  "user",
+        "detectNames":  [
+                            "Obsidian"
+                        ]
+    },
+    {
+        "id":  "app.office.pdfsam",
+        "title":  "PDFsam Basic",
+        "description":  "Dividir/unir PDF gratis.",
+        "wingetId":  "PDFsam.PDFsam",
+        "category":  "office",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://pdfsam.org/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.85,
+                     "telemetry":  0.9,
+                     "security":  0.75,
+                     "performance":  0.7,
+                     "ecosystem":  0.65
+                 },
+        "profiles":  [
+                         "balanced",
+                         "developer",
+                         "virtualization"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "PDFsam"
+                        ]
+    }
+]

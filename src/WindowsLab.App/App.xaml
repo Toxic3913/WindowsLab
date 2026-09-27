@@ -277,6 +277,16 @@
       <Setter Property="Padding" Value="0,4"/>
     </Style>
 
+    <Style x:Key="AdjustCategoryCard" TargetType="Border">
+      <Setter Property="Background" Value="{DynamicResource PanelElevatedBrush}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource BorderBrushSubtle}"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="CornerRadius" Value="8"/>
+      <Setter Property="Padding" Value="12,10"/>
+      <Setter Property="Margin" Value="0,0,10,10"/>
+      <Setter Property="VerticalAlignment" Value="Top"/>
+    </Style>
+
     <Style x:Key="ModeButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
       <Setter Property="Height" Value="118"/>
       <Setter Property="Margin" Value="0,0,10,10"/>

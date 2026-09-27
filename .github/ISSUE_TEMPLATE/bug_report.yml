@@ -13,7 +13,7 @@ body:
     attributes:
       label: WindowsLab version
       description: Help → About, or `windowslab-cli.exe --version` / FileVersion of WindowsLab.exe
-      placeholder: "1.0.0"
+      placeholder: "1.2.0"
     validations:
       required: true
 

@@ -83,7 +83,7 @@
           <TextBlock x:Name="HomeModesTitle" Margin="0,20,0,6" FontSize="18" FontWeight="SemiBold" Text="Montajes"/>
           <TextBlock x:Name="HomeModesHint" Margin="0,0,0,12" Foreground="{DynamicResource MutedBrush}" TextWrapping="Wrap"
                      Text="Marca el montaje en Ajustes (no aplica solo). Revisa y pulsa Aplicar."/>
-          <UniformGrid Columns="3">
+          <UniformGrid Columns="4">
             <Button x:Name="BtnModeEmpresa" Style="{StaticResource ModeButton}" Tag="empresa" Click="QuickMode_OnClick">
               <StackPanel>
                 <TextBlock x:Name="BtnModeEmpresaTitle" Text="Empresa" FontSize="18" FontWeight="SemiBold"/>
@@ -114,6 +114,14 @@
                 <TextBlock x:Name="BtnModeDevSub" Text="Rutas largas, toolchain" Margin="0,6,0,0"
                            Foreground="{DynamicResource SecondaryTextBrush}" TextWrapping="Wrap"/>
                 <TextBlock x:Name="BtnModeDevStat" Margin="0,10,0,0" Foreground="{DynamicResource AccentBrush}" FontSize="12"/>
+              </StackPanel>
+            </Button>
+            <Button x:Name="BtnModeWork" Style="{StaticResource ModeButton}" Tag="work" Click="QuickMode_OnClick">
+              <StackPanel>
+                <TextBlock x:Name="BtnModeWorkTitle" Text="Trabajo / VM" FontSize="18" FontWeight="SemiBold"/>
+                <TextBlock x:Name="BtnModeWorkSub" Text="Pausar Xbox, más CPU/RAM" Margin="0,6,0,0"
+                           Foreground="{DynamicResource SecondaryTextBrush}" TextWrapping="Wrap"/>
+                <TextBlock x:Name="BtnModeWorkStat" Margin="0,10,0,0" Foreground="{DynamicResource AccentBrush}" FontSize="12"/>
               </StackPanel>
             </Button>
             <Button x:Name="BtnModeBalanced" Style="{StaticResource ModeButton}" Tag="balanced" Click="QuickMode_OnClick">
@@ -164,51 +172,80 @@
         </StackPanel>
       </ScrollViewer>
 
-      <!-- AJUSTES -->
-      <DockPanel x:Name="PageAdjust" Visibility="Collapsed">
+      <!-- AJUSTES: 2 columnas en pantallas anchas; filas compactas (sin DataGrid a todo el ancho) -->
+      <DockPanel x:Name="PageAdjust" Visibility="Collapsed" SizeChanged="PageAdjust_OnSizeChanged">
         <StackPanel DockPanel.Dock="Top" Margin="0,0,0,8">
           <TextBlock x:Name="AdjustHint" TextWrapping="Wrap" Margin="0,0,0,8"
                      Text="Montaje = selección. Revisa checks y aplica una vez (con backup)."/>
           <TextBlock x:Name="AdjustPresetsLabel" FontWeight="SemiBold" Margin="0,0,0,6" Text="Montajes"/>
           <WrapPanel x:Name="AdjustPresetBar" Margin="0,0,0,8"/>
-          <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-            <TextBox x:Name="AdjustSearchBox" Width="220" Margin="0,0,12,0" Padding="6,4"
+          <DockPanel Margin="0,0,0,8" LastChildFill="False">
+            <TextBox x:Name="AdjustSearchBox" DockPanel.Dock="Left" Width="240" Margin="0,0,12,0" Padding="6,4"
                      ToolTip="Buscar" TextChanged="AdjustSearch_OnChanged"/>
-            <TextBlock x:Name="AdjustFilterLabel" VerticalAlignment="Center" Margin="0,0,8,0" Text="Filtro"/>
-            <ComboBox x:Name="AdjustFilterBox" Width="140" SelectionChanged="AdjustFilter_OnChanged">
+            <TextBlock x:Name="AdjustFilterLabel" DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,8,0" Text="Filtro"/>
+            <ComboBox x:Name="AdjustFilterBox" DockPanel.Dock="Left" Width="140" SelectionChanged="AdjustFilter_OnChanged">
               <ComboBoxItem Content="Todos" Tag="all" IsSelected="True"/>
               <ComboBoxItem Content="Desalineados" Tag="gaps"/>
               <ComboBoxItem Content="Recomendados" Tag="recommended"/>
             </ComboBox>
-            <Button x:Name="BtnAdjustClear" Content="Limpiar" Click="AdjustClear_OnClick" Margin="12,0,0,0" Padding="10,4"/>
-            <Button x:Name="BtnAdjustSimulate" Content="Simular" Click="AdjustSimulate_OnClick" Margin="8,0,0,0" Padding="10,4"/>
-            <Button x:Name="BtnAdjustApply" Style="{StaticResource PrimaryButton}" Content="Aplicar seleccionados"
-                    Click="AdjustApply_OnClick" Margin="8,0,0,0" Padding="10,4"/>
-          </StackPanel>
-          <TextBlock x:Name="AdjustStatus" TextWrapping="Wrap" Foreground="{DynamicResource MutedBrush}" Margin="0,0,0,8"/>
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+              <Button x:Name="BtnAdjustClear" Content="Limpiar" Click="AdjustClear_OnClick" Margin="0,0,8,0" Padding="10,4"/>
+              <Button x:Name="BtnAdjustSimulate" Content="Simular" Click="AdjustSimulate_OnClick" Margin="0,0,8,0" Padding="10,4"/>
+              <Button x:Name="BtnAdjustApply" Style="{StaticResource PrimaryButton}" Content="Aplicar seleccionados"
+                      Click="AdjustApply_OnClick" Margin="0" Padding="10,4"/>
+            </StackPanel>
+          </DockPanel>
+          <TextBlock x:Name="AdjustStatus" TextWrapping="Wrap" Foreground="{DynamicResource MutedBrush}" Margin="0,0,0,4"/>
         </StackPanel>
-        <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                      Padding="0,0,4,0">
           <ItemsControl x:Name="TweakCategoryList">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <WrapPanel Orientation="Horizontal"/>
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
               <DataTemplate>
-                <Expander IsExpanded="True" Margin="0,0,0,8">
-                  <Expander.Header>
-                    <TextBlock FontWeight="SemiBold" Text="{Binding Header}"/>
-                  </Expander.Header>
-                  <DataGrid ItemsSource="{Binding Rows}" AutoGenerateColumns="False" IsReadOnly="False"
-                            SelectionMode="Single" CanUserAddRows="False" HeadersVisibility="Column"
-                            MaxHeight="320" Margin="0,6,0,0">
-                    <DataGrid.Columns>
-                      <DataGridCheckBoxColumn Header="" Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" Width="40"/>
-                      <DataGridTextColumn Header="Ajuste" Binding="{Binding Title}" IsReadOnly="True" Width="220"/>
-                      <DataGridTextColumn Header="Actual" Binding="{Binding Actual}" IsReadOnly="True" Width="100"/>
-                      <DataGridTextColumn Header="Objetivo" Binding="{Binding Desired}" IsReadOnly="True" Width="100"/>
-                      <DataGridTextColumn Header="OK" Binding="{Binding MatchLabel}" IsReadOnly="True" Width="50"/>
-                      <DataGridTextColumn Header="Riesgo" Binding="{Binding Risk}" IsReadOnly="True" Width="70"/>
-                      <DataGridTextColumn Header="Evidencia" Binding="{Binding Evidence}" IsReadOnly="True" Width="90"/>
-                    </DataGrid.Columns>
-                  </DataGrid>
-                </Expander>
+                <Border Style="{StaticResource AdjustCategoryCard}">
+                    <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" FontWeight="SemiBold" FontSize="14"
+                               Text="{Binding Header}" Margin="0,0,0,8"/>
+                    <ItemsControl ItemsSource="{Binding Rows}">
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                          <Border Padding="4,5" Margin="0,0,0,2" CornerRadius="4"
+                                  Background="Transparent" ToolTip="{Binding DetailTip}">
+                            <Grid>
+                              <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                              </Grid.ColumnDefinitions>
+                              <CheckBox Grid.Column="0" VerticalAlignment="Top" Margin="0,1,8,0"
+                                        IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Checked="TweakSelect_OnChanged" Unchecked="TweakSelect_OnChanged"/>
+                              <TextBlock Grid.Column="1" Text="{Binding Title}" TextWrapping="Wrap"
+                                         VerticalAlignment="Top" Margin="0,1,10,0"/>
+                              <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Top">
+                                <TextBlock Text="{Binding StateText}" FontSize="11"
+                                           Foreground="{DynamicResource MutedBrush}"
+                                           VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock Text="{Binding MatchLabel}" FontWeight="SemiBold" Width="16"
+                                           TextAlignment="Center" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <Border Background="{DynamicResource PanelBrush}" CornerRadius="4"
+                                        Padding="6,2" VerticalAlignment="Center">
+                                  <TextBlock Text="{Binding Risk}" FontSize="11"
+                                             Foreground="{DynamicResource SecondaryTextBrush}"/>
+                                </Border>
+                              </StackPanel>
+                            </Grid>
+                          </Border>
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                  </DockPanel>
+                </Border>
               </DataTemplate>
             </ItemsControl.ItemTemplate>
           </ItemsControl>
@@ -222,10 +259,19 @@
           <TextBox x:Name="AppsSearchBox" Width="200" Margin="0,0,12,0" Padding="6,4"
                    ToolTip="Buscar" TextChanged="AppsSearch_OnChanged"/>
           <TextBlock x:Name="AppsFilterLabel" VerticalAlignment="Center" Margin="0,0,8,0"/>
-          <ComboBox x:Name="AppsCategoryBox" Width="140" SelectionChanged="AppsCategoryBox_OnSelectionChanged">
-            <ComboBoxItem Content="all" Tag="all" IsSelected="True"/>
-            <ComboBoxItem Content="browser" Tag="browser"/>
-            <ComboBoxItem Content="tool" Tag="tool"/>
+          <ComboBox x:Name="AppsCategoryBox" Width="150" SelectionChanged="AppsCategoryBox_OnSelectionChanged">
+            <ComboBoxItem Content="Todas" Tag="all" IsSelected="True"/>
+            <ComboBoxItem Content="Navegador" Tag="browser"/>
+            <ComboBoxItem Content="Herramientas" Tag="tool"/>
+            <ComboBoxItem Content="Sistema" Tag="system"/>
+            <ComboBoxItem Content="Seguridad" Tag="security"/>
+            <ComboBoxItem Content="Backup" Tag="backup"/>
+            <ComboBoxItem Content="Desarrollo" Tag="developer"/>
+            <ComboBoxItem Content="Virtualización" Tag="virt"/>
+            <ComboBoxItem Content="Remoto / red" Tag="remote"/>
+            <ComboBoxItem Content="Oficina" Tag="office"/>
+            <ComboBoxItem Content="Media" Tag="media"/>
+            <ComboBoxItem Content="Juegos" Tag="gaming"/>
           </ComboBox>
         </StackPanel>
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,8,0,0">
@@ -314,8 +360,19 @@
 
           <TextBlock x:Name="SettingsSystemApplyTitle" FontWeight="SemiBold" FontSize="16" Text="Apply de sistema" Margin="0,8,0,8"/>
           <TextBlock x:Name="SettingsSystemApplyHint" TextWrapping="Wrap" Margin="0,0,0,8" Foreground="{DynamicResource MutedBrush}"/>
-          <CheckBox x:Name="ChkAllowSystemApply" Content="Permitir apply de sistema (solo VM de lab)"
+          <CheckBox x:Name="ChkAllowSystemApply" Content="Permitir apply de sistema (HKLM / Worker)"
                     Margin="0,0,0,16" Checked="AllowSystemApply_OnChanged" Unchecked="AllowSystemApply_OnChanged"/>
+
+          <TextBlock x:Name="MoreWorkloadsTitle" FontWeight="SemiBold" FontSize="16" Text="Cargas externas" Margin="0,8,0,8"/>
+          <TextBlock x:Name="MoreWorkloadsHint" TextWrapping="Wrap" Margin="0,0,0,8" Foreground="{DynamicResource MutedBrush}"
+                     Text="Detecta Steam, Riot, Overwolf, LibreOffice… y los detiene cuando no los uses (PC real). Lista curada; no toca Defender/Search/SysMain."/>
+          <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+            <Button x:Name="BtnWorkloadRefresh" Content="Actualizar" Click="WorkloadRefresh_OnClick" Margin="0,0,8,0" Padding="10,4"/>
+            <Button x:Name="BtnWorkloadStopAll" Style="{StaticResource PrimaryButton}" Content="Detener activas"
+                    Click="WorkloadStopAllActive_OnClick" Padding="10,4"/>
+          </StackPanel>
+          <WrapPanel x:Name="WorkloadPanel" Margin="0,0,0,8"/>
+          <TextBlock x:Name="WorkloadStatusText" TextWrapping="Wrap" Margin="0,0,0,16" Foreground="{DynamicResource MutedBrush}"/>
 
           <TextBlock x:Name="MoreBackupsTitle" FontWeight="SemiBold" FontSize="16" Text="Respaldos" Margin="0,0,0,8"/>
           <ListBox x:Name="BackupList" Height="120" Margin="0,0,0,8"/>

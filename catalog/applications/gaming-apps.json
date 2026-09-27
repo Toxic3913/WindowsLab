@@ -1,0 +1,83 @@
+[
+    {
+        "id":  "app.gaming.steam",
+        "title":  "Steam",
+        "description":  "Tienda y runtime de juegos (Valve).",
+        "wingetId":  "Valve.Steam",
+        "category":  "gaming",
+        "evidence":  "OFFICIAL",
+        "evidenceRefs":  [
+                             "https://store.steampowered.com/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.45,
+                     "telemetry":  0.35,
+                     "security":  0.7,
+                     "performance":  0.75,
+                     "ecosystem":  0.95
+                 },
+        "profiles":  [
+                         "gaming",
+                         "balanced"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "Steam"
+                        ]
+    },
+    {
+        "id":  "app.gaming.discord",
+        "title":  "Discord",
+        "description":  "Voz/chat (overlay puede afectar FPS; mídolo).",
+        "wingetId":  "Discord.Discord",
+        "category":  "gaming",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://discord.com/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.4,
+                     "telemetry":  0.3,
+                     "security":  0.65,
+                     "performance":  0.65,
+                     "ecosystem":  0.9
+                 },
+        "profiles":  [
+                         "gaming",
+                         "balanced"
+                     ],
+        "scopePreference":  "user",
+        "detectNames":  [
+                            "Discord"
+                        ]
+    },
+    {
+        "id":  "app.gaming.epic",
+        "title":  "Epic Games Launcher",
+        "description":  "Launcher Epic (Free games).",
+        "wingetId":  "EpicGames.EpicGamesLauncher",
+        "category":  "gaming",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://store.epicgames.com/"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.4,
+                     "telemetry":  0.3,
+                     "security":  0.65,
+                     "performance":  0.65,
+                     "ecosystem":  0.8
+                 },
+        "profiles":  [
+                         "gaming"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "Epic Games Launcher",
+                            "Epic Games"
+                        ]
+    }
+]

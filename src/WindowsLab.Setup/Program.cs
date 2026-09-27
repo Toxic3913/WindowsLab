@@ -33,8 +33,8 @@ internal static class Program
         if (name is null)
         {
             return lang.StartsWith("en", StringComparison.OrdinalIgnoreCase)
-                ? "WindowsLab 1.1 — accept to continue. See docs/legal/EULA-en.txt."
-                : "WindowsLab 1.1 — acepte para continuar. Ver docs/legal/EULA-es.txt.";
+                ? "WindowsLab 1.2 — accept to continue. See docs/legal/EULA-en.txt."
+                : "WindowsLab 1.2 — acepte para continuar. Ver docs/legal/EULA-es.txt.";
         }
 
         using var stream = asm.GetManifestResourceStream(name)!;
@@ -307,7 +307,7 @@ internal sealed class SetupWizardForm : Form
             var shortcut = shell.CreateShortcut(link);
             shortcut.TargetPath = targetExe;
             shortcut.WorkingDirectory = Path.GetDirectoryName(targetExe);
-            shortcut.Description = "WindowsLab 1.1";
+            shortcut.Description = "WindowsLab 1.2";
             shortcut.Save();
         }
         catch

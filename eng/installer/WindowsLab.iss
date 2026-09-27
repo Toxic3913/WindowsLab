@@ -1,9 +1,9 @@
-; WindowsLab 1.1 — Inno Setup 6
+; WindowsLab 1.2 — Inno Setup 6
 ; Preferido cuando ISCC.exe está instalado (winget install JRSoftware.InnoSetup)
 ; eng/publish.ps1 lo invoca tras llenar artifacts\publish\win-x64
 
 #define MyAppName "WindowsLab"
-#define MyAppVersion "1.1.0"
+#define MyAppVersion "1.2.0"
 #define MyAppPublisher "WindowsLab"
 #define MyAppExeName "WindowsLab.exe"
 #define MyAppURL "https://github.com/"
@@ -67,7 +67,7 @@ Filename: "https://learn.microsoft.com/sysinternals/downloads/bginfo"; Descripti
 function InitializeSetup(): Boolean;
 begin
   Result := True;
-  MsgBox('WindowsLab 1.1 — auditoría, configuración y apply con backup.' #13#10 +
+  MsgBox('WindowsLab 1.2 — auditoría, configuración y apply con backup.' #13#10 +
          'El apply de sistema requiere opt-in (Ajustes / VM de lab).' #13#10 +
          'Si SmartScreen avisa, el instalador aún no tiene firma Authenticode.',
          mbInformation, MB_OK);

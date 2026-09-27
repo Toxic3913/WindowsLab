@@ -2,11 +2,24 @@
 
 Date: 2026-09-23
 
-**WindowsLab 1.1.0** is the current public product slice: audit, stacks (empresa/pruebas), curated apply with backup, live Performance, five-destination UI, apps via winget. System apply on daily hosts stays opt-in (D020). Mutating tests stay on [testing/vm-lab.md](testing/vm-lab.md).
+**WindowsLab 1.2.0** is the current public product slice: audit, stacks, curated apply with backup, live Performance, five-destination UI, expanded apps, and curated external workload stop (Steam/Riot/Overwolf…). System apply on daily hosts stays opt-in (D020). Mutating tests stay on [testing/vm-lab.md](testing/vm-lab.md).
 
 Agent model notes use Cursor's available slugs: cheap `composer-2.5-fast` for boilerplate, `gpt-5.6-sol-medium` for specialized design, current session model for architecture/critical review. Do **not** default to the most expensive model.
 
-## 1.1.0 — Five-destination UI + catalog curation (current)
+## 1.2.0 — External workloads + production polish (current)
+
+| | |
+| --- | --- |
+| Objective | Detect/stop Steam·Riot·Overwolf·LibreOffice… on real PCs; remove leftover Beta/read-only docs |
+| Dependencies | 1.1.0 |
+| Tasks | D028 workload catalog + Más UI + CLI; version 1.2.0; SECURITY/EULA/CLI README |
+| Deliverables | Installer/portable 1.2; `workload list|stop` |
+| Tests | Unit suite; workload catalog load; App build |
+| Risks | Stopping Vanguard/Gaming Services may need elevation; overlays respawn if relaunched |
+| Acceptance | Más shows active Steam/Overwolf on PC-HUGO; Stop closes allowlisted procs; never Defender/Search/SysMain |
+| Agent | medium |
+
+## 1.1.0 — Five-destination UI + catalog curation (done)
 
 | | |
 | --- | --- |
