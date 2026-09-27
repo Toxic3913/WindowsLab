@@ -10,8 +10,13 @@ internal static class Program
     private const string ResourceName = "payload.zip";
 
     [STAThread]
-    public static int Main()
+    public static int Main(string[] args)
     {
+        if (HasFlag(args, "--update"))
+        {
+            return RunSilentUpdate(args);
+        }
+
         ApplicationConfiguration.Initialize();
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
@@ -22,6 +27,99 @@ internal static class Program
         using var form = new SetupWizardForm(LoadEula(uiLang), OpenPayload, uiLang);
         Application.Run(form);
         return form.ExitCode;
+    }
+
+    private static bool HasFlag(string[] args, string flag) =>
+        args.Any(a => string.Equals(a, flag, StringComparison.OrdinalIgnoreCase));
+
+    private static string? GetOption(string[] args, string name)
+    {
+        for (var i = 0; i < args.Length - 1; i++)
+        {
+            if (string.Equals(args[i], name, StringComparison.OrdinalIgnoreCase))
+            {
+                return args[i + 1];
+            }
+        }
+
+        return null;
+    }
+
+    private static int RunSilentUpdate(string[] args)
+    {
+        try
+        {
+            var dir = GetOption(args, "--dir");
+            if (string.IsNullOrWhiteSpace(dir))
+            {
+                dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "WindowsLab");
+            }
+
+            if (GetOption(args, "--wait-pid") is { } pidRaw
+                && int.TryParse(pidRaw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var pid)
+                && pid > 0)
+            {
+                try
+                {
+                    using var existing = System.Diagnostics.Process.GetProcessById(pid);
+                    if (!existing.WaitForExit(120_000))
+                    {
+                        try { existing.Kill(entireProcessTree: true); } catch { /* best effort */ }
+                        existing.WaitForExit(15_000);
+                    }
+                }
+                catch (ArgumentException)
+                {
+                    // already exited
+                }
+            }
+
+            // Brief settle so file locks release.
+            Thread.Sleep(800);
+
+            using var zip = OpenPayload();
+            if (zip is null)
+            {
+                MessageBox.Show(
+                    "No hay payload embebido en el Setup. Descarga WindowsLab-Setup.exe de GitHub Releases.",
+                    "WindowsLab Update",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return 2;
+            }
+
+            Directory.CreateDirectory(dir);
+            ZipFile.ExtractToDirectory(zip, dir, overwriteFiles: true);
+
+            var exe = Path.Combine(dir, "WindowsLab.exe");
+            if (!File.Exists(exe))
+            {
+                MessageBox.Show("Falta WindowsLab.exe tras actualizar.", "WindowsLab Update",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return 3;
+            }
+
+            if (HasFlag(args, "--launch"))
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = exe,
+                    WorkingDirectory = dir,
+                    UseShellExecute = true
+                });
+            }
+
+            return 0;
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                "La actualización falló.\r\n\r\n" + ex.Message,
+                "WindowsLab Update",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+            return 1;
+        }
     }
 
     private static string LoadEula(string lang)

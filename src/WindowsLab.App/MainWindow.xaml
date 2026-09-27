@@ -356,6 +356,13 @@
                     Content="Buscar actualizaciones" Click="CheckUpdates_OnClick" Margin="0,0,8,0" Padding="12,8"/>
             <Button x:Name="BtnOpenReleases" Content="Abrir releases en GitHub" Click="OpenReleases_OnClick" Padding="12,8"/>
           </StackPanel>
+          <TextBlock x:Name="UpdateTokenHint" TextWrapping="Wrap" Margin="0,0,0,4" Foreground="{DynamicResource MutedBrush}"
+                     Text="Si el repo es privado, pega un token GitHub (Contents:read) para comprobar y descargar:"/>
+          <DockPanel Margin="0,0,0,8" LastChildFill="True">
+            <Button x:Name="BtnSaveGithubToken" DockPanel.Dock="Right" Content="Guardar token"
+                    Click="SaveGithubToken_OnClick" Margin="8,0,0,0" Padding="10,4"/>
+            <PasswordBox x:Name="GithubTokenBox" Height="28" Padding="6,4"/>
+          </DockPanel>
           <TextBlock x:Name="UpdateStatusText" TextWrapping="Wrap" Margin="0,0,0,16" Foreground="{DynamicResource MutedBrush}"/>
 
           <TextBlock x:Name="SettingsSystemApplyTitle" FontWeight="SemiBold" FontSize="16" Text="Apply de sistema" Margin="0,8,0,8"/>

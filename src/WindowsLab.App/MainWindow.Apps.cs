@@ -153,7 +153,23 @@ public partial class MainWindow
         var lang = Loc.Language;
         var theme = (ThemeBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "dark";
         var allowSystem = ChkAllowSystemApply.IsChecked == true;
-        OperatorSettingsStore.Save(new OperatorSettings(profile, preset, DateTimeOffset.UtcNow, lang, theme, allowSystem));
+        var existingToken = OperatorSettingsStore.Load().GitHubToken;
+        OperatorSettingsStore.Save(new OperatorSettings(profile, preset, DateTimeOffset.UtcNow, lang, theme, allowSystem, existingToken));
+    }
+
+    private void SaveGithubToken_OnClick(object sender, RoutedEventArgs e)
+    {
+        var existing = OperatorSettingsStore.Load();
+        var token = string.IsNullOrWhiteSpace(GithubTokenBox.Password) ? null : GithubTokenBox.Password.Trim();
+        OperatorSettingsStore.Save(existing with
+        {
+            GitHubToken = token,
+            SavedUtc = DateTimeOffset.UtcNow
+        });
+        GithubTokenBox.Password = "";
+        UpdateStatusText.Text = token is null
+            ? (Loc.IsEnglish ? "GitHub token cleared." : "Token de GitHub borrado.")
+            : (Loc.IsEnglish ? "GitHub token saved (local only)." : "Token de GitHub guardado (solo local).");
     }
 
     private void AllowSystemApply_OnChanged(object sender, RoutedEventArgs e)

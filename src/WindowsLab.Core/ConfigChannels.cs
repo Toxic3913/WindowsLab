@@ -15,7 +15,8 @@ public sealed record OperatorSettings(
     DateTimeOffset SavedUtc,
     string Language = "es",
     string Theme = "dark",
-    bool AllowSystemApply = false);
+    bool AllowSystemApply = false,
+    string? GitHubToken = null);
 
 public static class ConfigChannels
 {

@@ -314,6 +314,8 @@ public partial class MainWindow : Window
         SettingsUpdateTitle.Text = Loc.T("update.title");
         BtnCheckUpdatesSettings.Content = Loc.T("update.check");
         BtnOpenReleases.Content = Loc.T("update.open");
+        UpdateTokenHint.Text = Loc.T("update.tokenHint");
+        BtnSaveGithubToken.Content = Loc.T("update.saveToken");
         SettingsVersionText.Text = Loc.T("update.version").Replace("{0}", AppUpdateChecker.GetCurrentVersion(), StringComparison.Ordinal);
         SettingsInstallPath.Text = Loc.IsEnglish
             ? "Setup: artifacts\\installer\\WindowsLab-Setup.exe  ·  Zip: artifacts\\zip\\WindowsLab-portable-win-x64.zip"
@@ -382,50 +384,89 @@ public partial class MainWindow : Window
         BtnCheckUpdatesSettings.IsEnabled = false;
         try
         {
-            var result = await AppUpdateChecker.CheckAsync().ConfigureAwait(true);
+            var token = AppUpdateChecker.ResolveToken(
+                string.IsNullOrWhiteSpace(GithubTokenBox?.Password) ? null : GithubTokenBox.Password);
+            var result = await AppUpdateChecker.CheckAsync(token).ConfigureAwait(true);
             UpdateStatusText.Text = result.Message;
             HomeQuickStatus.Text = result.Message;
 
-            if (result.Status is UpdateCheckStatus.UpdateAvailable or UpdateCheckStatus.NoReleasePublished)
+            if (result.Status == UpdateCheckStatus.UpdateAvailable)
             {
-                var open = MessageBox.Show(
+                var install = MessageBox.Show(
                     result.Message + "\n\n" +
-                    (Loc.IsEnglish ? "Open GitHub releases page?" : "¿Abrir la página de releases en GitHub?"),
+                    (Loc.IsEnglish
+                        ? "Download Setup, install over this folder, and restart WindowsLab?\n(UAC may prompt.)"
+                        : "¿Descargar el Setup, instalar encima y reiniciar WindowsLab?\n(Puede pedir UAC.)"),
                     Loc.T("update.title"),
                     MessageBoxButton.YesNo,
-                    result.Status == UpdateCheckStatus.UpdateAvailable
-                        ? MessageBoxImage.Information
-                        : MessageBoxImage.Question);
-                if (open == MessageBoxResult.Yes)
+                    MessageBoxImage.Question);
+                if (install != MessageBoxResult.Yes)
                 {
-                    Launch(result.ReleaseUrl ?? AppUpdateChecker.ReleasesPageUrl,
-                        Loc.IsEnglish ? "Could not open the browser." : "No se pudo abrir el navegador.");
+                    return;
                 }
+
+                if (string.IsNullOrWhiteSpace(result.SetupAssetUrl))
+                {
+                    var open = MessageBox.Show(
+                        Loc.IsEnglish
+                            ? "No Setup.exe asset on the release. Open the releases page?"
+                            : "La release no trae Setup.exe. ¿Abrir la página de releases?",
+                        Loc.T("update.title"),
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Warning);
+                    if (open == MessageBoxResult.Yes)
+                    {
+                        Launch(result.ReleaseUrl ?? AppUpdateChecker.ReleasesPageUrl,
+                            Loc.IsEnglish ? "Could not open the browser." : "No se pudo abrir el navegador.");
+                    }
+
+                    return;
+                }
+
+                var progress = new Progress<double>(p =>
+                {
+                    UpdateStatusText.Text = Loc.IsEnglish
+                        ? $"Downloading… {(p * 100):0}%"
+                        : $"Descargando… {(p * 100):0}%";
+                    HomeQuickStatus.Text = UpdateStatusText.Text;
+                });
+
+                var setupPath = await AppSelfUpdater.DownloadSetupAsync(result, token, progress).ConfigureAwait(true);
+                UpdateStatusText.Text = Loc.IsEnglish
+                    ? "Starting Setup — WindowsLab will close and reopen."
+                    : "Iniciando Setup — WindowsLab se cerrará y volverá a abrir.";
+                AppSelfUpdater.LaunchSetupAndExit(
+                    setupPath,
+                    AppSelfUpdater.ResolveInstallDirectory(),
+                    Environment.ProcessId);
+                Application.Current.Shutdown();
+                return;
             }
-            else if (result.Status == UpdateCheckStatus.UpToDate)
+
+            if (result.Status == UpdateCheckStatus.UpToDate)
             {
                 MessageBox.Show(result.Message, Loc.T("update.title"), MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
             }
-            else
+
+            var openPage = MessageBox.Show(
+                result.Message + "\n\n" +
+                (Loc.IsEnglish ? "Open GitHub releases page?" : "¿Abrir la página de releases en GitHub?"),
+                Loc.T("update.title"),
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+            if (openPage == MessageBoxResult.Yes)
             {
-                var open = MessageBox.Show(
-                    result.Message + "\n\n" +
-                    (Loc.IsEnglish ? "Open releases page anyway?" : "¿Abrir releases de todos modos?"),
-                    Loc.T("update.title"),
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Warning);
-                if (open == MessageBoxResult.Yes)
-                {
-                    Launch(AppUpdateChecker.ReleasesPageUrl,
-                        Loc.IsEnglish ? "Could not open the browser." : "No se pudo abrir el navegador.");
-                }
+                Launch(result.ReleaseUrl ?? AppUpdateChecker.ReleasesPageUrl,
+                    Loc.IsEnglish ? "Could not open the browser." : "No se pudo abrir el navegador.");
             }
         }
         catch (Exception ex)
         {
-            var msg = Loc.IsEnglish ? "Update check failed: " + ex.Message : "Fallo al buscar updates: " + ex.Message;
+            var msg = Loc.IsEnglish ? "Update failed: " + ex.Message : "Fallo al actualizar: " + ex.Message;
             UpdateStatusText.Text = msg;
             HomeQuickStatus.Text = msg;
+            MessageBox.Show(msg, Loc.T("update.title"), MessageBoxButton.OK, MessageBoxImage.Error);
         }
         finally
         {

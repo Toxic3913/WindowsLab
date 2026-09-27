@@ -6,12 +6,12 @@ namespace WindowsLab.Core.Tests;
 public sealed class ProductVersionTests
 {
     [Fact]
-    public void Informational_version_is_1_2_0()
+    public void Informational_version_is_1_2_1()
     {
         var v = typeof(Loc).Assembly
             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
             ?.InformationalVersion;
-        Assert.StartsWith("1.2.0", v ?? "", StringComparison.Ordinal);
-        Assert.StartsWith("1.2.0", AppUpdateChecker.GetCurrentVersion(), StringComparison.Ordinal);
+        Assert.StartsWith("1.2.1", v ?? "", StringComparison.Ordinal);
+        Assert.StartsWith("1.2.1", AppUpdateChecker.GetCurrentVersion(), StringComparison.Ordinal);
     }
 }

@@ -271,3 +271,14 @@ Do not change an architectural decision without a new dated entry.
 - **Reason:** Free RAM/CPU on daily drivers without mass-disabling Xbox at boot or killing protected OS services.
 - **Trade-offs:** Some services need elevation; apps may respawn (Steam auto-start); Vanguard stop is MEDIUM and separate from Riot Client.
 
+## D029 — In-app update: download Setup + restart
+
+- **Date:** 2026-09-27
+- **Context:** “Buscar actualizaciones” only opened GitHub and reported no releases because the repo is **private** (anonymous API → 404). Operator wants real download + apply + restart.
+- **Chosen:**
+  - Check GitHub Releases with optional PAT (`operator.json` / `WINDOWSLAB_GITHUB_TOKEN` / `GH_TOKEN`).
+  - On newer tag: download `WindowsLab-Setup.exe`, launch `Setup --update --dir <install> --wait-pid <pid> --launch`, then exit the app.
+  - Setup silent path overwrites files after the GUI exits and relaunches `WindowsLab.exe` (UAC via requireAdministrator).
+- **Reason:** Match production expectation without embedding a permanent token in the binary.
+- **Trade-offs:** Private repos need a token or a public repo; SmartScreen may still warn on unsigned Setup.
+
