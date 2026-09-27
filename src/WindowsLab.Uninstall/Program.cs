@@ -47,10 +47,18 @@ internal static class Program
 
         try
         {
+            var sentinel = Path.Combine(installDir, "WindowsLab.exe");
+            if (!File.Exists(sentinel) && !File.Exists(Path.Combine(installDir, "WindowsLab-Uninstall.exe")))
+            {
+                throw new InvalidOperationException(
+                    es
+                        ? $"No parece una instalación de WindowsLab:\n{installDir}"
+                        : $"Does not look like a WindowsLab install:\n{installDir}");
+            }
+
             InstallRegistration.StopProductProcesses();
             Thread.Sleep(500);
-            InstallRegistration.RemoveShortcuts();
-            InstallRegistration.Unregister();
+            // Shortcuts + ARP stay until FinishDelete so a cancelled UAC does not orphan the install.
 
             // Relocate self to TEMP so we can delete the install directory including this EXE.
             var self = Environment.ProcessPath ?? Application.ExecutablePath;
@@ -59,6 +67,7 @@ internal static class Program
                 "WindowsLab-Uninstall-" + Guid.NewGuid().ToString("N") + ".exe");
             File.Copy(self, tempExe, overwrite: true);
 
+            // UseShellExecute + Verb=runas required for UAC; ArgumentList is unsupported then.
             var psi = new ProcessStartInfo
             {
                 FileName = tempExe,
@@ -66,7 +75,15 @@ internal static class Program
                 UseShellExecute = true,
                 Verb = "runas"
             };
-            Process.Start(psi);
+            var proc = Process.Start(psi);
+            if (proc is null)
+            {
+                throw new InvalidOperationException(
+                    es
+                        ? "No se pudo iniciar la segunda etapa del desinstalador (¿UAC cancelado?)."
+                        : "Could not start the uninstall finish stage (UAC cancelled?).");
+            }
+
             return 0;
         }
         catch (Exception ex)
@@ -92,12 +109,17 @@ internal static class Program
             InstallRegistration.StopProductProcesses();
             Thread.Sleep(400);
 
-            if (Directory.Exists(installDir))
+            var sentinel = Path.Combine(installDir, "WindowsLab.exe");
+            var uninstallHere = Path.Combine(installDir, "WindowsLab-Uninstall.exe");
+            if (!Directory.Exists(installDir)
+                || (!File.Exists(sentinel) && !File.Exists(uninstallHere)))
             {
-                TryDeleteDirectory(installDir);
+                throw new InvalidOperationException(
+                    $"Refusing to delete '{installDir}' — WindowsLab sentinel not found.");
             }
 
-            // Clean leftover empty parent if any
+            TryDeleteDirectory(installDir);
+
             InstallRegistration.Unregister();
             InstallRegistration.RemoveShortcuts();
 

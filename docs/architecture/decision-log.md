@@ -293,4 +293,5 @@ Do not change an architectural decision without a new dated entry.
   - Does **not** delete `%LocalAppData%\WindowsLab` / `%ProgramData%\WindowsLab` by default (backups/settings).
 - **Reason:** Match normal Windows desktop product expectations.
 - **Trade-offs:** Elevated uninstall (UAC); leftover user/runtime data must be removed manually if desired.
+- **Hardening (1.2.3):** Sentinel check before recursive delete; ARP/shortcuts removed only after finish stage; UAC cancel no longer reports success.
 

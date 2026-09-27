@@ -167,6 +167,7 @@ internal static class Program
 internal sealed class SetupWizardForm : Form
 {
     private readonly Func<Stream?> _openPayload;
+    private readonly bool _es;
     private readonly TabControl _tabs = new() { Dock = DockStyle.Fill };
     private readonly TextBox _eulaBox = new() { Multiline = true, ReadOnly = true, ScrollBars = ScrollBars.Vertical, Dock = DockStyle.Fill, Font = new Font("Segoe UI", 9f) };
     private readonly CheckBox _accept = new() { Text = "He leído y acepto el contrato de licencia (EULA)", AutoSize = true };
@@ -186,8 +187,10 @@ internal sealed class SetupWizardForm : Form
     public SetupWizardForm(string eula, Func<Stream?> openPayload, string uiLang)
     {
         _openPayload = openPayload;
-        var es = !uiLang.StartsWith("en", StringComparison.OrdinalIgnoreCase);
-        Text = es ? "WindowsLab Setup — 1.0" : "WindowsLab Setup — 1.0";
+        _es = !uiLang.StartsWith("en", StringComparison.OrdinalIgnoreCase);
+        var es = _es;
+        var ver = typeof(Program).Assembly.GetName().Version?.ToString(3) ?? "1.0.0";
+        Text = $"WindowsLab Setup — {ver}";
         Width = 640;
         Height = 480;
         StartPosition = FormStartPosition.CenterScreen;
@@ -383,7 +386,7 @@ internal sealed class SetupWizardForm : Form
                     var uninstall = Path.Combine(dest, "WindowsLab-Uninstall.exe");
                     if (File.Exists(uninstall))
                     {
-                        InstallRegistration.CreateUninstallShortcut(uninstall, spanish: true);
+                        InstallRegistration.CreateUninstallShortcut(uninstall, spanish: _es);
                     }
                 }
 
