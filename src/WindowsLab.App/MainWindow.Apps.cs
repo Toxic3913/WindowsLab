@@ -102,9 +102,19 @@ public partial class MainWindow
 
         var confirm = MessageBox.Show(
             Loc.IsEnglish
-                ? $"Install {app.Title} via winget ({app.WingetId})?\nMay prompt UAC for machine-wide packages."
-                : $"¿Instalar {app.Title} con winget ({app.WingetId})?\nPuede pedir UAC si el paquete es de máquina.",
-            "WindowsLab",
+                ? $"Install {app.Title}?\n\n"
+                  + $"{app.Description}\n\n"
+                  + $"winget: {app.WingetId}\n"
+                  + $"Category: {app.Category} · Evidence: {app.Evidence} · Risk: {app.Risk}\n"
+                  + $"Scope: {app.ScopePreference}\n\n"
+                  + "May prompt UAC for machine-wide packages. Continue?"
+                : $"¿Instalar {app.Title}?\n\n"
+                  + $"{app.Description}\n\n"
+                  + $"winget: {app.WingetId}\n"
+                  + $"Categoría: {app.Category} · Evidencia: {app.Evidence} · Riesgo: {app.Risk}\n"
+                  + $"Ámbito: {app.ScopePreference}\n\n"
+                  + "Puede pedir UAC si el paquete es de máquina. ¿Continuar?",
+            Loc.IsEnglish ? "Confirm app install" : "Confirmar instalación",
             MessageBoxButton.YesNo,
             MessageBoxImage.Question);
         if (confirm != MessageBoxResult.Yes)

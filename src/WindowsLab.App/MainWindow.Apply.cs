@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -282,46 +283,74 @@ public partial class MainWindow
 
     private void ActivateBgInfo_OnClick(object sender, RoutedEventArgs e)
     {
-        SetQuickStatus(Loc.IsEnglish ? "BGInfo…" : "BGInfo…");
+        var probe = QuickTools.ProbeBgInfo();
+        BgInfoLogHint.Text = (Loc.IsEnglish ? "Log: " : "Log: ") + probe.LogPath;
+        SetQuickStatus(probe.Summary);
+
+        var pre = new StringBuilder();
+        pre.AppendLine(probe.Details);
+        pre.AppendLine();
+        if (probe.NeedsInstall)
+        {
+            pre.AppendLine(Loc.IsEnglish
+                ? "BGInfo is not installed. Install via winget (Microsoft.Sysinternals.BGInfo) and open it?"
+                : "BGInfo no está instalado. ¿Instalar con winget (Microsoft.Sysinternals.BGInfo) y abrirlo?");
+        }
+        else
+        {
+            pre.AppendLine(Loc.IsEnglish
+                ? "Open BGInfo now?"
+                : "¿Abrir BGInfo ahora?");
+        }
+
+        if (probe.WallpaperConflicts.Count > 0)
+        {
+            pre.AppendLine();
+            pre.AppendLine(Loc.IsEnglish
+                ? "Tip: pause wallpaper apps first if the desktop does not update."
+                : "Consejo: pausa las apps de fondo si el escritorio no se actualiza.");
+        }
+
+        var go = MessageBox.Show(
+            pre.ToString(),
+            "BGInfo",
+            MessageBoxButton.YesNo,
+            probe.WallpaperConflicts.Count > 0 ? MessageBoxImage.Warning : MessageBoxImage.Question);
+        if (go != MessageBoxResult.Yes)
+        {
+            SetQuickStatus(Loc.IsEnglish ? "BGInfo cancelled." : "BGInfo cancelado.");
+            return;
+        }
+
+        SetQuickStatus(Loc.IsEnglish ? "BGInfo working…" : "BGInfo en curso…");
         BtnBgInfo.IsEnabled = false;
-        Task.Run(QuickTools.LaunchOrInstallBgInfo).ContinueWith(t =>
+        var allowInstall = probe.NeedsInstall;
+        Task.Run(() => QuickTools.LaunchOrInstallBgInfo(allowInstall)).ContinueWith(t =>
         {
             Dispatcher.Invoke(() =>
             {
                 BtnBgInfo.IsEnabled = true;
                 if (t.IsFaulted)
                 {
-                    SetQuickStatus(Truncate(t.Exception?.GetBaseException().Message ?? "error", 300));
+                    var err = Truncate(t.Exception?.GetBaseException().Message ?? "error", 400);
+                    SetQuickStatus(err);
+                    MessageBox.Show(err + "\n\nLog: " + QuickTools.BgInfoLogPath, "BGInfo",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
-                var (ok, msg) = t.Result;
-                SetQuickStatus(msg);
-                if (!ok)
-                {
-                    MessageBox.Show(msg, "BGInfo", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
+                var report = t.Result;
+                SetQuickStatus(Truncate(report.Summary, 400));
+                BgInfoLogHint.Text = (Loc.IsEnglish ? "Log: " : "Log: ") + report.LogPath;
+                MessageBox.Show(
+                    report.Details,
+                    "BGInfo — " + (report.Ok ? (Loc.IsEnglish ? "OK" : "Listo") : (Loc.IsEnglish ? "Problem" : "Problema")),
+                    MessageBoxButton.OK,
+                    report.Ok
+                        ? (report.WallpaperConflicts.Count > 0 ? MessageBoxImage.Warning : MessageBoxImage.Information)
+                        : MessageBoxImage.Warning);
             });
         }, TaskScheduler.Default);
-    }
-
-    private async void DownloadLibreOffice_OnClick(object sender, RoutedEventArgs e)
-    {
-        SetQuickStatus(Loc.IsEnglish ? "Downloading LibreOffice…" : "Descargando LibreOffice…");
-        BtnLibreOffice.IsEnabled = false;
-        try
-        {
-            var (ok, msg) = await QuickTools.DownloadLibreOfficeAsync().ConfigureAwait(true);
-            SetQuickStatus(msg);
-            if (!ok)
-            {
-                MessageBox.Show(msg, "LibreOffice", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        }
-        finally
-        {
-            BtnLibreOffice.IsEnabled = true;
-        }
     }
 
     private void SetQuickStatus(string text)

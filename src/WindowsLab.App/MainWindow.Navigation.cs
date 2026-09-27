@@ -280,11 +280,15 @@ public partial class MainWindow
         _allTweakRows = _session.Catalog.Select(t =>
         {
             var d = _session.Detections.FirstOrDefault(x => x.TweakId == t.Id);
+            var (pros, cons) = TweakRow.BuildImpact(t, Loc.IsEnglish);
             return new TweakRow
             {
                 IsSelected = _selectedTweakIds.Contains(t.Id),
                 Id = t.Id,
                 Title = t.Title,
+                Description = t.Description,
+                ProsText = pros,
+                ConsText = cons,
                 Category = t.Category,
                 Risk = t.Risk.ToString(),
                 Evidence = t.Evidence.ToString(),
@@ -292,7 +296,8 @@ public partial class MainWindow
                 Desired = d?.DesiredDisplay,
                 Match = d?.MatchesDesired,
                 Status = d?.Status.ToString(),
-                IsRecommended = recommended.Contains(t.Id)
+                IsRecommended = recommended.Contains(t.Id),
+                AffectsSecurity = t.AffectsSecurity
             };
         }).ToList();
 
@@ -357,6 +362,23 @@ public partial class MainWindow
 
         CaptureSelectionsFromUi();
         UpdateAdjustSelectionStatus();
+    }
+
+    private void TweakInfo_OnClick(object sender, RoutedEventArgs e)
+    {
+        if ((sender as FrameworkElement)?.DataContext is not TweakRow row)
+        {
+            return;
+        }
+
+        MessageBox.Show(
+            $"{row.Title}\n\n{row.Description}\n\n{row.ProsText}\n\n{row.ConsText}\n\n"
+            + $"{row.Id} · {row.Evidence} · {row.Risk}\n"
+            + (Loc.IsEnglish ? "Actual → Desired: " : "Actual → Objetivo: ")
+            + $"{row.Actual ?? "?"} → {row.Desired ?? "?"}",
+            Loc.IsEnglish ? "Tweak details" : "Detalle del ajuste",
+            MessageBoxButton.OK,
+            MessageBoxImage.Information);
     }
 
     private void UpdateAdjustSelectionStatus()

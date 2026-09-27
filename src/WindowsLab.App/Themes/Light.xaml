@@ -22,4 +22,7 @@
   <SolidColorBrush x:Key="SecondaryTextBrush" Color="#FF57606A"/>
   <SolidColorBrush x:Key="GapBorderBrush" Color="#FFE8C07A"/>
   <SolidColorBrush x:Key="CheckBoxFillBrush" Color="#FFFFFFFF"/>
+  <SolidColorBrush x:Key="ChipBrush" Color="#FFE8EEF5"/>
+  <SolidColorBrush x:Key="MenuBgBrush" Color="#FFFFFFFF"/>
+  <SolidColorBrush x:Key="InputBgBrush" Color="#FFF5F7FA"/>
 </ResourceDictionary>

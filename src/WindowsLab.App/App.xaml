@@ -334,15 +334,28 @@
       <Setter Property="MinWidth" Value="10"/>
     </Style>
 
+    <Style TargetType="TextBox" BasedOn="{StaticResource SearchBox}">
+      <Setter Property="Background" Value="{DynamicResource InputBgBrush}"/>
+    </Style>
+
+    <Style TargetType="ToolTip">
+      <Setter Property="Background" Value="{DynamicResource PanelElevatedBrush}"/>
+      <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource BorderBrushSubtle}"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="Padding" Value="10,8"/>
+      <Setter Property="MaxWidth" Value="420"/>
+    </Style>
+
     <Style TargetType="Menu">
-      <Setter Property="Background" Value="{DynamicResource PanelBrush}"/>
+      <Setter Property="Background" Value="{DynamicResource MenuBgBrush}"/>
       <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
       <Setter Property="FontFamily" Value="Segoe UI Variable Text, Segoe UI"/>
     </Style>
 
     <Style TargetType="MenuItem">
       <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
-      <Setter Property="Background" Value="{DynamicResource PanelBrush}"/>
+      <Setter Property="Background" Value="{DynamicResource MenuBgBrush}"/>
       <Setter Property="Padding" Value="10,6"/>
     </Style>
 

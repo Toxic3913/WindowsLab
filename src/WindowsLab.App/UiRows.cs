@@ -47,6 +47,9 @@ public sealed class TweakRow : INotifyPropertyChanged
 
     public required string Id { get; init; }
     public required string Title { get; init; }
+    public required string Description { get; init; }
+    public required string ProsText { get; init; }
+    public required string ConsText { get; init; }
     public required string Category { get; init; }
     public required string Risk { get; init; }
     public required string Evidence { get; init; }
@@ -56,14 +59,79 @@ public sealed class TweakRow : INotifyPropertyChanged
     public string? Status { get; init; }
     public string MatchLabel => Match is true ? "✓" : Match is false ? "—" : "?";
     public string StateText => $"{Actual ?? "?"} → {Desired ?? "?"}";
-    public string DetailTip => $"{Id} · {Evidence} · {Risk}";
+    public string DetailTip =>
+        $"{Title}\n{Description}\n\n{ProsText}\n{ConsText}\n\n{Id} · {Evidence} · {Risk}";
     public bool IsRecommended { get; init; }
     public bool IsGap => Match is not true;
+    public bool AffectsSecurity { get; init; }
+    public bool ShowImpactHint =>
+        AffectsSecurity
+        || string.Equals(Risk, "HIGH", StringComparison.OrdinalIgnoreCase)
+        || string.Equals(Risk, "CRITICAL", StringComparison.OrdinalIgnoreCase);
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private void OnPropertyChanged([CallerMemberName] string? name = null) =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+    public static (string Pros, string Cons) BuildImpact(TweakDefinition t, bool english)
+    {
+        var pros = new List<string>();
+        var cons = new List<string>();
+        if (!string.IsNullOrWhiteSpace(t.Description))
+        {
+            pros.Add(t.Description.Trim());
+        }
+
+        pros.Add(english
+            ? $"Evidence: {t.Evidence}"
+            : $"Evidencia: {t.Evidence}");
+
+        if (t.Risk >= RiskLevel.Medium)
+        {
+            cons.Add(english ? $"Risk: {t.Risk}" : $"Riesgo: {t.Risk}");
+        }
+
+        if (t.AffectsSecurity)
+        {
+            cons.Add(english
+                ? "Affects security posture (extra confirmation on apply)."
+                : "Afecta la postura de seguridad (doble confirmación al aplicar).");
+        }
+
+        if (t.AffectsUpdates)
+        {
+            cons.Add(english ? "May affect Windows Update behavior." : "Puede afectar Windows Update.");
+        }
+
+        if (t.AffectsCompatibility)
+        {
+            cons.Add(english ? "May affect app/OS compatibility." : "Puede afectar compatibilidad de apps/SO.");
+        }
+
+        if (t.RequiresReboot)
+        {
+            cons.Add(english ? "Requires reboot to fully take effect." : "Requiere reinicio para aplicarse del todo.");
+        }
+
+        if (t.Conflicts.Count > 0)
+        {
+            cons.Add((english ? "Conflicts: " : "Conflictos: ") + string.Join(", ", t.Conflicts));
+        }
+
+        if (cons.Count == 0)
+        {
+            cons.Add(english
+                ? "Low impact for typical desktops; still review before apply."
+                : "Impacto bajo en escritorios típicos; revisa antes de aplicar.");
+        }
+
+        var prosLabel = english ? "Pros" : "Pros";
+        var consLabel = english ? "Cons" : "Contras";
+        return (
+            prosLabel + ": " + string.Join(" · ", pros),
+            consLabel + ": " + string.Join(" · ", cons));
+    }
 }
 
 public sealed class TweakCategoryGroup

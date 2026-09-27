@@ -31,11 +31,26 @@ public partial class DesktopInfoWindow : Window
 
     private void OpenBgInfo_OnClick(object sender, RoutedEventArgs e)
     {
-        var (ok, msg) = QuickTools.LaunchOrInstallBgInfo();
-        if (!ok)
+        var probe = QuickTools.ProbeBgInfo();
+        var ask = MessageBox.Show(
+            probe.Details + "\n\n" +
+            (probe.NeedsInstall
+                ? (Loc.IsEnglish ? "Install and open BGInfo?" : "¿Instalar y abrir BGInfo?")
+                : (Loc.IsEnglish ? "Open BGInfo?" : "¿Abrir BGInfo?")),
+            "BGInfo",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question);
+        if (ask != MessageBoxResult.Yes)
         {
-            MessageBox.Show(msg, "BGInfo", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
         }
+
+        var report = QuickTools.LaunchOrInstallBgInfo(allowInstall: probe.NeedsInstall);
+        MessageBox.Show(
+            report.Details,
+            "BGInfo",
+            MessageBoxButton.OK,
+            report.Ok ? MessageBoxImage.Information : MessageBoxImage.Warning);
     }
 
     private void Refresh()

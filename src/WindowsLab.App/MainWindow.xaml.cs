@@ -339,7 +339,6 @@ public partial class MainWindow : Window
         BtnBgInfoDocs.Content = Loc.T("btn.bginfo.docs");
         BtnGodMode.Content = Loc.T("tools.godmode");
         BtnActivateWindows.Content = Loc.T("btn.activateWindows");
-        BtnLibreOffice.Content = Loc.T("btn.libreoffice");
         BtnWindowsSecurity.Content = Loc.T("btn.windowsSecurity");
         BtnWindowsSecurity.ToolTip = Loc.T("btn.windowsSecurity.tip");
         BtnDefenderRealtimeOff.Content = Loc.T("btn.defenderRealtimeOff");

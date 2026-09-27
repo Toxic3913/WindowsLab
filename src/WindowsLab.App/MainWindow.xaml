@@ -293,12 +293,20 @@
                                         IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                         Checked="TweakSelect_OnChanged" Unchecked="TweakSelect_OnChanged"/>
                               <StackPanel Grid.Column="1" Margin="0,0,10,0">
-                                <TextBlock Text="{Binding Title}" TextWrapping="Wrap" FontWeight="SemiBold"/>
-                                <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                                  <Border Background="{DynamicResource PanelBrush}" CornerRadius="4" Padding="6,2" Margin="0,0,6,0">
+                                <TextBlock Text="{Binding Title}" TextWrapping="Wrap" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextBrush}"/>
+                                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Margin="0,3,0,0"
+                                           FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                                <TextBlock Text="{Binding ProsText}" TextWrapping="Wrap" Margin="0,4,0,0"
+                                           FontSize="11" Foreground="{DynamicResource OkBrush}"/>
+                                <TextBlock Text="{Binding ConsText}" TextWrapping="Wrap" Margin="0,2,0,0"
+                                           FontSize="11" Foreground="{DynamicResource WarnBrush}"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                  <Border Background="{DynamicResource ChipBrush}" CornerRadius="4" Padding="6,2" Margin="0,0,6,0">
                                     <StackPanel Orientation="Horizontal">
                                       <TextBlock FontSize="11" Foreground="{DynamicResource MutedBrush}" Text="Actual: "/>
-                                      <TextBlock FontSize="11" Text="{Binding Actual, TargetNullValue=?}"/>
+                                      <TextBlock FontSize="11" Foreground="{DynamicResource TextBrush}"
+                                                 Text="{Binding Actual, TargetNullValue=?}"/>
                                     </StackPanel>
                                   </Border>
                                   <TextBlock Text="→" VerticalAlignment="Center" Margin="0,0,6,0"
@@ -306,12 +314,16 @@
                                   <Border Background="{DynamicResource AccentDeepBrush}" CornerRadius="4" Padding="6,2">
                                     <StackPanel Orientation="Horizontal">
                                       <TextBlock FontSize="11" Foreground="{DynamicResource AccentBrush}" Text="Objetivo: "/>
-                                      <TextBlock FontSize="11" Text="{Binding Desired, TargetNullValue=?}"/>
+                                      <TextBlock FontSize="11" Foreground="{DynamicResource TextBrush}"
+                                                 Text="{Binding Desired, TargetNullValue=?}"/>
                                     </StackPanel>
                                   </Border>
                                 </StackPanel>
                               </StackPanel>
                               <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Top">
+                                <Button Content="i" Width="26" Height="26" Padding="0" Margin="0,0,8,0"
+                                        ToolTip="Pros / contras" Click="TweakInfo_OnClick"
+                                        VerticalAlignment="Center"/>
                                 <TextBlock Text="{Binding MatchLabel}" FontWeight="Bold" Width="18" FontSize="14"
                                            TextAlignment="Center" VerticalAlignment="Center" Margin="0,0,8,0">
                                   <TextBlock.Style>
@@ -328,7 +340,7 @@
                                     </Style>
                                   </TextBlock.Style>
                                 </TextBlock>
-                                <Border Background="{DynamicResource PanelBrush}" CornerRadius="4"
+                                <Border Background="{DynamicResource ChipBrush}" CornerRadius="4"
                                         Padding="6,2" VerticalAlignment="Center">
                                   <TextBlock Text="{Binding Risk}" FontSize="11"
                                              Foreground="{DynamicResource SecondaryTextBrush}"/>
@@ -498,11 +510,11 @@
                 <Button x:Name="BtnBgInfoDocs" Content="Docs BGInfo" Click="OpenBgInfoOfficial_OnClick" Padding="12,8" Margin="0,0,8,8"/>
                 <Button x:Name="BtnGodMode" Content="Modo Dios" Click="OpenGodMode_OnClick" Padding="12,8" Margin="0,0,8,8"/>
                 <Button x:Name="BtnActivateWindows" Content="Activar Windows" Click="ActivateWindows_OnClick" Padding="12,8" Margin="0,0,8,8"/>
-                <Button x:Name="BtnLibreOffice" Content="LibreOffice" Click="DownloadLibreOffice_OnClick" Padding="12,8" Margin="0,0,8,8"/>
                 <Button x:Name="BtnWindowsSecurity" Content="Seguridad de Windows" Click="OpenWindowsSecurity_OnClick" Padding="12,8" Margin="0,0,8,8"/>
                 <Button x:Name="BtnDefenderRealtimeOff" Content="Defender RTP OFF" Click="DefenderRealtimeOff_OnClick" Padding="12,8" Margin="0,0,8,8"/>
               </WrapPanel>
-              <TextBlock x:Name="HomeQuickStatus" Margin="0,4,0,0" Foreground="{DynamicResource MutedBrush}" TextWrapping="Wrap"/>
+              <TextBlock x:Name="HomeQuickStatus" Margin="0,8,0,0" Foreground="{DynamicResource SecondaryTextBrush}" TextWrapping="Wrap"/>
+              <TextBlock x:Name="BgInfoLogHint" Margin="0,4,0,0" Foreground="{DynamicResource MutedBrush}" FontSize="11" TextWrapping="Wrap"/>
             </StackPanel>
           </Expander>
 

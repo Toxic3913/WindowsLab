@@ -17,8 +17,8 @@ No GitHub token is required while the repository stays public. The UI no longer 
 3. Tag and push:
 
 ```powershell
-git tag -a v1.2.4 -m "WindowsLab 1.2.4"
-git push origin v1.2.4
+git tag -a v1.2.5 -m "WindowsLab 1.2.5"
+git push origin v1.2.5
 ```
 
 4. Wait for Actions workflow **release** (`v*` tags):

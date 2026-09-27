@@ -3,7 +3,7 @@
 ; eng/publish.ps1 lo invoca tras llenar artifacts\publish\win-x64
 
 #define MyAppName "WindowsLab"
-#define MyAppVersion "1.2.4"
+#define MyAppVersion "1.2.5"
 #define MyAppPublisher "WindowsLab"
 #define MyAppExeName "WindowsLab.exe"
 #define MyAppURL "https://github.com/"
