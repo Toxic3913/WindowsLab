@@ -196,7 +196,7 @@ public partial class MainWindow : Window
 
     private void SelectLangBox(string language)
     {
-        var want = Loc.Language == "en" ? "EN" : "ES";
+        var want = string.Equals(language, "en", StringComparison.OrdinalIgnoreCase) ? "EN" : "ES";
         foreach (ComboBoxItem item in LangBox.Items)
         {
             if (string.Equals(item.Content?.ToString(), want, StringComparison.OrdinalIgnoreCase))
@@ -216,11 +216,25 @@ public partial class MainWindow : Window
         NavAdjust.Content = Loc.T("nav.adjust");
         NavApps.Content = Loc.T("nav.apps");
         NavPerformance.Content = Loc.T("nav.performance");
+        NavWorkloads.Content = Loc.T("nav.workloads");
+        NavBackups.Content = Loc.T("nav.backups");
+        NavTools.Content = Loc.T("nav.tools");
         NavMore.Content = Loc.T("nav.more");
+        var headers = Nav.Items.OfType<ListBoxItem>().Where(i => i.Tag is null).ToList();
+        if (headers.Count >= 3)
+        {
+            headers[0].Content = Loc.T("nav.group.primary");
+            headers[1].Content = Loc.T("nav.group.ops");
+            headers[2].Content = Loc.T("nav.group.meta");
+        }
+
         MenuNavHome.Header = Loc.T("nav.home");
         MenuNavAdjust.Header = Loc.T("nav.adjust");
         MenuNavApps.Header = Loc.T("nav.apps");
         MenuNavPerf.Header = Loc.T("nav.performance");
+        MenuNavWorkloads.Header = Loc.T("nav.workloads");
+        MenuNavBackups.Header = Loc.T("nav.backups");
+        MenuNavTools.Header = Loc.T("nav.tools");
         MenuNavMore.Header = Loc.T("nav.more");
         MenuFile.Header = Loc.T("menu.file");
         MenuView.Header = Loc.T("menu.view");
@@ -237,7 +251,20 @@ public partial class MainWindow : Window
         HomeModesHint.Text = Loc.T("home.modesHint");
         HomePendingTitle.Text = Loc.T("home.pending");
         HomePendingHint.Text = Loc.T("home.pendingHint");
-        HomeProbesTitle.Text = Loc.T("home.probes");
+        HomeCapabilitiesTitle.Text = Loc.T("home.capabilities");
+        HomeCapabilitiesHint.Text = Loc.T("home.capabilitiesHint");
+        CapAuditTitle.Text = Loc.T("home.cap.audit");
+        CapAuditBody.Text = Loc.T("home.cap.auditBody");
+        CapTweaksTitle.Text = Loc.T("home.cap.tweaks");
+        CapTweaksBody.Text = Loc.T("home.cap.tweaksBody");
+        CapAppsTitle.Text = Loc.T("home.cap.apps");
+        CapAppsBody.Text = Loc.T("home.cap.appsBody");
+        CapPerfTitle.Text = Loc.T("home.cap.perf");
+        CapPerfBody.Text = Loc.T("home.cap.perfBody");
+        CapLoadsTitle.Text = Loc.T("home.cap.loads");
+        CapLoadsBody.Text = Loc.T("home.cap.loadsBody");
+        CapBackupsTitle.Text = Loc.T("home.cap.backups");
+        CapBackupsBody.Text = Loc.T("home.cap.backupsBody");
         BtnModeGamingTitle.Text = Loc.T("mode.gaming");
         BtnModeGamingSub.Text = Loc.T("mode.gaming.sub");
         BtnModeOptimizedTitle.Text = Loc.T("mode.optimized");
@@ -282,6 +309,12 @@ public partial class MainWindow : Window
         SettingsChannelsTitle.Text = Loc.T("settings.channels");
         SettingsChannelsHint.Text = Loc.T("settings.channelsHint");
         MoreBackupsTitle.Text = Loc.T("more.backups");
+        BackupsHint.Text = Loc.T("backups.hint");
+        BtnCreateBackup.Content = Loc.T("backups.create");
+        BtnRefreshBackups.Content = Loc.T("backups.refresh");
+        BtnRestoreBackup.Content = Loc.T("backups.restore");
+        ToolsPageTitle.Text = Loc.T("tools.pageTitle");
+        ToolsPageHint.Text = Loc.T("tools.pageHint");
         MoreSystemTitle.Text = Loc.T("more.system");
         MoreSecurityTitle.Text = Loc.T("more.security");
         MoreToolsTitle.Text = Loc.T("more.tools");
@@ -314,8 +347,6 @@ public partial class MainWindow : Window
         SettingsUpdateTitle.Text = Loc.T("update.title");
         BtnCheckUpdatesSettings.Content = Loc.T("update.check");
         BtnOpenReleases.Content = Loc.T("update.open");
-        UpdateTokenHint.Text = Loc.T("update.tokenHint");
-        BtnSaveGithubToken.Content = Loc.T("update.saveToken");
         SettingsVersionText.Text = Loc.T("update.version").Replace("{0}", AppUpdateChecker.GetCurrentVersion(), StringComparison.Ordinal);
         SettingsInstallPath.Text = Loc.IsEnglish
             ? "Setup: artifacts\\installer\\WindowsLab-Setup.exe  ·  Zip: artifacts\\zip\\WindowsLab-portable-win-x64.zip"
@@ -384,8 +415,7 @@ public partial class MainWindow : Window
         BtnCheckUpdatesSettings.IsEnabled = false;
         try
         {
-            var token = AppUpdateChecker.ResolveToken(
-                string.IsNullOrWhiteSpace(GithubTokenBox?.Password) ? null : GithubTokenBox.Password);
+            var token = AppUpdateChecker.ResolveToken();
             var result = await AppUpdateChecker.CheckAsync(token).ConfigureAwait(true);
             UpdateStatusText.Text = result.Message;
             HomeQuickStatus.Text = result.Message;

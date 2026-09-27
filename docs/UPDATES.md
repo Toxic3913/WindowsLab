@@ -8,7 +8,7 @@ WindowsLab is **public**. In-app update uses GitHub Releases **without a token**
 2. In the app: **Más → Buscar e instalar actualización**.
 3. Confirm → download Setup → UAC → app closes → files replaced → app reopens.
 
-No GitHub token is required while the repository stays public.
+No GitHub token is required while the repository stays public. The UI no longer offers saving a PAT; for a private repo again, set `WINDOWSLAB_GITHUB_TOKEN` / `GH_TOKEN` or `operator.json` (Contents:read) outside the app.
 
 ## What you do to publish a new version
 
@@ -17,8 +17,8 @@ No GitHub token is required while the repository stays public.
 3. Tag and push:
 
 ```powershell
-git tag -a v1.2.3 -m "WindowsLab 1.2.3"
-git push origin v1.2.3
+git tag -a v1.2.4 -m "WindowsLab 1.2.4"
+git push origin v1.2.4
 ```
 
 4. Wait for Actions workflow **release** (`v*` tags):

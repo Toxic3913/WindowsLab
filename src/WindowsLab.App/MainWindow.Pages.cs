@@ -21,7 +21,7 @@ public partial class MainWindow
                 Id = r.Id,
                 Estado = r.Verdict switch
                 {
-                    ChecklistVerdict.Gap => "FALTA",
+                    ChecklistVerdict.Gap => Loc.T("home.pending.gap"),
                     ChecklistVerdict.Unknown => "?",
                     _ => "INFO"
                 },

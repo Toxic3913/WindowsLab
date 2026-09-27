@@ -10,9 +10,9 @@
     <Authors>WindowsLab</Authors>
     <Company>WindowsLab</Company>
     <Product>WindowsLab</Product>
-    <Version>1.2.3</Version>
-    <AssemblyVersion>1.2.3.0</AssemblyVersion>
-    <FileVersion>1.2.3.0</FileVersion>
-    <InformationalVersion>1.2.3</InformationalVersion>
+    <Version>1.2.4</Version>
+    <AssemblyVersion>1.2.4.0</AssemblyVersion>
+    <FileVersion>1.2.4.0</FileVersion>
+    <InformationalVersion>1.2.4</InformationalVersion>
   </PropertyGroup>
 </Project>

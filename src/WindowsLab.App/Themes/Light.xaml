@@ -20,4 +20,6 @@
   <SolidColorBrush x:Key="RowAltBrush" Color="#FFF0F3F7"/>
   <SolidColorBrush x:Key="HeaderBrush" Color="#FFE6EBF1"/>
   <SolidColorBrush x:Key="SecondaryTextBrush" Color="#FF57606A"/>
+  <SolidColorBrush x:Key="GapBorderBrush" Color="#FFE8C07A"/>
+  <SolidColorBrush x:Key="CheckBoxFillBrush" Color="#FFFFFFFF"/>
 </ResourceDictionary>

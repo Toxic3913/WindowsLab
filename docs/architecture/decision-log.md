@@ -266,7 +266,7 @@ Do not change an architectural decision without a new dated entry.
 - **Chosen:**
   - `catalog/workloads/*.json` allowlist (process + service names).
   - `ExternalWorkloadController` runtime stop (`CloseMainWindow`/`Kill` + `ServiceController.Stop`) with hard blocks for DiagTrack/SysMain/WSearch/Defender and critical system processes.
-  - UI on **Más → Cargas externas**; CLI `workload list|stop --yes`.
+  - UI on **Cargas** (nav; was Más → Cargas externas); CLI `workload list|stop --yes`.
   - Performance page stays sample-only (D022); this is an explicit operator action with confirmation.
 - **Reason:** Free RAM/CPU on daily drivers without mass-disabling Xbox at boot or killing protected OS services.
 - **Trade-offs:** Some services need elevation; apps may respawn (Steam auto-start); Vanguard stop is MEDIUM and separate from Riot Client.
@@ -294,4 +294,17 @@ Do not change an architectural decision without a new dated entry.
 - **Reason:** Match normal Windows desktop product expectations.
 - **Trade-offs:** Elevated uninstall (UAC); leftover user/runtime data must be removed manually if desired.
 - **Hardening (1.2.3):** Sentinel check before recursive delete; ARP/shortcuts removed only after finish stage; UAC cancel no longer reports success.
+
+## D031 — Eight-destination UI (ops pages promoted)
+
+- **Date:** 2026-09-27
+- **Context:** Más mixed updates, system-apply, workloads, backups, tools, and channels; Home showed machine probes instead of product capabilities; dark CheckBox/diff UX was hard to read.
+- **Chosen:**
+  - Nav: **Inicio · Ajustes · Apps · Rendimiento · Cargas · Respaldos · Herramientas · Más** (group headers Principal/Operación/Meta).
+  - Inicio: Montajes + Pendientes + **Qué puedes hacer**; remove Detalles del equipo.
+  - Cargas / Respaldos / Herramientas are first-class pages; Más is updates banner + system apply + theme/paths.
+  - No GitHub token UI (env / `operator.json` still work for private repos).
+  - Dark CheckBox template + Actual/Objetivo chips; Apps status **No instalado**; manual backup button.
+- **Reason:** Discoverability for daily ops without a catch-all Más dump.
+- **Trade-offs:** Eight nav items need compact sidebar; D024 five-destination IA superseded for shell layout (safety model unchanged).
 

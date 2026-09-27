@@ -15,7 +15,8 @@ public partial class MainWindow
 
     private void Nav_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (PageHome is null || PageAdjust is null || PagePerformance is null || PageMore is null)
+        if (PageHome is null || PageAdjust is null || PageApps is null || PagePerformance is null || PageMore is null
+            || PageWorkloads is null || PageBackups is null || PageTools is null)
         {
             return;
         }
@@ -43,15 +44,30 @@ public partial class MainWindow
         PageAdjust.Visibility = tag == "adjust" ? Visibility.Visible : Visibility.Collapsed;
         PageApps.Visibility = tag == "apps" ? Visibility.Visible : Visibility.Collapsed;
         PagePerformance.Visibility = tag == "performance" ? Visibility.Visible : Visibility.Collapsed;
+        PageWorkloads.Visibility = tag == "workloads" ? Visibility.Visible : Visibility.Collapsed;
+        PageBackups.Visibility = tag == "backups" ? Visibility.Visible : Visibility.Collapsed;
+        PageTools.Visibility = tag == "tools" ? Visibility.Visible : Visibility.Collapsed;
         PageMore.Visibility = tag == "more" ? Visibility.Visible : Visibility.Collapsed;
         if (tag == "adjust")
         {
             Dispatcher.BeginInvoke(UpdateAdjustCategoryColumns, DispatcherPriority.Loaded);
         }
 
-        if (tag == "more")
+        if (tag == "workloads")
         {
             RenderWorkloads();
+        }
+
+        if (tag == "backups")
+        {
+            RefreshBackupList();
+        }
+
+        if (tag == "tools")
+        {
+            RenderChannels();
+            RenderSystem();
+            RenderSecurity();
         }
     }
 
@@ -104,7 +120,21 @@ public partial class MainWindow
         UpdateModeButton(BtnModeEmpresaStat, "stack.empresa");
         UpdateModeButton(BtnModePruebasStat, "stack.pruebas");
 
-        ProbeList.ItemsSource = inv.Probes.Select(p => $"{p.Status,-12} {p.ProbeId}  {p.Message}").ToArray();
+        HomeCapabilitiesTitle.Text = Loc.T("home.capabilities");
+        HomeCapabilitiesHint.Text = Loc.T("home.capabilitiesHint");
+        CapAuditTitle.Text = Loc.T("home.cap.audit");
+        CapAuditBody.Text = Loc.T("home.cap.auditBody");
+        CapTweaksTitle.Text = Loc.T("home.cap.tweaks");
+        CapTweaksBody.Text = Loc.T("home.cap.tweaksBody");
+        CapAppsTitle.Text = Loc.T("home.cap.apps");
+        CapAppsBody.Text = Loc.T("home.cap.appsBody");
+        CapPerfTitle.Text = Loc.T("home.cap.perf");
+        CapPerfBody.Text = Loc.T("home.cap.perfBody");
+        CapLoadsTitle.Text = Loc.T("home.cap.loads");
+        CapLoadsBody.Text = Loc.T("home.cap.loadsBody");
+        CapBackupsTitle.Text = Loc.T("home.cap.backups");
+        CapBackupsBody.Text = Loc.T("home.cap.backupsBody");
+
         RenderPending();
     }
 
@@ -331,11 +361,13 @@ public partial class MainWindow
 
     private void UpdateAdjustSelectionStatus()
     {
-        var selectedTotal = _allTweakRows.Count(r => r.IsSelected);
-        AdjustStatus.Text = Loc.T("adjust.selected").Replace(
-            "{0}",
-            selectedTotal.ToString(System.Globalization.CultureInfo.InvariantCulture),
-            StringComparison.Ordinal);
+        var selected = _allTweakRows.Where(r => r.IsSelected).ToList();
+        var match = selected.Count(r => r.Match is true);
+        var gap = selected.Count - match;
+        AdjustStatus.Text = Loc.T("adjust.selected")
+            .Replace("{0}", selected.Count.ToString(System.Globalization.CultureInfo.InvariantCulture), StringComparison.Ordinal)
+            .Replace("{1}", gap.ToString(System.Globalization.CultureInfo.InvariantCulture), StringComparison.Ordinal)
+            .Replace("{2}", match.ToString(System.Globalization.CultureInfo.InvariantCulture), StringComparison.Ordinal);
     }
 
     private void PageAdjust_OnSizeChanged(object sender, SizeChangedEventArgs e) =>

@@ -43,7 +43,7 @@ public partial class MainWindow
                 Category = r.Category,
                 Score = r.Score,
                 Evidence = r.Evidence.ToString(),
-                InstalledLabel = r.Installed ? (Loc.IsEnglish ? "installed" : "instalado") : (Loc.IsEnglish ? "missing" : "falta"),
+                InstalledLabel = r.Installed ? Loc.T("apps.status.installed") : Loc.T("apps.status.notInstalled"),
                 Why = r.Why,
                 WingetId = r.WingetId,
                 Privacy = Math.Round(r.Axes.Privacy, 2),
@@ -155,21 +155,6 @@ public partial class MainWindow
         var allowSystem = ChkAllowSystemApply.IsChecked == true;
         var existingToken = OperatorSettingsStore.Load().GitHubToken;
         OperatorSettingsStore.Save(new OperatorSettings(profile, preset, DateTimeOffset.UtcNow, lang, theme, allowSystem, existingToken));
-    }
-
-    private void SaveGithubToken_OnClick(object sender, RoutedEventArgs e)
-    {
-        var existing = OperatorSettingsStore.Load();
-        var token = string.IsNullOrWhiteSpace(GithubTokenBox.Password) ? null : GithubTokenBox.Password.Trim();
-        OperatorSettingsStore.Save(existing with
-        {
-            GitHubToken = token,
-            SavedUtc = DateTimeOffset.UtcNow
-        });
-        GithubTokenBox.Password = "";
-        UpdateStatusText.Text = token is null
-            ? (Loc.IsEnglish ? "GitHub token cleared." : "Token de GitHub borrado.")
-            : (Loc.IsEnglish ? "GitHub token saved (local only)." : "Token de GitHub guardado (solo local).");
     }
 
     private void AllowSystemApply_OnChanged(object sender, RoutedEventArgs e)

@@ -331,10 +331,63 @@ public partial class MainWindow
 
     private void MenuExit_OnClick(object sender, RoutedEventArgs e) => Close();
 
-    private void MenuBackups_OnClick(object sender, RoutedEventArgs e)
+    private void MenuBackups_OnClick(object sender, RoutedEventArgs e) => SelectNav("backups");
+
+    private async void CreateBackup_OnClick(object sender, RoutedEventArgs e)
     {
-        SelectNav("more");
-        RefreshBackupList();
+        if (_session is null)
+        {
+            BackupStatus.Text = Loc.IsEnglish ? "Still loading." : "Aún cargando.";
+            return;
+        }
+
+        var confirm = MessageBox.Show(
+            Loc.IsEnglish
+                ? "Capture current tweak state into a new backup (no changes applied)?"
+                : "¿Capturar el estado actual de los tweaks en un respaldo nuevo (sin aplicar cambios)?",
+            Loc.T("more.backups"),
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question);
+        if (confirm != MessageBoxResult.Yes)
+        {
+            BackupStatus.Text = Loc.IsEnglish ? "Cancelled." : "Cancelado.";
+            return;
+        }
+
+        BackupStatus.Text = Loc.T("backups.creating");
+        BtnCreateBackup.IsEnabled = false;
+        try
+        {
+            var tweaks = _session.Catalog
+                .Where(t => TweakApplicator.IsApplyEligible(t) || TweakApplicator.IsLabEligible(t))
+                .ToArray();
+            if (tweaks.Length == 0)
+            {
+                BackupStatus.Text = Loc.IsEnglish ? "No eligible tweaks to snapshot." : "No hay tweaks elegibles para el snapshot.";
+                return;
+            }
+
+            var manifest = await Task.Run(() =>
+            {
+                var request = ManifestBackupBuilder.Build(
+                    tweaks,
+                    new LiveRegistryReader(),
+                    reason: "manual",
+                    restorePoint: null);
+                return new FileBackupStore().Create(request);
+            }).ConfigureAwait(true);
+
+            BackupStatus.Text = Loc.T("backups.created").Replace("{0}", manifest.BackupId, StringComparison.Ordinal);
+            RefreshBackupList();
+        }
+        catch (Exception ex)
+        {
+            BackupStatus.Text = Loc.T("backups.createFailed").Replace("{0}", ex.Message, StringComparison.Ordinal);
+        }
+        finally
+        {
+            BtnCreateBackup.IsEnabled = true;
+        }
     }
 
     private void MenuNav_OnClick(object sender, RoutedEventArgs e)
