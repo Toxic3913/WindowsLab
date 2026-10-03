@@ -336,7 +336,15 @@ public partial class MainWindow : Window
         UpdatePerfFilterLabels();
         BtnDesktopInfo.Content = Loc.T("btn.desktopInfo");
         BtnBgInfo.Content = Loc.T("btn.bginfo.activate");
+        BtnBgInfoDisable.Content = Loc.T("btn.bginfo.disable");
         BtnBgInfoDocs.Content = Loc.T("btn.bginfo.docs");
+        BgInfoCompatHint.Text = Loc.T("btn.bginfo.compat");
+        OverlayChoiceTitle.Text = Loc.T("overlay.choice.title");
+        BtnOverlayRecommended.Content = Loc.T("overlay.choice.openRecommended");
+        BtnRefreshOverlayRec.Content = Loc.T("overlay.choice.refresh");
+        MenuBgInfoEnable.Header = Loc.T("btn.bginfo.activate");
+        MenuBgInfoDisable.Header = Loc.T("btn.bginfo.disable");
+        RefreshOverlayRecommendation();
         BtnGodMode.Content = Loc.T("tools.godmode");
         BtnActivateWindows.Content = Loc.T("btn.activateWindows");
         BtnWindowsSecurity.Content = Loc.T("btn.windowsSecurity");

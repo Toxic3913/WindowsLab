@@ -238,8 +238,55 @@ public partial class MainWindow
 
     private void OpenDesktopInfo_OnClick(object sender, RoutedEventArgs e)
     {
-        var w = new DesktopInfoWindow { Owner = this };
-        w.Show();
+        DesktopInfoWindow.ShowSingleton(this);
+        RefreshOverlayRecommendation();
+        SetQuickStatus(Loc.IsEnglish
+            ? "DesktopInfo open (overlay — wallpaper safe)."
+            : "DesktopInfo abierto (overlay — no toca el fondo).");
+    }
+
+    private void OpenRecommendedOverlay_OnClick(object sender, RoutedEventArgs e)
+    {
+        var rec = DesktopInfoChooser.Recommend();
+        RefreshOverlayRecommendation(rec);
+        if (rec.Recommended == DesktopOverlayChoice.DesktopInfo)
+        {
+            OpenDesktopInfo_OnClick(sender, e);
+            return;
+        }
+
+        ActivateBgInfo_OnClick(sender, e);
+    }
+
+    private void RefreshOverlayRecommendation_OnClick(object sender, RoutedEventArgs e) =>
+        RefreshOverlayRecommendation();
+
+    private void RefreshOverlayRecommendation(DesktopOverlayRecommendation? rec = null)
+    {
+        rec ??= DesktopInfoChooser.Recommend();
+        if (OverlayRecommendTitle is null)
+        {
+            return;
+        }
+
+        OverlayRecommendTitle.Text = rec.Title;
+        OverlayRecommendReason.Text = rec.Reason;
+        var brushKey = rec.Recommended == DesktopOverlayChoice.DesktopInfo ? "OkBrush" : "WarnBrush";
+        if (TryFindResource(brushKey) is System.Windows.Media.Brush brush)
+        {
+            OverlayRecommendTitle.Foreground = brush;
+        }
+
+        BtnOverlayRecommended.Content = rec.Recommended == DesktopOverlayChoice.DesktopInfo
+            ? Loc.T("overlay.choice.openDesktopInfo")
+            : Loc.T("btn.bginfo.activate");
+        var primary = TryFindResource("PrimaryButton") as Style;
+        var plain = TryFindResource(typeof(Button)) as Style;
+        if (primary is not null && plain is not null)
+        {
+            BtnDesktopInfo.Style = rec.Recommended == DesktopOverlayChoice.DesktopInfo ? primary : plain;
+            BtnBgInfo.Style = rec.Recommended == DesktopOverlayChoice.BgInfo ? primary : plain;
+        }
     }
 
     private void OpenBgInfoOfficial_OnClick(object sender, RoutedEventArgs e)
@@ -284,52 +331,60 @@ public partial class MainWindow
     private void ActivateBgInfo_OnClick(object sender, RoutedEventArgs e)
     {
         var probe = QuickTools.ProbeBgInfo();
-        BgInfoLogHint.Text = (Loc.IsEnglish ? "Log: " : "Log: ") + probe.LogPath;
+        BgInfoLogHint.Text = "Log: " + probe.LogPath;
         SetQuickStatus(probe.Summary);
 
-        var pre = new StringBuilder();
-        pre.AppendLine(probe.Details);
-        pre.AppendLine();
-        if (probe.NeedsInstall)
+        var pauseConflicts = false;
+        if (probe.WallpaperConflicts.Count > 0)
         {
-            pre.AppendLine(Loc.IsEnglish
-                ? "BGInfo is not installed. Install via winget (Microsoft.Sysinternals.BGInfo) and open it?"
-                : "BGInfo no está instalado. ¿Instalar con winget (Microsoft.Sysinternals.BGInfo) y abrirlo?");
+            var conflictMsg = Loc.T("btn.bginfo.enable.conflict")
+                .Replace("{0}", string.Join(", ", probe.WallpaperConflicts), StringComparison.Ordinal)
+                + "\n\n" + probe.Details;
+            var conflictAsk = MessageBox.Show(
+                conflictMsg,
+                "BGInfo / DesktopInfo",
+                MessageBoxButton.YesNoCancel,
+                MessageBoxImage.Warning);
+            if (conflictAsk == MessageBoxResult.Cancel)
+            {
+                SetQuickStatus(Loc.T("btn.bginfo.cancelled"));
+                return;
+            }
+
+            if (conflictAsk == MessageBoxResult.Yes)
+            {
+                OpenDesktopInfo_OnClick(sender, e);
+                return;
+            }
+
+            // No = proceed with BGInfo after pausing conflicts
+            pauseConflicts = true;
         }
         else
         {
-            pre.AppendLine(Loc.IsEnglish
-                ? "Open BGInfo now?"
-                : "¿Abrir BGInfo ahora?");
+            var go = MessageBox.Show(
+                Loc.T("btn.bginfo.enable.confirm") + "\n\n" + probe.Details,
+                "BGInfo",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+            if (go != MessageBoxResult.Yes)
+            {
+                SetQuickStatus(Loc.T("btn.bginfo.cancelled"));
+                return;
+            }
         }
 
-        if (probe.WallpaperConflicts.Count > 0)
-        {
-            pre.AppendLine();
-            pre.AppendLine(Loc.IsEnglish
-                ? "Tip: pause wallpaper apps first if the desktop does not update."
-                : "Consejo: pausa las apps de fondo si el escritorio no se actualiza.");
-        }
-
-        var go = MessageBox.Show(
-            pre.ToString(),
-            "BGInfo",
-            MessageBoxButton.YesNo,
-            probe.WallpaperConflicts.Count > 0 ? MessageBoxImage.Warning : MessageBoxImage.Question);
-        if (go != MessageBoxResult.Yes)
-        {
-            SetQuickStatus(Loc.IsEnglish ? "BGInfo cancelled." : "BGInfo cancelado.");
-            return;
-        }
-
-        SetQuickStatus(Loc.IsEnglish ? "BGInfo working…" : "BGInfo en curso…");
+        SetQuickStatus(Loc.T("btn.bginfo.working"));
         BtnBgInfo.IsEnabled = false;
+        BtnBgInfoDisable.IsEnabled = false;
         var allowInstall = probe.NeedsInstall;
-        Task.Run(() => QuickTools.LaunchOrInstallBgInfo(allowInstall)).ContinueWith(t =>
+        var pause = pauseConflicts;
+        Task.Run(() => BgInfoService.Enable(allowInstall, pause)).ContinueWith(t =>
         {
             Dispatcher.Invoke(() =>
             {
                 BtnBgInfo.IsEnabled = true;
+                BtnBgInfoDisable.IsEnabled = true;
                 if (t.IsFaulted)
                 {
                     var err = Truncate(t.Exception?.GetBaseException().Message ?? "error", 400);
@@ -341,7 +396,7 @@ public partial class MainWindow
 
                 var report = t.Result;
                 SetQuickStatus(Truncate(report.Summary, 400));
-                BgInfoLogHint.Text = (Loc.IsEnglish ? "Log: " : "Log: ") + report.LogPath;
+                BgInfoLogHint.Text = "Log: " + report.LogPath;
                 MessageBox.Show(
                     report.Details,
                     "BGInfo — " + (report.Ok ? (Loc.IsEnglish ? "OK" : "Listo") : (Loc.IsEnglish ? "Problem" : "Problema")),
@@ -349,6 +404,49 @@ public partial class MainWindow
                     report.Ok
                         ? (report.WallpaperConflicts.Count > 0 ? MessageBoxImage.Warning : MessageBoxImage.Information)
                         : MessageBoxImage.Warning);
+            });
+        }, TaskScheduler.Default);
+    }
+
+    private void DisableBgInfo_OnClick(object sender, RoutedEventArgs e)
+    {
+        var ask = MessageBox.Show(
+            Loc.T("btn.bginfo.disable.confirm"),
+            "BGInfo",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question);
+        if (ask != MessageBoxResult.Yes)
+        {
+            SetQuickStatus(Loc.T("btn.bginfo.cancelled"));
+            return;
+        }
+
+        SetQuickStatus(Loc.T("btn.bginfo.working"));
+        BtnBgInfo.IsEnabled = false;
+        BtnBgInfoDisable.IsEnabled = false;
+        Task.Run(() => BgInfoService.Disable(resumeConflicts: true)).ContinueWith(t =>
+        {
+            Dispatcher.Invoke(() =>
+            {
+                BtnBgInfo.IsEnabled = true;
+                BtnBgInfoDisable.IsEnabled = true;
+                if (t.IsFaulted)
+                {
+                    var err = Truncate(t.Exception?.GetBaseException().Message ?? "error", 400);
+                    SetQuickStatus(err);
+                    MessageBox.Show(err + "\n\nLog: " + QuickTools.BgInfoLogPath, "BGInfo",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                var report = t.Result;
+                SetQuickStatus(Truncate(report.Summary, 400));
+                BgInfoLogHint.Text = "Log: " + report.LogPath;
+                MessageBox.Show(
+                    report.Details,
+                    "BGInfo — " + (report.Ok ? (Loc.IsEnglish ? "Disabled" : "Desactivado") : (Loc.IsEnglish ? "Problem" : "Problema")),
+                    MessageBoxButton.OK,
+                    report.Ok ? MessageBoxImage.Information : MessageBoxImage.Warning);
             });
         }, TaskScheduler.Default);
     }

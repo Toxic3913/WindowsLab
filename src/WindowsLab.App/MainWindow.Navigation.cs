@@ -68,6 +68,7 @@ public partial class MainWindow
             RenderChannels();
             RenderSystem();
             RenderSecurity();
+            RefreshOverlayRecommendation();
         }
     }
 
