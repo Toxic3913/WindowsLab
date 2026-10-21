@@ -342,9 +342,12 @@ public partial class MainWindow : Window
         OverlayChoiceTitle.Text = Loc.T("overlay.choice.title");
         BtnOverlayRecommended.Content = Loc.T("overlay.choice.openRecommended");
         BtnRefreshOverlayRec.Content = Loc.T("overlay.choice.refresh");
+        ToolHubSectionTitle.Text = Loc.T("tools.hub.sectionTitle");
+        ToolHubSectionHint.Text = Loc.T("tools.hub.sectionHint");
         MenuBgInfoEnable.Header = Loc.T("btn.bginfo.activate");
         MenuBgInfoDisable.Header = Loc.T("btn.bginfo.disable");
         RefreshOverlayRecommendation();
+        RefreshToolHub();
         BtnGodMode.Content = Loc.T("tools.godmode");
         BtnActivateWindows.Content = Loc.T("btn.activateWindows");
         BtnWindowsSecurity.Content = Loc.T("btn.windowsSecurity");

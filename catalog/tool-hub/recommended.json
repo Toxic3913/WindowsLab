@@ -1,0 +1,144 @@
+[
+  {
+    "id": "hub.desktop.powertoys",
+    "title": "PowerToys",
+    "group": "desktop",
+    "summary": "Utilidades oficiales de Microsoft (FancyZones, Run, Color Picker, Awake…).",
+    "summaryEn": "Official Microsoft utilities (FancyZones, Run, Color Picker, Awake…).",
+    "improves": "Productividad en el escritorio sin tocar políticas de Windows.",
+    "improvesEn": "Desktop productivity without changing Windows policy.",
+    "kind": "winget",
+    "catalogAppId": "app.tool.powertoys",
+    "url": "https://learn.microsoft.com/windows/powertoys/",
+    "evidence": "OFFICIAL",
+    "riskNote": "",
+    "riskNoteEn": "",
+    "launchExeHints": [
+      "%LOCALAPPDATA%\\PowerToys\\PowerToys.exe",
+      "%ProgramFiles%\\PowerToys\\PowerToys.exe",
+      "PowerToys.exe"
+    ]
+  },
+  {
+    "id": "hub.desktop.treesize-free",
+    "title": "TreeSize Free",
+    "group": "desktop",
+    "summary": "Muestra qué carpetas ocupan más espacio en disco.",
+    "summaryEn": "Shows which folders use the most disk space.",
+    "improves": "Diagnóstico de almacenamiento y limpieza informada.",
+    "improvesEn": "Storage diagnostics and informed cleanup.",
+    "kind": "winget",
+    "catalogAppId": "app.tool.treesize-free",
+    "url": "https://www.jam-software.com/treesize_free",
+    "evidence": "STRONG",
+    "riskNote": "",
+    "riskNoteEn": "",
+    "launchExeHints": [
+      "%ProgramFiles%\\JAM Software\\TreeSize Free\\TreeSizeFree.exe",
+      "%ProgramFiles(x86)%\\JAM Software\\TreeSize Free\\TreeSizeFree.exe",
+      "TreeSizeFree.exe"
+    ]
+  },
+  {
+    "id": "hub.performance.quickcpu",
+    "title": "Quick CPU",
+    "group": "performance",
+    "summary": "Monitorización y ajuste de parámetros de CPU y energía.",
+    "summaryEn": "CPU and power parameter monitoring and tuning.",
+    "improves": "Diagnóstico y posibles ajustes de rendimiento del procesador.",
+    "improvesEn": "Diagnostics and possible CPU performance tuning.",
+    "kind": "winget",
+    "catalogAppId": "app.tool.quickcpu",
+    "url": "https://coderbag.com/product/quickcpu",
+    "evidence": "STRONG",
+    "riskNote": "Puede cambiar planes de energía y límites de CPU. Úsalo con cuidado.",
+    "riskNoteEn": "May change power plans and CPU limits. Use carefully.",
+    "launchExeHints": [
+      "%ProgramFiles%\\QuickCPU\\QuickCPU.exe",
+      "%ProgramFiles(x86)%\\QuickCPU\\QuickCPU.exe",
+      "QuickCPU.exe"
+    ]
+  },
+  {
+    "id": "hub.performance.lossless-scaling",
+    "title": "Lossless Scaling",
+    "group": "performance",
+    "summary": "Escalado de imagen y generación de fotogramas (LSFG). Se distribuye por Steam.",
+    "summaryEn": "Image scaling and frame generation (LSFG). Distributed via Steam.",
+    "improves": "Fluidez visual y rendimiento percibido en juegos compatibles.",
+    "improvesEn": "Visual smoothness and perceived performance in compatible games.",
+    "kind": "steam",
+    "steamAppId": "993090",
+    "url": "https://store.steampowered.com/app/993090/Lossless_Scaling/",
+    "evidence": "STRONG",
+    "riskNote": "No hay paquete winget. Compra/instalación vía Steam. Anti-cheat: úsalo con criterio.",
+    "riskNoteEn": "No winget package. Buy/install via Steam. Anti-cheat: use at your discretion.",
+    "launchExeHints": [
+      "%ProgramFiles(x86)%\\Steam\\steamapps\\common\\Lossless Scaling\\LosslessScaling.exe",
+      "%ProgramFiles%\\Steam\\steamapps\\common\\Lossless Scaling\\LosslessScaling.exe"
+    ]
+  },
+  {
+    "id": "hub.performance.nvidia-reflex",
+    "title": "NVIDIA Reflex",
+    "group": "performance",
+    "summary": "Tecnología de drivers/juegos NVIDIA para reducir latencia de sistema. No es una app instalable aparte.",
+    "summaryEn": "NVIDIA driver/game technology to reduce system latency. Not a standalone installable app.",
+    "improves": "Tiempo de respuesta en juegos compatibles con GPU NVIDIA.",
+    "improvesEn": "Response time in compatible games on NVIDIA GPUs.",
+    "kind": "docsOnly",
+    "url": "https://www.nvidia.com/en-us/geforce/technologies/reflex/",
+    "evidence": "OFFICIAL",
+    "riskNote": "Actívalo en el juego y/o Panel de control NVIDIA. WindowsLab no lo instala.",
+    "riskNoteEn": "Enable in-game and/or NVIDIA Control Panel. WindowsLab does not install it.",
+    "launchExeHints": [
+      "%ProgramFiles%\\NVIDIA Corporation\\Control Panel Client\\nvcplui.exe"
+    ]
+  },
+  {
+    "id": "hub.network.exitlag",
+    "title": "ExitLag",
+    "group": "network",
+    "summary": "Optimización de rutas de conexión hacia servidores de juegos (servicio de terceros).",
+    "summaryEn": "Route optimization toward game servers (third-party service).",
+    "improves": "Posible reducción de latencia, pérdida de paquetes o jitter.",
+    "improvesEn": "Possible reduction of latency, packet loss, or jitter.",
+    "kind": "externalUrl",
+    "url": "https://www.exitlag.com/",
+    "evidence": "COMMUNITY",
+    "riskNote": "Proxy/VPN de terceros. No hay winget curado; WindowsLab solo abre la web oficial.",
+    "riskNoteEn": "Third-party proxy/VPN. No curated winget; WindowsLab only opens the official site.",
+    "launchExeHints": []
+  },
+  {
+    "id": "hub.network.tcp-optimizer",
+    "title": "TCP Optimizer",
+    "group": "network",
+    "summary": "Utilidad de SpeedGuide para revisar/ajustar parámetros TCP/IP de Windows.",
+    "summaryEn": "SpeedGuide utility to review/tune Windows TCP/IP parameters.",
+    "improves": "Posibles mejoras de conectividad en algunas configs; no garantiza menos ping.",
+    "improvesEn": "Possible connectivity improvements in some setups; does not guarantee lower ping.",
+    "kind": "externalUrl",
+    "url": "https://www.speedguide.net/downloads.php",
+    "evidence": "COMMUNITY",
+    "riskNote": "WindowsLab NO aplica tweaks TCP. Descarga oficial solo; úsalo bajo tu responsabilidad.",
+    "riskNoteEn": "WindowsLab does NOT apply TCP tweaks. Official download only; use at your own risk.",
+    "launchExeHints": []
+  },
+  {
+    "id": "hub.accessibility.filter-keys",
+    "title": "Filter Keys",
+    "group": "accessibility",
+    "summary": "Función de accesibilidad de Windows que filtra pulsaciones repetidas o accidentales.",
+    "summaryEn": "Windows accessibility feature that filters repeated or accidental key presses.",
+    "improves": "Evitar pulsaciones no deseadas. No aumenta los FPS.",
+    "improvesEn": "Avoid unwanted key repeats. Does not increase FPS.",
+    "kind": "windowsSettings",
+    "settingsUri": "ms-settings:easeofaccess-keyboard",
+    "url": "https://support.microsoft.com/windows/make-your-keyboard-easier-to-use-in-windows-054f9d0b-ba83-8b6c-b1d6-0d5a70063daa",
+    "evidence": "OFFICIAL",
+    "riskNote": "WindowsLab solo abre Configuración; no cambia Filter Keys por ti.",
+    "riskNoteEn": "WindowsLab only opens Settings; it does not toggle Filter Keys for you.",
+    "launchExeHints": []
+  }
+]

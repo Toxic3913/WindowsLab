@@ -143,6 +143,65 @@
                         ]
     },
     {
+        "id":  "app.tool.treesize-free",
+        "title":  "TreeSize Free",
+        "description":  "Analiza qué carpetas ocupan disco (JAM Software Free).",
+        "wingetId":  "JAMSoftware.TreeSize.Free",
+        "category":  "tool",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://www.jam-software.com/treesize_free"
+                         ],
+        "risk":  "LOW",
+        "axes":  {
+                     "privacy":  0.8,
+                     "telemetry":  0.75,
+                     "security":  0.75,
+                     "performance":  0.7,
+                     "ecosystem":  0.7
+                 },
+        "profiles":  [
+                         "balanced",
+                         "developer",
+                         "gaming",
+                         "virtualization"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "TreeSize Free",
+                            "TreeSize"
+                        ]
+    },
+    {
+        "id":  "app.tool.quickcpu",
+        "title":  "Quick CPU",
+        "description":  "Monitorización y ajuste de CPU/energía (CoderBag). Úsalo con cuidado.",
+        "wingetId":  "CoderBag.QuickCPUx64",
+        "category":  "tool",
+        "evidence":  "STRONG",
+        "evidenceRefs":  [
+                             "https://coderbag.com/product/quickcpu"
+                         ],
+        "risk":  "MEDIUM",
+        "axes":  {
+                     "privacy":  0.7,
+                     "telemetry":  0.7,
+                     "security":  0.55,
+                     "performance":  0.85,
+                     "ecosystem":  0.55
+                 },
+        "profiles":  [
+                         "gaming",
+                         "developer",
+                         "balanced"
+                     ],
+        "scopePreference":  "machine",
+        "detectNames":  [
+                            "Quick CPU",
+                            "QuickCPU"
+                        ]
+    },
+    {
         "id":  "app.tool.notepadpp",
         "title":  "Notepad++",
         "description":  "Editor de texto ligero para configs y logs.",

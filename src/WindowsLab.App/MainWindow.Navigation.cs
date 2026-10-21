@@ -69,6 +69,7 @@ public partial class MainWindow
             RenderSystem();
             RenderSecurity();
             RefreshOverlayRecommendation();
+            RefreshToolHub();
         }
     }
 
