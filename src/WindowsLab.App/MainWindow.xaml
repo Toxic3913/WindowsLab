@@ -19,6 +19,7 @@
         <MenuItem x:Name="MenuNavAdjust" Header="Ajustes" Tag="adjust" Click="MenuNav_OnClick"/>
         <MenuItem x:Name="MenuNavApps" Header="Apps" Tag="apps" Click="MenuNav_OnClick"/>
         <MenuItem x:Name="MenuNavPerf" Header="Rendimiento" Tag="performance" Click="MenuNav_OnClick"/>
+        <MenuItem x:Name="MenuNavGame" Header="Juegos" Tag="game" Click="MenuNav_OnClick"/>
         <Separator/>
         <MenuItem x:Name="MenuNavWorkloads" Header="Cargas" Tag="workloads" Click="MenuNav_OnClick"/>
         <MenuItem x:Name="MenuNavBackups" Header="Respaldos" Tag="backups" Click="MenuNav_OnClick"/>
@@ -78,6 +79,7 @@
       <ListBoxItem x:Name="NavAdjust" Content="Ajustes" Tag="adjust"/>
       <ListBoxItem x:Name="NavApps" Content="Apps" Tag="apps"/>
       <ListBoxItem x:Name="NavPerformance" Content="Rendimiento" Tag="performance"/>
+      <ListBoxItem x:Name="NavGame" Content="Juegos" Tag="game"/>
       <ListBoxItem Style="{StaticResource NavHeader}" Content="Operación"/>
       <ListBoxItem x:Name="NavWorkloads" Content="Cargas" Tag="workloads"/>
       <ListBoxItem x:Name="NavBackups" Content="Respaldos" Tag="backups"/>
@@ -450,6 +452,64 @@
           </DataGrid.Columns>
         </DataGrid>
       </DockPanel>
+
+      <!-- JUEGOS -->
+      <ScrollViewer x:Name="PageGame" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+          <TextBlock x:Name="GamePageTitle" FontWeight="SemiBold" FontSize="18" Text="Juegos" Margin="0,0,0,8"/>
+          <TextBlock x:Name="GamePageHint" TextWrapping="Wrap" Margin="0,0,0,12" Foreground="{DynamicResource MutedBrush}"/>
+
+          <Border Padding="14" Margin="0,0,0,14" CornerRadius="8"
+                  Background="{DynamicResource ChipBrush}"
+                  BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1">
+            <StackPanel>
+              <TextBlock x:Name="GameModeCardTitle" FontWeight="SemiBold" FontSize="15"
+                         Foreground="{DynamicResource TextBrush}" Text="Modo juego"/>
+              <TextBlock x:Name="GameModeCardBody" Margin="0,8,0,0" TextWrapping="Wrap" FontSize="12"
+                         Foreground="{DynamicResource SecondaryTextBrush}"/>
+              <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                <Button x:Name="BtnStartGameMode" Style="{StaticResource PrimaryButton}"
+                        Content="Iniciar modo juego" Click="StartGameMode_OnClick" Padding="14,8" Margin="0,0,8,0"/>
+                <Button x:Name="BtnGameModeSettings" Content="Config. Game Mode"
+                        Click="OpenWindowsGameMode_OnClick" Padding="12,8"/>
+              </StackPanel>
+            </StackPanel>
+          </Border>
+
+          <TextBlock x:Name="GameQuickTitle" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,8" Text="Antes de jugar"/>
+          <WrapPanel Margin="0,0,0,8">
+            <Button x:Name="BtnGameFreeRam" Content="Aliviar RAM (cargas)" Click="GameFreeRam_OnClick"
+                    Padding="12,8" Margin="0,0,8,8"/>
+            <Button x:Name="BtnGameOpenPerf" Content="Rendimiento en vivo" Click="GameOpenPerf_OnClick"
+                    Padding="12,8" Margin="0,0,8,8"/>
+            <Button x:Name="BtnGameOpenWorkloads" Content="Cargas externas" Click="GameOpenWorkloads_OnClick"
+                    Padding="12,8" Margin="0,0,8,8"/>
+            <Button x:Name="BtnGameOpenTools" Content="Herramientas hub" Click="GameOpenTools_OnClick"
+                    Padding="12,8" Margin="0,0,8,8"/>
+          </WrapPanel>
+          <TextBlock x:Name="GameRamPolicyHint" TextWrapping="Wrap" Margin="0,0,0,14" FontSize="12"
+                     Foreground="{DynamicResource WarnBrush}"/>
+
+          <Border Padding="14" Margin="0,0,0,14" CornerRadius="8"
+                  Background="{DynamicResource ChipBrush}"
+                  BorderBrush="{DynamicResource BorderBrushSubtle}" BorderThickness="1">
+            <StackPanel>
+              <TextBlock x:Name="GameScsTitle" FontWeight="SemiBold" FontSize="15"
+                         Foreground="{DynamicResource TextBrush}" Text="SCSKiller"/>
+              <TextBlock x:Name="GameScsStatus" Margin="0,8,0,4" FontWeight="SemiBold" TextWrapping="Wrap"/>
+              <TextBlock x:Name="GameScsBody" TextWrapping="Wrap" FontSize="12"
+                         Foreground="{DynamicResource SecondaryTextBrush}"/>
+              <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                <Button x:Name="BtnScsKillerAction" Style="{StaticResource PrimaryButton}"
+                        Content="Abrir / Descargar" Click="ScsKillerAction_OnClick" Padding="12,8" Margin="0,0,8,0"/>
+                <Button x:Name="BtnScsKillerDocs" Content="GitHub" Click="ScsKillerDocs_OnClick" Padding="12,8"/>
+              </StackPanel>
+            </StackPanel>
+          </Border>
+
+          <TextBlock x:Name="GameStatusText" TextWrapping="Wrap" Foreground="{DynamicResource SecondaryTextBrush}"/>
+        </StackPanel>
+      </ScrollViewer>
 
       <!-- CARGAS -->
       <ScrollViewer x:Name="PageWorkloads" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">

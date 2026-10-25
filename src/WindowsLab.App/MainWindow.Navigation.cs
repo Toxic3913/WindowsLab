@@ -16,7 +16,7 @@ public partial class MainWindow
     private void Nav_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (PageHome is null || PageAdjust is null || PageApps is null || PagePerformance is null || PageMore is null
-            || PageWorkloads is null || PageBackups is null || PageTools is null)
+            || PageWorkloads is null || PageBackups is null || PageTools is null || PageGame is null)
         {
             return;
         }
@@ -44,6 +44,7 @@ public partial class MainWindow
         PageAdjust.Visibility = tag == "adjust" ? Visibility.Visible : Visibility.Collapsed;
         PageApps.Visibility = tag == "apps" ? Visibility.Visible : Visibility.Collapsed;
         PagePerformance.Visibility = tag == "performance" ? Visibility.Visible : Visibility.Collapsed;
+        PageGame.Visibility = tag == "game" ? Visibility.Visible : Visibility.Collapsed;
         PageWorkloads.Visibility = tag == "workloads" ? Visibility.Visible : Visibility.Collapsed;
         PageBackups.Visibility = tag == "backups" ? Visibility.Visible : Visibility.Collapsed;
         PageTools.Visibility = tag == "tools" ? Visibility.Visible : Visibility.Collapsed;
@@ -51,6 +52,11 @@ public partial class MainWindow
         if (tag == "adjust")
         {
             Dispatcher.BeginInvoke(UpdateAdjustCategoryColumns, DispatcherPriority.Loaded);
+        }
+
+        if (tag == "game")
+        {
+            RefreshGamePage();
         }
 
         if (tag == "workloads")

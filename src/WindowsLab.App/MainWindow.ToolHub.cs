@@ -91,8 +91,12 @@ public partial class MainWindow
                 row.ActionText = Loc.T("tools.hub.action.settings");
                 break;
             case ToolHubKind.ExternalUrl:
-                row.StatusText = Loc.T("tools.hub.status.external");
-                row.ActionText = Loc.T("tools.hub.action.website");
+                row.StatusText = Loc.T(present
+                    ? "tools.hub.status.installed"
+                    : "tools.hub.status.external");
+                row.ActionText = Loc.T(present
+                    ? "tools.hub.action.open"
+                    : "tools.hub.action.website");
                 break;
             case ToolHubKind.DocsOnly:
                 row.StatusText = Loc.T(present
@@ -176,6 +180,12 @@ public partial class MainWindow
                 return;
 
             case ToolHubKind.ExternalUrl:
+                if (row.IsPresent && ToolHubService.TryLaunch(entry))
+                {
+                    SetQuickStatus(Loc.T("tools.hub.action.open") + ": " + entry.Title);
+                    return;
+                }
+
                 if (!ToolHubService.TryOpenUrl(entry.Url))
                 {
                     SetQuickStatus(Loc.T("tools.hub.openFail"));

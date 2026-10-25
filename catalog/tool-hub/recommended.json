@@ -79,6 +79,25 @@
     ]
   },
   {
+    "id": "hub.performance.scskiller",
+    "title": "SCSKiller",
+    "group": "performance",
+    "summary": "Compila shaders al caché del driver antes de jugar (menos stutter de compilación).",
+    "summaryEn": "Compiles shaders into the GPU driver cache before you play (less compile stutter).",
+    "improves": "Fluidez en juegos DX12 (NVIDIA/AMD) al reducir compilaciones mid-game.",
+    "improvesEn": "Smoother DX12 play (NVIDIA/AMD) by reducing mid-game shader compiles.",
+    "kind": "externalUrl",
+    "url": "https://github.com/BlueHeisenberg/SCSKiller/releases/latest",
+    "evidence": "STRONG",
+    "riskNote": "Sin winget. Descarga solo desde Releases oficiales. Anti-cheat: lee el FAQ del proyecto.",
+    "riskNoteEn": "No winget. Download only from official Releases. Anti-cheat: read the project FAQ.",
+    "launchExeHints": [
+      "%LOCALAPPDATA%\\SCSKiller\\SCSKiller.exe",
+      "%LOCALAPPDATA%\\Programs\\SCSKiller\\SCSKiller.exe",
+      "%ProgramFiles%\\SCSKiller\\SCSKiller.exe"
+    ]
+  },
+  {
     "id": "hub.performance.nvidia-reflex",
     "title": "NVIDIA Reflex",
     "group": "performance",
