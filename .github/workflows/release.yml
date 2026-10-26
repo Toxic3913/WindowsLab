@@ -21,7 +21,7 @@ jobs:
       - name: Publish portable
         run: pwsh -File eng/publish.ps1
       - name: Upload release assets
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           generate_release_notes: true
           fail_on_unmatched_files: false
