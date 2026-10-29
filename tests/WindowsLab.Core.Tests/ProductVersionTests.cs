@@ -11,7 +11,7 @@ public sealed class ProductVersionTests
         var v = typeof(Loc).Assembly
             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
             ?.InformationalVersion;
-        Assert.StartsWith("1.2.9", v ?? "", StringComparison.Ordinal);
-        Assert.StartsWith("1.2.9", AppUpdateChecker.GetCurrentVersion(), StringComparison.Ordinal);
+        Assert.StartsWith("1.2.10", v ?? "", StringComparison.Ordinal);
+        Assert.StartsWith("1.2.10", AppUpdateChecker.GetCurrentVersion(), StringComparison.Ordinal);
     }
 }

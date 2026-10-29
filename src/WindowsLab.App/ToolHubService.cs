@@ -74,7 +74,8 @@ public static class ToolHubService
         {
             try
             {
-                if (!LooksLikeFilePath(candidate) || File.Exists(candidate))
+                // Bare "Foo.exe": try UseShellExecute (PATH / App Paths). Full paths: only if they exist.
+                if (IsBareExeName(candidate) || !LooksLikeFilePath(candidate) || File.Exists(candidate))
                 {
                     Process.Start(new ProcessStartInfo { FileName = candidate, UseShellExecute = true });
                     return true;
@@ -86,7 +87,55 @@ public static class ToolHubService
             }
         }
 
+        // Winget per-user installs often land under %LOCALAPPDATA%\Programs\<Vendor>\...
+        foreach (var bare in entry.LaunchExeHints.Where(IsBareExeName))
+        {
+            foreach (var hit in FindUnderLocalPrograms(bare).Take(3))
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo { FileName = hit, UseShellExecute = true });
+                    return true;
+                }
+                catch
+                {
+                    // try next
+                }
+            }
+        }
+
         return false;
+    }
+
+    private static bool IsBareExeName(string path) =>
+        !string.IsNullOrWhiteSpace(path)
+        && path.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)
+        && path.IndexOfAny(['\\', '/']) < 0;
+
+    private static IEnumerable<string> FindUnderLocalPrograms(string exeName)
+    {
+        var root = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "Programs");
+        if (!Directory.Exists(root))
+        {
+            yield break;
+        }
+
+        IEnumerable<string> files;
+        try
+        {
+            files = Directory.EnumerateFiles(root, exeName, SearchOption.AllDirectories);
+        }
+        catch
+        {
+            yield break;
+        }
+
+        foreach (var f in files)
+        {
+            yield return f;
+        }
     }
 
     public static bool TryOpenUrl(string? url)
@@ -153,8 +202,26 @@ public static class ToolHubService
         }
     }
 
-    private static bool AnyLaunchHintExists(ToolHubEntry entry) =>
-        ExpandLaunchHints(entry.LaunchExeHints).Any(p => LooksLikeFilePath(p) && File.Exists(p));
+    private static bool AnyLaunchHintExists(ToolHubEntry entry)
+    {
+        foreach (var p in ExpandLaunchHints(entry.LaunchExeHints))
+        {
+            if (LooksLikeFilePath(p) && !IsBareExeName(p) && File.Exists(p))
+            {
+                return true;
+            }
+        }
+
+        foreach (var bare in entry.LaunchExeHints.Where(IsBareExeName))
+        {
+            if (FindUnderLocalPrograms(bare).Any())
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     private static bool LooksLikeFilePath(string path) =>
         path.Contains('\\', StringComparison.Ordinal)
