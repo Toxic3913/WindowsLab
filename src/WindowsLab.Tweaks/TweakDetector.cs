@@ -76,10 +76,29 @@ public static class TweakDetector
             }
 
             var raw = registry.GetValue(tweak.Detect.Hive, tweak.Detect.Path, tweak.Detect.Name);
-            var actualReg = Format(raw);
             var desiredReg = FormatDesired(tweak.DesiredEquals);
-            var matchReg = ValuesMatch(raw, tweak.DesiredEquals);
-            return new TweakDetection(tweak.Id, ProbeStatus.Ok, actualReg, desiredReg, matchReg, raw is null ? "Value missing" : null);
+            var absent = raw is null;
+            object? effective = raw;
+            var fromDefault = false;
+            if (absent && !string.IsNullOrEmpty(tweak.Detect.DefaultIfAbsent))
+            {
+                effective = CoerceDefault(tweak.Detect.DefaultIfAbsent, tweak.Detect.ValueKind);
+                fromDefault = true;
+            }
+
+            var actualReg = absent && !fromDefault
+                ? "(absent)"
+                : Format(effective) + (fromDefault ? " (default)" : "");
+            var matchReg = ValuesMatch(effective, tweak.DesiredEquals);
+            return new TweakDetection(
+                tweak.Id,
+                ProbeStatus.Ok,
+                actualReg,
+                desiredReg,
+                matchReg,
+                absent ? (fromDefault ? "Absent — using DefaultIfAbsent" : "Value absent") : null,
+                ValueAbsent: absent,
+                InterpretedFromDefault: fromDefault);
         }
         catch (UnauthorizedAccessException ex)
         {
@@ -119,9 +138,24 @@ public static class TweakDetector
         return string.Equals(Format(actual), desired, StringComparison.OrdinalIgnoreCase);
     }
 
+    private static object? CoerceDefault(string text, string valueKind)
+    {
+        if (string.Equals(valueKind, "DWord", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(valueKind, "QWord", StringComparison.OrdinalIgnoreCase))
+        {
+            if (int.TryParse(text, System.Globalization.NumberStyles.Integer,
+                    System.Globalization.CultureInfo.InvariantCulture, out var n))
+            {
+                return n;
+            }
+        }
+
+        return text;
+    }
+
     private static string Format(object? value) => value switch
     {
-        null => "(missing)",
+        null => "(absent)",
         int i => i.ToString(System.Globalization.CultureInfo.InvariantCulture),
         long l => l.ToString(System.Globalization.CultureInfo.InvariantCulture),
         byte[] bytes => Convert.ToHexString(bytes),

@@ -6,19 +6,45 @@
     "category": "privacy",
     "risk": "LOW",
     "evidence": "OFFICIAL",
-    "evidenceRefs": ["https://learn.microsoft.com/windows/privacy/windows-diagnostic-data"],
+    "evidenceRefs": [
+      "https://learn.microsoft.com/windows/privacy/windows-diagnostic-data"
+    ],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["balanced", "developer", "gaming"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "balanced",
+      "developer",
+      "gaming"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo", "name": "Enabled", "valueKind": "DWord" },
-    "desired": { "equals": 0 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo", "name": "Enabled", "valueKind": "DWord", "value": "0" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo",
+      "name": "Enabled",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 1
+    },
+    "desired": {
+      "equals": 0
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo",
+        "name": "Enabled",
+        "valueKind": "DWord",
+        "value": "0"
+      }
+    ]
   },
   {
     "id": "privacy.tailored-experiences-off",
@@ -27,19 +53,44 @@
     "category": "privacy",
     "risk": "LOW",
     "evidence": "OFFICIAL",
-    "evidenceRefs": ["https://learn.microsoft.com/windows/privacy/windows-diagnostic-data"],
+    "evidenceRefs": [
+      "https://learn.microsoft.com/windows/privacy/windows-diagnostic-data"
+    ],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["balanced", "privacy"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "balanced",
+      "privacy"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Privacy", "name": "TailoredExperiencesWithDiagnosticDataEnabled", "valueKind": "DWord" },
-    "desired": { "equals": 0 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Privacy", "name": "TailoredExperiencesWithDiagnosticDataEnabled", "valueKind": "DWord", "value": "0" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Privacy",
+      "name": "TailoredExperiencesWithDiagnosticDataEnabled",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 1
+    },
+    "desired": {
+      "equals": 0
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Privacy",
+        "name": "TailoredExperiencesWithDiagnosticDataEnabled",
+        "valueKind": "DWord",
+        "value": "0"
+      }
+    ]
   },
   {
     "id": "privacy.start-track-progs-off",
@@ -50,17 +101,40 @@
     "evidence": "STRONG",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["balanced", "gaming"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "balanced",
+      "gaming"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "Start_TrackProgs", "valueKind": "DWord" },
-    "desired": { "equals": 0 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "Start_TrackProgs", "valueKind": "DWord", "value": "0" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+      "name": "Start_TrackProgs",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 1
+    },
+    "desired": {
+      "equals": 0
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+        "name": "Start_TrackProgs",
+        "valueKind": "DWord",
+        "value": "0"
+      }
+    ]
   },
   {
     "id": "privacy.search-highlights-off",
@@ -71,17 +145,41 @@
     "evidence": "STRONG",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["balanced", "developer", "gaming"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "balanced",
+      "developer",
+      "gaming"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\SearchSettings", "name": "IsDynamicSearchBoxEnabled", "valueKind": "DWord" },
-    "desired": { "equals": 0 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\SearchSettings", "name": "IsDynamicSearchBoxEnabled", "valueKind": "DWord", "value": "0" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\Windows\\CurrentVersion\\SearchSettings",
+      "name": "IsDynamicSearchBoxEnabled",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 1
+    },
+    "desired": {
+      "equals": 0
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\Windows\\CurrentVersion\\SearchSettings",
+        "name": "IsDynamicSearchBoxEnabled",
+        "valueKind": "DWord",
+        "value": "0"
+      }
+    ]
   },
   {
     "id": "privacy.ink-personalization-off",
@@ -92,17 +190,39 @@
     "evidence": "STRONG",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["balanced"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "balanced"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\InputPersonalization", "name": "RestrictImplicitInkCollection", "valueKind": "DWord" },
-    "desired": { "equals": 1 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\InputPersonalization", "name": "RestrictImplicitInkCollection", "valueKind": "DWord", "value": "1" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\InputPersonalization",
+      "name": "RestrictImplicitInkCollection",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 0
+    },
+    "desired": {
+      "equals": 1
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\InputPersonalization",
+        "name": "RestrictImplicitInkCollection",
+        "valueKind": "DWord",
+        "value": "1"
+      }
+    ]
   },
   {
     "id": "privacy.restrict-implicit-text",
@@ -113,17 +233,39 @@
     "evidence": "STRONG",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["balanced"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "balanced"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\InputPersonalization", "name": "RestrictImplicitTextCollection", "valueKind": "DWord" },
-    "desired": { "equals": 1 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\InputPersonalization", "name": "RestrictImplicitTextCollection", "valueKind": "DWord", "value": "1" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\InputPersonalization",
+      "name": "RestrictImplicitTextCollection",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 0
+    },
+    "desired": {
+      "equals": 1
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\InputPersonalization",
+        "name": "RestrictImplicitTextCollection",
+        "valueKind": "DWord",
+        "value": "1"
+      }
+    ]
   },
   {
     "id": "privacy.content-delivery-off",
@@ -134,17 +276,40 @@
     "evidence": "COMMUNITY",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["balanced", "gaming"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "balanced",
+      "gaming"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SubscribedContent-338387Enabled", "valueKind": "DWord" },
-    "desired": { "equals": 0 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SubscribedContent-338387Enabled", "valueKind": "DWord", "value": "0" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+      "name": "SubscribedContent-338387Enabled",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 1
+    },
+    "desired": {
+      "equals": 0
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+        "name": "SubscribedContent-338387Enabled",
+        "valueKind": "DWord",
+        "value": "0"
+      }
+    ]
   },
   {
     "id": "privacy.silent-installed-apps-off",
@@ -155,17 +320,39 @@
     "evidence": "COMMUNITY",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["balanced"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "balanced"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": true,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SilentInstalledAppsEnabled", "valueKind": "DWord" },
-    "desired": { "equals": 0 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SilentInstalledAppsEnabled", "valueKind": "DWord", "value": "0" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+      "name": "SilentInstalledAppsEnabled",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 1
+    },
+    "desired": {
+      "equals": 0
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+        "name": "SilentInstalledAppsEnabled",
+        "valueKind": "DWord",
+        "value": "0"
+      }
+    ]
   },
   {
     "id": "privacy.allow-telemetry-required",
@@ -174,19 +361,44 @@
     "category": "privacy",
     "risk": "LOW",
     "evidence": "OFFICIAL",
-    "evidenceRefs": ["https://learn.microsoft.com/windows/privacy/configure-windows-diagnostic-data-in-your-organization"],
+    "evidenceRefs": [
+      "https://learn.microsoft.com/windows/privacy/configure-windows-diagnostic-data-in-your-organization"
+    ],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["balanced", "developer", "gaming"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "balanced",
+      "developer",
+      "gaming"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKLM", "path": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\DataCollection", "name": "AllowTelemetry", "valueKind": "DWord" },
-    "desired": { "equals": 1 },
-    "ops": [{ "kind": "registry", "hive": "HKLM", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection", "name": "AllowTelemetry", "valueKind": "DWord", "value": "1" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKLM",
+      "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection",
+      "name": "AllowTelemetry",
+      "valueKind": "DWord"
+    },
+    "desired": {
+      "equals": 1
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKLM",
+        "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection",
+        "name": "AllowTelemetry",
+        "valueKind": "DWord",
+        "value": "1"
+      }
+    ]
   },
   {
     "id": "privacy.start-suggestions-off",
@@ -197,16 +409,39 @@
     "evidence": "COMMUNITY",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["balanced", "gaming"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "balanced",
+      "gaming"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SystemPaneSuggestionsEnabled", "valueKind": "DWord" },
-    "desired": { "equals": 0 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SystemPaneSuggestionsEnabled", "valueKind": "DWord", "value": "0" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+      "name": "SystemPaneSuggestionsEnabled",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 1
+    },
+    "desired": {
+      "equals": 0
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+        "name": "SystemPaneSuggestionsEnabled",
+        "valueKind": "DWord",
+        "value": "0"
+      }
+    ]
   }
 ]

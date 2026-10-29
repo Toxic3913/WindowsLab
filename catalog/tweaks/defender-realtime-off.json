@@ -25,7 +25,9 @@
       "name": "DisableRealtimeMonitoring",
       "valueKind": "DWord"
     },
-    "desired": { "equals": "1" },
+    "desired": {
+      "equals": "1"
+    },
     "ops": [
       {
         "kind": "registry",

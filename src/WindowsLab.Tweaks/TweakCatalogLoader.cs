@@ -86,13 +86,31 @@ public static class TweakCatalogLoader
                 ReadString(detect, "hive") ?? "HKCU",
                 ReadString(detect, "path") ?? "",
                 ReadString(detect, "name") ?? "",
-                ReadString(detect, "valueKind") ?? "DWord"),
+                ReadString(detect, "valueKind") ?? "DWord",
+                ReadDefaultIfAbsent(detect)),
             desiredText,
             ops);
     }
 
     private static string? ReadString(JsonElement el, string name) =>
         el.TryGetProperty(name, out var p) && p.ValueKind == JsonValueKind.String ? p.GetString() : null;
+
+    private static string? ReadDefaultIfAbsent(JsonElement detect)
+    {
+        if (!detect.TryGetProperty("defaultIfAbsent", out var p))
+        {
+            return null;
+        }
+
+        return p.ValueKind switch
+        {
+            JsonValueKind.Number => p.GetRawText(),
+            JsonValueKind.String => p.GetString(),
+            JsonValueKind.True => "1",
+            JsonValueKind.False => "0",
+            _ => null
+        };
+    }
 
     private static string[] ReadStringArray(JsonElement el, string name)
     {

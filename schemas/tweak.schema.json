@@ -26,12 +26,17 @@
     "detect": {
       "type": "object",
       "required": ["kind", "hive", "path", "name"],
+      "additionalProperties": false,
       "properties": {
         "kind": { "const": "registry" },
         "hive": { "type": "string" },
         "path": { "type": "string" },
         "name": { "type": "string" },
-        "valueKind": { "type": "string" }
+        "valueKind": { "type": "string" },
+        "defaultIfAbsent": {
+          "description": "If the registry value is missing, treat detect as this value (like winutil DefaultState). Display still notes the key was absent.",
+          "type": ["string", "number", "boolean"]
+        }
       }
     },
     "desired": {

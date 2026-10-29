@@ -57,12 +57,87 @@ public sealed class TweakRow : INotifyPropertyChanged
     public string? Desired { get; init; }
     public bool? Match { get; init; }
     public string? Status { get; init; }
+    public bool ValueAbsent { get; init; }
+    public bool InterpretedFromDefault { get; init; }
+
+    /// <summary>Aplicado / Pendiente / Por defecto / Desconocido</summary>
+    public string StatusLabel
+    {
+        get
+        {
+            if (string.Equals(Status, "Denied", StringComparison.OrdinalIgnoreCase))
+            {
+                return Loc.T("adjust.status.denied");
+            }
+
+            if (string.Equals(Status, "Error", StringComparison.OrdinalIgnoreCase))
+            {
+                return Loc.T("adjust.status.error");
+            }
+
+            if (Match is true && InterpretedFromDefault)
+            {
+                return Loc.T("adjust.status.defaultOk");
+            }
+
+            if (Match is true)
+            {
+                return Loc.T("adjust.status.applied");
+            }
+
+            if (Match is false && ValueAbsent)
+            {
+                return Loc.T("adjust.status.pendingAbsent");
+            }
+
+            if (Match is false)
+            {
+                return Loc.T("adjust.status.pending");
+            }
+
+            return Loc.T("adjust.status.unknown");
+        }
+    }
+
+    public string ActualLabel
+    {
+        get
+        {
+            if (string.Equals(Status, "Denied", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(Status, "Error", StringComparison.OrdinalIgnoreCase))
+            {
+                return Status ?? Loc.T("adjust.status.unknown");
+            }
+
+            if (ValueAbsent && !InterpretedFromDefault)
+            {
+                return Loc.T("adjust.actual.absent");
+            }
+
+            if (string.IsNullOrWhiteSpace(Actual) || Actual is "(absent)" or "(missing)")
+            {
+                return Loc.T("adjust.actual.absent");
+            }
+
+            if (InterpretedFromDefault)
+            {
+                return Loc.T("adjust.actual.default").Replace("{0}", Actual.Replace(" (default)", "", StringComparison.Ordinal), StringComparison.Ordinal);
+            }
+
+            return Actual;
+        }
+    }
+
     public string MatchLabel => Match is true ? "✓" : Match is false ? "—" : "?";
-    public string StateText => $"{Actual ?? "?"} → {Desired ?? "?"}";
+    public string StateText => $"{ActualLabel} → {Desired ?? "?"}";
     public string DetailTip =>
-        $"{Title}\n{Description}\n\n{ProsText}\n{ConsText}\n\n{Id} · {Evidence} · {Risk}";
+        $"{Title}\n{Description}\n\n{ProsText}\n{ConsText}\n\n"
+        + $"{Loc.T("adjust.chip.actual")}: {ActualLabel}\n"
+        + $"{Loc.T("adjust.chip.desired")}: {Desired ?? "?"}\n\n"
+        + $"{Id} · {Evidence} · {Risk}";
     public bool IsRecommended { get; init; }
     public bool IsGap => Match is not true;
+    public bool IsApplied => Match is true;
     public bool AffectsSecurity { get; init; }
     public bool ShowImpactHint =>
         AffectsSecurity

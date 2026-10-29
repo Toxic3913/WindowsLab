@@ -6,22 +6,59 @@
     "category": "privacy",
     "risk": "LOW",
     "evidence": "OFFICIAL",
-    "evidenceRefs": ["https://learn.microsoft.com/windows/privacy/windows-diagnostic-data"],
+    "evidenceRefs": [
+      "https://learn.microsoft.com/windows/privacy/windows-diagnostic-data"
+    ],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["balanced", "developer", "gaming"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "balanced",
+      "developer",
+      "gaming"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKLM", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\System", "name": "PublishUserActivities", "valueKind": "DWord" },
-    "desired": { "equals": 0 },
+    "detect": {
+      "kind": "registry",
+      "hive": "HKLM",
+      "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+      "name": "PublishUserActivities",
+      "valueKind": "DWord"
+    },
+    "desired": {
+      "equals": 0
+    },
     "ops": [
-      { "kind": "registry", "hive": "HKLM", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\System", "name": "EnableActivityFeed", "valueKind": "DWord", "value": "0" },
-      { "kind": "registry", "hive": "HKLM", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\System", "name": "PublishUserActivities", "valueKind": "DWord", "value": "0" },
-      { "kind": "registry", "hive": "HKLM", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\System", "name": "UploadUserActivities", "valueKind": "DWord", "value": "0" }
+      {
+        "kind": "registry",
+        "hive": "HKLM",
+        "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+        "name": "EnableActivityFeed",
+        "valueKind": "DWord",
+        "value": "0"
+      },
+      {
+        "kind": "registry",
+        "hive": "HKLM",
+        "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+        "name": "PublishUserActivities",
+        "valueKind": "DWord",
+        "value": "0"
+      },
+      {
+        "kind": "registry",
+        "hive": "HKLM",
+        "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\System",
+        "name": "UploadUserActivities",
+        "valueKind": "DWord",
+        "value": "0"
+      }
     ]
   },
   {
@@ -33,17 +70,41 @@
     "evidence": "STRONG",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["balanced", "developer", "gaming"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "balanced",
+      "developer",
+      "gaming"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Search", "name": "BingSearchEnabled", "valueKind": "DWord" },
-    "desired": { "equals": 0 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Search", "name": "BingSearchEnabled", "valueKind": "DWord", "value": "0" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Search",
+      "name": "BingSearchEnabled",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 1
+    },
+    "desired": {
+      "equals": 0
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Search",
+        "name": "BingSearchEnabled",
+        "valueKind": "DWord",
+        "value": "0"
+      }
+    ]
   },
   {
     "id": "privacy.consumer-features-off",
@@ -52,19 +113,43 @@
     "category": "privacy",
     "risk": "LOW",
     "evidence": "OFFICIAL",
-    "evidenceRefs": ["https://learn.microsoft.com/windows/client-management/mdm/policy-csp-experience"],
+    "evidenceRefs": [
+      "https://learn.microsoft.com/windows/client-management/mdm/policy-csp-experience"
+    ],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["balanced", "developer"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "balanced",
+      "developer"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKLM", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent", "name": "DisableWindowsConsumerFeatures", "valueKind": "DWord" },
-    "desired": { "equals": 1 },
-    "ops": [{ "kind": "registry", "hive": "HKLM", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent", "name": "DisableWindowsConsumerFeatures", "valueKind": "DWord", "value": "1" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKLM",
+      "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent",
+      "name": "DisableWindowsConsumerFeatures",
+      "valueKind": "DWord"
+    },
+    "desired": {
+      "equals": 1
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKLM",
+        "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent",
+        "name": "DisableWindowsConsumerFeatures",
+        "valueKind": "DWord",
+        "value": "1"
+      }
+    ]
   },
   {
     "id": "privacy.background-apps-off",
@@ -75,16 +160,39 @@
     "evidence": "COMMUNITY",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["gaming", "balanced"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "gaming",
+      "balanced"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": true,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications", "name": "GlobalUserDisabled", "valueKind": "DWord" },
-    "desired": { "equals": 1 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications", "name": "GlobalUserDisabled", "valueKind": "DWord", "value": "1" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications",
+      "name": "GlobalUserDisabled",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 0
+    },
+    "desired": {
+      "equals": 1
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications",
+        "name": "GlobalUserDisabled",
+        "valueKind": "DWord",
+        "value": "1"
+      }
+    ]
   }
 ]

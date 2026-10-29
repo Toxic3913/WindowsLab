@@ -6,19 +6,45 @@
     "category": "developer",
     "risk": "LOW",
     "evidence": "OFFICIAL",
-    "evidenceRefs": ["https://learn.microsoft.com/windows/win32/fileio/maximum-file-path-limitation"],
+    "evidenceRefs": [
+      "https://learn.microsoft.com/windows/win32/fileio/maximum-file-path-limitation"
+    ],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["developer"],
-    "requires": ["toolchain.git"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "developer"
+    ],
+    "requires": [
+      "toolchain.git"
+    ],
     "conflicts": [],
     "requiresReboot": true,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": true,
-    "detect": { "kind": "registry", "hive": "HKLM", "path": "SYSTEM\\CurrentControlSet\\Control\\FileSystem", "name": "LongPathsEnabled", "valueKind": "DWord" },
-    "desired": { "equals": 1 },
-    "ops": [{ "kind": "registry", "hive": "HKLM", "path": "SYSTEM\\CurrentControlSet\\Control\\FileSystem", "name": "LongPathsEnabled", "valueKind": "DWord", "value": "1" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKLM",
+      "path": "SYSTEM\\CurrentControlSet\\Control\\FileSystem",
+      "name": "LongPathsEnabled",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 0
+    },
+    "desired": {
+      "equals": 1
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKLM",
+        "path": "SYSTEM\\CurrentControlSet\\Control\\FileSystem",
+        "name": "LongPathsEnabled",
+        "valueKind": "DWord",
+        "value": "1"
+      }
+    ]
   },
   {
     "id": "developer.appmodel-unlock",
@@ -27,19 +53,43 @@
     "category": "developer",
     "risk": "MEDIUM",
     "evidence": "OFFICIAL",
-    "evidenceRefs": ["https://learn.microsoft.com/windows/apps/get-started/enable-your-device-for-development"],
+    "evidenceRefs": [
+      "https://learn.microsoft.com/windows/apps/get-started/enable-your-device-for-development"
+    ],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["developer"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "developer"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": true,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKLM", "path": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\AppModelUnlock", "name": "AllowDevelopmentWithoutDevLicense", "valueKind": "DWord" },
-    "desired": { "equals": 1 },
-    "ops": [{ "kind": "registry", "hive": "HKLM", "path": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\AppModelUnlock", "name": "AllowDevelopmentWithoutDevLicense", "valueKind": "DWord", "value": "1" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKLM",
+      "path": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\AppModelUnlock",
+      "name": "AllowDevelopmentWithoutDevLicense",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 0
+    },
+    "desired": {
+      "equals": 1
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKLM",
+        "path": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\AppModelUnlock",
+        "name": "AllowDevelopmentWithoutDevLicense",
+        "valueKind": "DWord",
+        "value": "1"
+      }
+    ]
   },
   {
     "id": "desktop.show-seconds-clock",
@@ -50,17 +100,39 @@
     "evidence": "STRONG",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["developer"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "developer"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "ShowSecondsInSystemClock", "valueKind": "DWord" },
-    "desired": { "equals": 1 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "ShowSecondsInSystemClock", "valueKind": "DWord", "value": "1" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+      "name": "ShowSecondsInSystemClock",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 0
+    },
+    "desired": {
+      "equals": 1
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+        "name": "ShowSecondsInSystemClock",
+        "valueKind": "DWord",
+        "value": "1"
+      }
+    ]
   },
   {
     "id": "desktop.alttab-windows-only",
@@ -71,17 +143,40 @@
     "evidence": "STRONG",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["developer", "balanced"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "developer",
+      "balanced"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "MultiTaskingAltTabFilter", "valueKind": "DWord" },
-    "desired": { "equals": 1 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "MultiTaskingAltTabFilter", "valueKind": "DWord", "value": "1" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+      "name": "MultiTaskingAltTabFilter",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 0
+    },
+    "desired": {
+      "equals": 1
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+        "name": "MultiTaskingAltTabFilter",
+        "valueKind": "DWord",
+        "value": "1"
+      }
+    ]
   },
   {
     "id": "desktop.snap-assist-on",
@@ -90,19 +185,44 @@
     "category": "desktop",
     "risk": "LOW",
     "evidence": "OFFICIAL",
-    "evidenceRefs": ["https://support.microsoft.com/windows/snap-your-windows"],
+    "evidenceRefs": [
+      "https://support.microsoft.com/windows/snap-your-windows"
+    ],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["balanced", "developer"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "balanced",
+      "developer"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "EnableSnapBar", "valueKind": "DWord" },
-    "desired": { "equals": 1 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "EnableSnapBar", "valueKind": "DWord", "value": "1" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+      "name": "EnableSnapBar",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 1
+    },
+    "desired": {
+      "equals": 1
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+        "name": "EnableSnapBar",
+        "valueKind": "DWord",
+        "value": "1"
+      }
+    ]
   },
   {
     "id": "desktop.aero-peek-off",
@@ -113,17 +233,39 @@
     "evidence": "STRONG",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["gaming"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "gaming"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "DisablePreviewDesktop", "valueKind": "DWord" },
-    "desired": { "equals": 1 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "DisablePreviewDesktop", "valueKind": "DWord", "value": "1" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+      "name": "DisablePreviewDesktop",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 0
+    },
+    "desired": {
+      "equals": 1
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+        "name": "DisablePreviewDesktop",
+        "valueKind": "DWord",
+        "value": "1"
+      }
+    ]
   },
   {
     "id": "desktop.transparency-on",
@@ -134,17 +276,39 @@
     "evidence": "OFFICIAL",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["balanced"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "balanced"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "name": "EnableTransparency", "valueKind": "DWord" },
-    "desired": { "equals": 1 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "name": "EnableTransparency", "valueKind": "DWord", "value": "1" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+      "name": "EnableTransparency",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 1
+    },
+    "desired": {
+      "equals": 1
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+        "name": "EnableTransparency",
+        "valueKind": "DWord",
+        "value": "1"
+      }
+    ]
   },
   {
     "id": "desktop.dark-apps",
@@ -155,17 +319,41 @@
     "evidence": "OFFICIAL",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["developer", "gaming", "balanced"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "developer",
+      "gaming",
+      "balanced"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "name": "AppsUseLightTheme", "valueKind": "DWord" },
-    "desired": { "equals": 0 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "name": "AppsUseLightTheme", "valueKind": "DWord", "value": "0" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+      "name": "AppsUseLightTheme",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 1
+    },
+    "desired": {
+      "equals": 0
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+        "name": "AppsUseLightTheme",
+        "valueKind": "DWord",
+        "value": "0"
+      }
+    ]
   },
   {
     "id": "desktop.dark-system",
@@ -176,16 +364,40 @@
     "evidence": "OFFICIAL",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["developer", "gaming", "balanced"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "developer",
+      "gaming",
+      "balanced"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "name": "SystemUsesLightTheme", "valueKind": "DWord" },
-    "desired": { "equals": 0 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "name": "SystemUsesLightTheme", "valueKind": "DWord", "value": "0" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+      "name": "SystemUsesLightTheme",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 1
+    },
+    "desired": {
+      "equals": 0
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+        "name": "SystemUsesLightTheme",
+        "valueKind": "DWord",
+        "value": "0"
+      }
+    ]
   }
 ]

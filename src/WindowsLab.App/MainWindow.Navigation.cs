@@ -1,6 +1,5 @@
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using System.Windows.Threading;
 using WindowsLab.Core;
 using WindowsLab.Tweaks;
@@ -51,7 +50,7 @@ public partial class MainWindow
         PageMore.Visibility = tag == "more" ? Visibility.Visible : Visibility.Collapsed;
         if (tag == "adjust")
         {
-            Dispatcher.BeginInvoke(UpdateAdjustCategoryColumns, DispatcherPriority.Loaded);
+            RefreshAdjustHostFacts();
         }
 
         if (tag == "game")
@@ -304,6 +303,8 @@ public partial class MainWindow
                 Desired = d?.DesiredDisplay,
                 Match = d?.MatchesDesired,
                 Status = d?.Status.ToString(),
+                ValueAbsent = d?.ValueAbsent == true,
+                InterpretedFromDefault = d?.InterpretedFromDefault == true,
                 IsRecommended = recommended.Contains(t.Id),
                 AffectsSecurity = t.AffectsSecurity
             };
@@ -357,8 +358,51 @@ public partial class MainWindow
             .ToList();
 
         TweakCategoryList.ItemsSource = groups;
-        TweakCategoryList.Dispatcher.BeginInvoke(UpdateAdjustCategoryColumns, DispatcherPriority.Loaded);
+        UpdateAdjustSummary(q.ToList());
         UpdateAdjustSelectionStatus();
+        RefreshAdjustHostFacts();
+    }
+
+    private void UpdateAdjustSummary(List<TweakRow> visible)
+    {
+        if (AdjustSummaryText is null)
+        {
+            return;
+        }
+
+        var applied = visible.Count(r => r.IsApplied && !r.InterpretedFromDefault);
+        var defaultOk = visible.Count(r => r.IsApplied && r.InterpretedFromDefault);
+        var pending = visible.Count(r => r.IsGap);
+        var absent = visible.Count(r => r.ValueAbsent && r.IsGap);
+        AdjustSummaryText.Text = Loc.T("adjust.summary")
+            .Replace("{0}", applied.ToString(System.Globalization.CultureInfo.InvariantCulture), StringComparison.Ordinal)
+            .Replace("{1}", defaultOk.ToString(System.Globalization.CultureInfo.InvariantCulture), StringComparison.Ordinal)
+            .Replace("{2}", pending.ToString(System.Globalization.CultureInfo.InvariantCulture), StringComparison.Ordinal)
+            .Replace("{3}", absent.ToString(System.Globalization.CultureInfo.InvariantCulture), StringComparison.Ordinal)
+            .Replace("{4}", visible.Count.ToString(System.Globalization.CultureInfo.InvariantCulture), StringComparison.Ordinal);
+    }
+
+    private void RefreshAdjustHostFacts()
+    {
+        if (AdjustHostFacts is null || _session is null)
+        {
+            return;
+        }
+
+        var inv = _session.Inventory;
+        var ramGb = inv.Ram.TotalBytes / (1024d * 1024 * 1024);
+        var gpu = inv.Gpus.Count > 0 && !string.IsNullOrWhiteSpace(inv.Gpus[0].Name)
+            ? inv.Gpus[0].Name
+            : "—";
+        static string OrDash(string? s) => string.IsNullOrWhiteSpace(s) ? "—" : s;
+        AdjustHostFacts.Text = Loc.T("adjust.hostFacts")
+            .Replace("{0}", OrDash(inv.Os.FamilyLabel), StringComparison.Ordinal)
+            .Replace("{1}", OrDash(inv.Os.DisplayVersion), StringComparison.Ordinal)
+            .Replace("{2}", inv.Os.Build.ToString(System.Globalization.CultureInfo.InvariantCulture), StringComparison.Ordinal)
+            .Replace("{3}", OrDash(inv.Os.EditionId), StringComparison.Ordinal)
+            .Replace("{4}", OrDash(inv.Cpu.Name), StringComparison.Ordinal)
+            .Replace("{5}", ramGb.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture), StringComparison.Ordinal)
+            .Replace("{6}", gpu, StringComparison.Ordinal);
     }
 
     private void TweakSelect_OnChanged(object sender, RoutedEventArgs e)
@@ -380,10 +424,7 @@ public partial class MainWindow
         }
 
         MessageBox.Show(
-            $"{row.Title}\n\n{row.Description}\n\n{row.ProsText}\n\n{row.ConsText}\n\n"
-            + $"{row.Id} · {row.Evidence} · {row.Risk}\n"
-            + (Loc.IsEnglish ? "Actual → Desired: " : "Actual → Objetivo: ")
-            + $"{row.Actual ?? "?"} → {row.Desired ?? "?"}",
+            row.DetailTip,
             Loc.IsEnglish ? "Tweak details" : "Detalle del ajuste",
             MessageBoxButton.OK,
             MessageBoxImage.Information);
@@ -400,58 +441,9 @@ public partial class MainWindow
             .Replace("{2}", match.ToString(System.Globalization.CultureInfo.InvariantCulture), StringComparison.Ordinal);
     }
 
-    private void PageAdjust_OnSizeChanged(object sender, SizeChangedEventArgs e) =>
-        Dispatcher.BeginInvoke(UpdateAdjustCategoryColumns, DispatcherPriority.Background);
-
-    private void UpdateAdjustCategoryColumns()
+    private void PageAdjust_OnSizeChanged(object sender, SizeChangedEventArgs e)
     {
-        if (TweakCategoryList is null || PageAdjust is null || PageAdjust.ActualWidth <= 0)
-        {
-            return;
-        }
-
-        var panel = FindVisualDescendant<WrapPanel>(TweakCategoryList);
-        if (panel is null)
-        {
-            return;
-        }
-
-        // Two cards across on ~1080p content; one column when the pane is narrow.
-        // Card Border already has 10px right/bottom margin for gutters.
-        var available = Math.Max(280, PageAdjust.ActualWidth - 20);
-        var columns = available >= 980 ? 2 : 1;
-        var cardWidth = columns == 1
-            ? available
-            : Math.Floor(available / 2);
-
-        foreach (UIElement child in panel.Children)
-        {
-            if (child is FrameworkElement fe)
-            {
-                fe.Width = cardWidth;
-            }
-        }
-    }
-
-    private static T? FindVisualDescendant<T>(DependencyObject root) where T : DependencyObject
-    {
-        var count = VisualTreeHelper.GetChildrenCount(root);
-        for (var i = 0; i < count; i++)
-        {
-            var child = VisualTreeHelper.GetChild(root, i);
-            if (child is T match)
-            {
-                return match;
-            }
-
-            var nested = FindVisualDescendant<T>(child);
-            if (nested is not null)
-            {
-                return nested;
-            }
-        }
-
-        return null;
+        // Single-column list layout — no card width math.
     }
 
     private static int CategorySortKey(string category) => category.ToLowerInvariant() switch

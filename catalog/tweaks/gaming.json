@@ -6,21 +6,50 @@
     "category": "gaming",
     "risk": "LOW",
     "evidence": "OFFICIAL",
-    "evidenceRefs": ["https://support.microsoft.com/windows/game-mode-and-game-bar"],
+    "evidenceRefs": [
+      "https://support.microsoft.com/windows/game-mode-and-game-bar"
+    ],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["gaming"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "gaming"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\GameBar", "name": "AutoGameModeEnabled", "valueKind": "DWord" },
-    "desired": { "equals": 1 },
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\GameBar",
+      "name": "AutoGameModeEnabled",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 1
+    },
+    "desired": {
+      "equals": 1
+    },
     "ops": [
-      { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\GameBar", "name": "AutoGameModeEnabled", "valueKind": "DWord", "value": "1" },
-      { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\GameBar", "name": "AllowAutoGameMode", "valueKind": "DWord", "value": "1" }
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\GameBar",
+        "name": "AutoGameModeEnabled",
+        "valueKind": "DWord",
+        "value": "1"
+      },
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\GameBar",
+        "name": "AllowAutoGameMode",
+        "valueKind": "DWord",
+        "value": "1"
+      }
     ]
   },
   {
@@ -32,19 +61,46 @@
     "evidence": "COMMUNITY",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["gaming"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "gaming"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": true,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR", "name": "AppCaptureEnabled", "valueKind": "DWord" },
-    "desired": { "equals": 0 },
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR",
+      "name": "AppCaptureEnabled",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 1
+    },
+    "desired": {
+      "equals": 0
+    },
     "ops": [
-      { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR", "name": "AppCaptureEnabled", "valueKind": "DWord", "value": "0" },
-      { "kind": "registry", "hive": "HKCU", "path": "System\\GameDVR", "name": "GameDVR_Enabled", "valueKind": "DWord", "value": "0" }
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR",
+        "name": "AppCaptureEnabled",
+        "valueKind": "DWord",
+        "value": "0"
+      },
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "System\\GameDVR",
+        "name": "GameDVR_Enabled",
+        "valueKind": "DWord",
+        "value": "0"
+      }
     ]
   },
   {
@@ -54,19 +110,45 @@
     "category": "gaming",
     "risk": "MEDIUM",
     "evidence": "COMMUNITY",
-    "evidenceRefs": ["https://devblogs.microsoft.com/directx/hardware-accelerated-gpu-scheduling/"],
+    "evidenceRefs": [
+      "https://devblogs.microsoft.com/directx/hardware-accelerated-gpu-scheduling/"
+    ],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["gaming"],
-    "requires": ["gpu.vendor=NVIDIA"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "gaming"
+    ],
+    "requires": [
+      "gpu.vendor=NVIDIA"
+    ],
     "conflicts": [],
     "requiresReboot": true,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": true,
-    "detect": { "kind": "registry", "hive": "HKLM", "path": "SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers", "name": "HwSchMode", "valueKind": "DWord" },
-    "desired": { "equals": 2 },
-    "ops": [{ "kind": "registry", "hive": "HKLM", "path": "SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers", "name": "HwSchMode", "valueKind": "DWord", "value": "2" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKLM",
+      "path": "SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers",
+      "name": "HwSchMode",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 1
+    },
+    "desired": {
+      "equals": 2
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKLM",
+        "path": "SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers",
+        "name": "HwSchMode",
+        "valueKind": "DWord",
+        "value": "2"
+      }
+    ]
   },
   {
     "id": "gaming.gamebar-tips-off",
@@ -77,17 +159,39 @@
     "evidence": "STRONG",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["gaming"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "gaming"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\GameBar", "name": "ShowStartupPanel", "valueKind": "DWord" },
-    "desired": { "equals": 0 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\GameBar", "name": "ShowStartupPanel", "valueKind": "DWord", "value": "0" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\GameBar",
+      "name": "ShowStartupPanel",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 1
+    },
+    "desired": {
+      "equals": 0
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\GameBar",
+        "name": "ShowStartupPanel",
+        "valueKind": "DWord",
+        "value": "0"
+      }
+    ]
   },
   {
     "id": "gaming.mouse-accel-off",
@@ -98,20 +202,54 @@
     "evidence": "COMMUNITY",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["gaming"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "gaming"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": true,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Control Panel\\Mouse", "name": "MouseSpeed", "valueKind": "String" },
-    "desired": { "equals": "0" },
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Control Panel\\Mouse",
+      "name": "MouseSpeed",
+      "valueKind": "String",
+      "defaultIfAbsent": "1"
+    },
+    "desired": {
+      "equals": "0"
+    },
     "ops": [
-      { "kind": "registry", "hive": "HKCU", "path": "Control Panel\\Mouse", "name": "MouseSpeed", "valueKind": "String", "value": "0" },
-      { "kind": "registry", "hive": "HKCU", "path": "Control Panel\\Mouse", "name": "MouseThreshold1", "valueKind": "String", "value": "0" },
-      { "kind": "registry", "hive": "HKCU", "path": "Control Panel\\Mouse", "name": "MouseThreshold2", "valueKind": "String", "value": "0" }
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Control Panel\\Mouse",
+        "name": "MouseSpeed",
+        "valueKind": "String",
+        "value": "0"
+      },
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Control Panel\\Mouse",
+        "name": "MouseThreshold1",
+        "valueKind": "String",
+        "value": "0"
+      },
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Control Panel\\Mouse",
+        "name": "MouseThreshold2",
+        "valueKind": "String",
+        "value": "0"
+      }
     ]
   }
 ]

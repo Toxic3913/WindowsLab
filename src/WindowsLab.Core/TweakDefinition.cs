@@ -4,7 +4,12 @@ public sealed record RegistryDetect(
     string Hive,
     string Path,
     string Name,
-    string ValueKind);
+    string ValueKind,
+    /// <summary>
+    /// When the registry value is absent, treat detection as this value (winutil-style DefaultState).
+    /// Null = absent never matches (legacy). Display still marks that the key was absent.
+    /// </summary>
+    string? DefaultIfAbsent = null);
 
 public sealed record TweakOp(
     string Kind,
@@ -41,4 +46,6 @@ public sealed record TweakDetection(
     string? ActualDisplay,
     string? DesiredDisplay,
     bool MatchesDesired,
-    string? Message);
+    string? Message,
+    bool ValueAbsent = false,
+    bool InterpretedFromDefault = false);

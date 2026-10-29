@@ -6,18 +6,38 @@
     "category": "security",
     "risk": "LOW",
     "evidence": "OFFICIAL",
-    "evidenceRefs": ["https://learn.microsoft.com/windows/security/operating-system-security/network-security/windows-firewall/additional-resources"],
+    "evidenceRefs": [
+      "https://learn.microsoft.com/windows/security/operating-system-security/network-security/windows-firewall/additional-resources"
+    ],
     "minBuild": 22000,
     "editions": [],
-    "profiles": ["balanced", "developer", "gaming"],
+    "profiles": [
+      "balanced",
+      "developer",
+      "gaming"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKLM", "path": "SYSTEM\\CurrentControlSet\\Services\\RemoteRegistry", "name": "Start", "valueKind": "DWord" },
-    "desired": { "equals": "4" },
-    "ops": [{ "kind": "service", "name": "RemoteRegistry", "value": "disabled" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKLM",
+      "path": "SYSTEM\\CurrentControlSet\\Services\\RemoteRegistry",
+      "name": "Start",
+      "valueKind": "DWord"
+    },
+    "desired": {
+      "equals": "4"
+    },
+    "ops": [
+      {
+        "kind": "service",
+        "name": "RemoteRegistry",
+        "value": "disabled"
+      }
+    ]
   }
 ]

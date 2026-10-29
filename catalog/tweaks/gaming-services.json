@@ -8,17 +8,36 @@
     "evidence": "COMMUNITY",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["virtualization", "developer"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "virtualization",
+      "developer"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": true,
-    "detect": { "kind": "registry", "hive": "HKLM", "path": "SYSTEM\\CurrentControlSet\\Services\\XblAuthManager", "name": "Start", "valueKind": "DWord" },
-    "desired": { "equals": "4" },
-    "ops": [{ "kind": "service", "name": "XblAuthManager", "value": "disabled" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKLM",
+      "path": "SYSTEM\\CurrentControlSet\\Services\\XblAuthManager",
+      "name": "Start",
+      "valueKind": "DWord"
+    },
+    "desired": {
+      "equals": "4"
+    },
+    "ops": [
+      {
+        "kind": "service",
+        "name": "XblAuthManager",
+        "value": "disabled"
+      }
+    ]
   },
   {
     "id": "gaming.xbox-net-api-disabled",
@@ -29,17 +48,36 @@
     "evidence": "COMMUNITY",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["virtualization", "developer"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "virtualization",
+      "developer"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": true,
-    "detect": { "kind": "registry", "hive": "HKLM", "path": "SYSTEM\\CurrentControlSet\\Services\\XboxNetApiSvc", "name": "Start", "valueKind": "DWord" },
-    "desired": { "equals": "4" },
-    "ops": [{ "kind": "service", "name": "XboxNetApiSvc", "value": "disabled" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKLM",
+      "path": "SYSTEM\\CurrentControlSet\\Services\\XboxNetApiSvc",
+      "name": "Start",
+      "valueKind": "DWord"
+    },
+    "desired": {
+      "equals": "4"
+    },
+    "ops": [
+      {
+        "kind": "service",
+        "name": "XboxNetApiSvc",
+        "value": "disabled"
+      }
+    ]
   },
   {
     "id": "gaming.xbox-game-save-disabled",
@@ -50,17 +88,36 @@
     "evidence": "COMMUNITY",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["virtualization", "developer"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "virtualization",
+      "developer"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": true,
-    "detect": { "kind": "registry", "hive": "HKLM", "path": "SYSTEM\\CurrentControlSet\\Services\\XblGameSave", "name": "Start", "valueKind": "DWord" },
-    "desired": { "equals": "4" },
-    "ops": [{ "kind": "service", "name": "XblGameSave", "value": "disabled" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKLM",
+      "path": "SYSTEM\\CurrentControlSet\\Services\\XblGameSave",
+      "name": "Start",
+      "valueKind": "DWord"
+    },
+    "desired": {
+      "equals": "4"
+    },
+    "ops": [
+      {
+        "kind": "service",
+        "name": "XblGameSave",
+        "value": "disabled"
+      }
+    ]
   },
   {
     "id": "gaming.gaming-services-disabled",
@@ -71,17 +128,36 @@
     "evidence": "COMMUNITY",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["virtualization", "developer"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "virtualization",
+      "developer"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": true,
-    "detect": { "kind": "registry", "hive": "HKLM", "path": "SYSTEM\\CurrentControlSet\\Services\\GamingServices", "name": "Start", "valueKind": "DWord" },
-    "desired": { "equals": "4" },
-    "ops": [{ "kind": "service", "name": "GamingServices", "value": "disabled" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKLM",
+      "path": "SYSTEM\\CurrentControlSet\\Services\\GamingServices",
+      "name": "Start",
+      "valueKind": "DWord"
+    },
+    "desired": {
+      "equals": "4"
+    },
+    "ops": [
+      {
+        "kind": "service",
+        "name": "GamingServices",
+        "value": "disabled"
+      }
+    ]
   },
   {
     "id": "gaming.gaming-services-net-disabled",
@@ -92,16 +168,35 @@
     "evidence": "COMMUNITY",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["virtualization", "developer"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "virtualization",
+      "developer"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": true,
-    "detect": { "kind": "registry", "hive": "HKLM", "path": "SYSTEM\\CurrentControlSet\\Services\\GamingServicesNet", "name": "Start", "valueKind": "DWord" },
-    "desired": { "equals": "4" },
-    "ops": [{ "kind": "service", "name": "GamingServicesNet", "value": "disabled" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKLM",
+      "path": "SYSTEM\\CurrentControlSet\\Services\\GamingServicesNet",
+      "name": "Start",
+      "valueKind": "DWord"
+    },
+    "desired": {
+      "equals": "4"
+    },
+    "ops": [
+      {
+        "kind": "service",
+        "name": "GamingServicesNet",
+        "value": "disabled"
+      }
+    ]
   }
 ]

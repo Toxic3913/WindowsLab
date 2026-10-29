@@ -16,19 +16,34 @@ public sealed class TweakDetectorTests
         Assert.Equal(ProbeStatus.Ok, result.Status);
         Assert.True(result.MatchesDesired);
         Assert.Equal("0", result.ActualDisplay);
+        Assert.False(result.ValueAbsent);
     }
 
     [Fact]
-    public void Detect_missing_value_does_not_match()
+    public void Detect_absent_value_does_not_match_without_default()
     {
         var tweak = Sample("explorer.show-file-extensions", "0");
         var result = TweakDetector.Detect(tweak, new FakeRegistry());
 
         Assert.False(result.MatchesDesired);
-        Assert.Equal("(missing)", result.ActualDisplay);
+        Assert.Equal("(absent)", result.ActualDisplay);
+        Assert.True(result.ValueAbsent);
+        Assert.False(result.InterpretedFromDefault);
     }
 
-    private static TweakDefinition Sample(string id, string desired) => new(
+    [Fact]
+    public void Detect_absent_uses_defaultIfAbsent_when_configured()
+    {
+        var tweak = Sample("gaming.game-mode-on", "1", defaultIfAbsent: "1");
+        var result = TweakDetector.Detect(tweak, new FakeRegistry());
+
+        Assert.True(result.MatchesDesired);
+        Assert.True(result.ValueAbsent);
+        Assert.True(result.InterpretedFromDefault);
+        Assert.Contains("default", result.ActualDisplay, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static TweakDefinition Sample(string id, string desired, string? defaultIfAbsent = null) => new(
         id,
         "t",
         "d",
@@ -45,7 +60,12 @@ public sealed class TweakDetectorTests
         false,
         false,
         false,
-        new RegistryDetect("HKCU", @"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "HideFileExt", "DWord"),
+        new RegistryDetect(
+            "HKCU",
+            @"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced",
+            "HideFileExt",
+            "DWord",
+            defaultIfAbsent),
         desired,
         []);
 

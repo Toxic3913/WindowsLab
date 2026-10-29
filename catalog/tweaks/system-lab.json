@@ -6,19 +6,44 @@
     "category": "desktop",
     "risk": "LOW",
     "evidence": "STRONG",
-    "evidenceRefs": ["https://learn.microsoft.com/troubleshoot/windows-client/performance/advanced-troubleshooting-boot-problems"],
+    "evidenceRefs": [
+      "https://learn.microsoft.com/troubleshoot/windows-client/performance/advanced-troubleshooting-boot-problems"
+    ],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["developer", "virtualization"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "developer",
+      "virtualization"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKLM", "path": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System", "name": "VerboseStatus", "valueKind": "DWord" },
-    "desired": { "equals": 1 },
-    "ops": [{ "kind": "registry", "hive": "HKLM", "path": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System", "name": "VerboseStatus", "valueKind": "DWord", "value": "1" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKLM",
+      "path": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+      "name": "VerboseStatus",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 0
+    },
+    "desired": {
+      "equals": 1
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKLM",
+        "path": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+        "name": "VerboseStatus",
+        "valueKind": "DWord",
+        "value": "1"
+      }
+    ]
   },
   {
     "id": "system.wpbt-off",
@@ -27,18 +52,42 @@
     "category": "security",
     "risk": "MEDIUM",
     "evidence": "STRONG",
-    "evidenceRefs": ["https://learn.microsoft.com/windows-hardware/drivers/bringup/windows-platform-binary-table"],
+    "evidenceRefs": [
+      "https://learn.microsoft.com/windows-hardware/drivers/bringup/windows-platform-binary-table"
+    ],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["developer", "balanced"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "developer",
+      "balanced"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": true,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": true,
-    "detect": { "kind": "registry", "hive": "HKLM", "path": "SYSTEM\\CurrentControlSet\\Control\\Session Manager", "name": "DisableWpbtExecution", "valueKind": "DWord" },
-    "desired": { "equals": 1 },
-    "ops": [{ "kind": "registry", "hive": "HKLM", "path": "SYSTEM\\CurrentControlSet\\Control\\Session Manager", "name": "DisableWpbtExecution", "valueKind": "DWord", "value": "1" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKLM",
+      "path": "SYSTEM\\CurrentControlSet\\Control\\Session Manager",
+      "name": "DisableWpbtExecution",
+      "valueKind": "DWord"
+    },
+    "desired": {
+      "equals": 1
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKLM",
+        "path": "SYSTEM\\CurrentControlSet\\Control\\Session Manager",
+        "name": "DisableWpbtExecution",
+        "valueKind": "DWord",
+        "value": "1"
+      }
+    ]
   }
 ]

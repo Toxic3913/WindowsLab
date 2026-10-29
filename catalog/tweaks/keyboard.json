@@ -8,16 +8,40 @@
     "evidence": "STRONG",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["gaming", "developer", "balanced"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "gaming",
+      "developer",
+      "balanced"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Control Panel\\Accessibility\\StickyKeys", "name": "Flags", "valueKind": "String" },
-    "desired": { "equals": "498" },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Control Panel\\Accessibility\\StickyKeys", "name": "Flags", "valueKind": "String", "value": "498" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Control Panel\\Accessibility\\StickyKeys",
+      "name": "Flags",
+      "valueKind": "String",
+      "defaultIfAbsent": "510"
+    },
+    "desired": {
+      "equals": "498"
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Control Panel\\Accessibility\\StickyKeys",
+        "name": "Flags",
+        "valueKind": "String",
+        "value": "498"
+      }
+    ]
   }
 ]

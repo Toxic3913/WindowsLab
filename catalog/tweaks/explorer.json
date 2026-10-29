@@ -6,19 +6,44 @@
     "category": "explorer",
     "risk": "LOW",
     "evidence": "OFFICIAL",
-    "evidenceRefs": ["https://learn.microsoft.com/windows/win32/shell/folder-options"],
+    "evidenceRefs": [
+      "https://learn.microsoft.com/windows/win32/shell/folder-options"
+    ],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["balanced", "developer"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "balanced",
+      "developer"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "HideFileExt", "valueKind": "DWord" },
-    "desired": { "equals": 0 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "HideFileExt", "valueKind": "DWord", "value": "0" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+      "name": "HideFileExt",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 1
+    },
+    "desired": {
+      "equals": 0
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+        "name": "HideFileExt",
+        "valueKind": "DWord",
+        "value": "0"
+      }
+    ]
   },
   {
     "id": "explorer.show-hidden-files",
@@ -27,19 +52,43 @@
     "category": "explorer",
     "risk": "LOW",
     "evidence": "OFFICIAL",
-    "evidenceRefs": ["https://learn.microsoft.com/windows/win32/shell/folder-options"],
+    "evidenceRefs": [
+      "https://learn.microsoft.com/windows/win32/shell/folder-options"
+    ],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["developer"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "developer"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "Hidden", "valueKind": "DWord" },
-    "desired": { "equals": 1 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "Hidden", "valueKind": "DWord", "value": "1" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+      "name": "Hidden",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 2
+    },
+    "desired": {
+      "equals": 1
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+        "name": "Hidden",
+        "valueKind": "DWord",
+        "value": "1"
+      }
+    ]
   },
   {
     "id": "explorer.launch-this-pc",
@@ -48,19 +97,43 @@
     "category": "explorer",
     "risk": "LOW",
     "evidence": "STRONG",
-    "evidenceRefs": ["https://learn.microsoft.com/windows/win32/shell/folder-options"],
+    "evidenceRefs": [
+      "https://learn.microsoft.com/windows/win32/shell/folder-options"
+    ],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["developer", "balanced"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "developer",
+      "balanced"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "LaunchTo", "valueKind": "DWord" },
-    "desired": { "equals": 1 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "LaunchTo", "valueKind": "DWord", "value": "1" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+      "name": "LaunchTo",
+      "valueKind": "DWord"
+    },
+    "desired": {
+      "equals": 1
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+        "name": "LaunchTo",
+        "valueKind": "DWord",
+        "value": "1"
+      }
+    ]
   },
   {
     "id": "explorer.compact-mode",
@@ -71,17 +144,39 @@
     "evidence": "STRONG",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["developer"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "developer"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "UseCompactMode", "valueKind": "DWord" },
-    "desired": { "equals": 1 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "UseCompactMode", "valueKind": "DWord", "value": "1" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+      "name": "UseCompactMode",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 0
+    },
+    "desired": {
+      "equals": 1
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+        "name": "UseCompactMode",
+        "valueKind": "DWord",
+        "value": "1"
+      }
+    ]
   },
   {
     "id": "explorer.show-full-path",
@@ -92,17 +187,39 @@
     "evidence": "STRONG",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["developer"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "developer"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\CabinetState", "name": "FullPath", "valueKind": "DWord" },
-    "desired": { "equals": 1 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\CabinetState", "name": "FullPath", "valueKind": "DWord", "value": "1" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\CabinetState",
+      "name": "FullPath",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 0
+    },
+    "desired": {
+      "equals": 1
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\CabinetState",
+        "name": "FullPath",
+        "valueKind": "DWord",
+        "value": "1"
+      }
+    ]
   },
   {
     "id": "explorer.hide-protected-os-files",
@@ -111,19 +228,43 @@
     "category": "explorer",
     "risk": "LOW",
     "evidence": "OFFICIAL",
-    "evidenceRefs": ["https://learn.microsoft.com/windows/win32/shell/folder-options"],
+    "evidenceRefs": [
+      "https://learn.microsoft.com/windows/win32/shell/folder-options"
+    ],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["balanced"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "balanced"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": true,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "ShowSuperHidden", "valueKind": "DWord" },
-    "desired": { "equals": 0 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "ShowSuperHidden", "valueKind": "DWord", "value": "0" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+      "name": "ShowSuperHidden",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 0
+    },
+    "desired": {
+      "equals": 0
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+        "name": "ShowSuperHidden",
+        "valueKind": "DWord",
+        "value": "0"
+      }
+    ]
   },
   {
     "id": "explorer.hide-frequent-quick-access",
@@ -134,17 +275,41 @@
     "evidence": "STRONG",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["balanced", "developer", "gaming"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "balanced",
+      "developer",
+      "gaming"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer", "name": "ShowFrequent", "valueKind": "DWord" },
-    "desired": { "equals": 0 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer", "name": "ShowFrequent", "valueKind": "DWord", "value": "0" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer",
+      "name": "ShowFrequent",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 1
+    },
+    "desired": {
+      "equals": 0
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer",
+        "name": "ShowFrequent",
+        "valueKind": "DWord",
+        "value": "0"
+      }
+    ]
   },
   {
     "id": "explorer.hide-recent-quick-access",
@@ -155,16 +320,40 @@
     "evidence": "STRONG",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["balanced", "developer", "gaming"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "balanced",
+      "developer",
+      "gaming"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer", "name": "ShowRecent", "valueKind": "DWord" },
-    "desired": { "equals": 0 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer", "name": "ShowRecent", "valueKind": "DWord", "value": "0" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer",
+      "name": "ShowRecent",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 1
+    },
+    "desired": {
+      "equals": 0
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer",
+        "name": "ShowRecent",
+        "valueKind": "DWord",
+        "value": "0"
+      }
+    ]
   }
 ]

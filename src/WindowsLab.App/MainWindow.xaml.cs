@@ -315,6 +315,15 @@ public partial class MainWindow : Window
             };
         }
 
+        if (_session is not null)
+        {
+            RenderTweaks();
+        }
+        else
+        {
+            RefreshAdjustHostFacts();
+        }
+
         SettingsSystemApplyTitle.Text = Loc.T("settings.systemApply");
         SettingsSystemApplyHint.Text = Loc.T("settings.systemApplyHint");
         ChkAllowSystemApply.Content = Loc.T("settings.allowSystemApply");

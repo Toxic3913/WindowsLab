@@ -8,17 +8,41 @@
     "evidence": "STRONG",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["balanced", "developer", "gaming"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "balanced",
+      "developer",
+      "gaming"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Control Panel\\Keyboard", "name": "InitialKeyboardIndicators", "valueKind": "String" },
-    "desired": { "equals": "2" },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Control Panel\\Keyboard", "name": "InitialKeyboardIndicators", "valueKind": "String", "value": "2" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Control Panel\\Keyboard",
+      "name": "InitialKeyboardIndicators",
+      "valueKind": "String",
+      "defaultIfAbsent": "0"
+    },
+    "desired": {
+      "equals": "2"
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Control Panel\\Keyboard",
+        "name": "InitialKeyboardIndicators",
+        "valueKind": "String",
+        "value": "2"
+      }
+    ]
   },
   {
     "id": "desktop.scrollbars-always",
@@ -29,17 +53,40 @@
     "evidence": "STRONG",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["balanced", "developer"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "balanced",
+      "developer"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Control Panel\\Accessibility", "name": "DynamicScrollbars", "valueKind": "DWord" },
-    "desired": { "equals": 0 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Control Panel\\Accessibility", "name": "DynamicScrollbars", "valueKind": "DWord", "value": "0" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Control Panel\\Accessibility",
+      "name": "DynamicScrollbars",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 1
+    },
+    "desired": {
+      "equals": 0
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Control Panel\\Accessibility",
+        "name": "DynamicScrollbars",
+        "valueKind": "DWord",
+        "value": "0"
+      }
+    ]
   },
   {
     "id": "desktop.battery-percentage",
@@ -50,16 +97,40 @@
     "evidence": "STRONG",
     "evidenceRefs": [],
     "minBuild": 22000,
-    "editions": ["*"],
-    "profiles": ["balanced", "developer", "gaming"],
+    "editions": [
+      "*"
+    ],
+    "profiles": [
+      "balanced",
+      "developer",
+      "gaming"
+    ],
     "requires": [],
     "conflicts": [],
     "requiresReboot": false,
     "affectsSecurity": false,
     "affectsUpdates": false,
     "affectsCompatibility": false,
-    "detect": { "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "IsBatteryPercentageEnabled", "valueKind": "DWord" },
-    "desired": { "equals": 1 },
-    "ops": [{ "kind": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "IsBatteryPercentageEnabled", "valueKind": "DWord", "value": "1" }]
+    "detect": {
+      "kind": "registry",
+      "hive": "HKCU",
+      "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+      "name": "IsBatteryPercentageEnabled",
+      "valueKind": "DWord",
+      "defaultIfAbsent": 0
+    },
+    "desired": {
+      "equals": 1
+    },
+    "ops": [
+      {
+        "kind": "registry",
+        "hive": "HKCU",
+        "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+        "name": "IsBatteryPercentageEnabled",
+        "valueKind": "DWord",
+        "value": "1"
+      }
+    ]
   }
 ]
