@@ -117,8 +117,15 @@ public static class ExternalWorkloadController
     {
         "System", "Idle", "csrss", "smss", "wininit", "services", "lsass", "svchost",
         "winlogon", "fontdrvhost", "dwm", "explorer", "MsMpEng", "SecurityHealthService",
+        "MsSense", "NisSrv", "SenseNdr", "WdNisSvc",
         "SearchHost", "SearchIndexer", "Memory Compression"
     };
+
+    public static bool IsProcessHardBlocked(string? processName) =>
+        !string.IsNullOrWhiteSpace(processName) && HardBlockedProcesses.Contains(processName.Trim());
+
+    public static bool IsServiceHardBlocked(string? serviceName) =>
+        !string.IsNullOrWhiteSpace(serviceName) && HardBlockedServices.Contains(serviceName.Trim());
 
     public static ExternalWorkloadStatus Detect(ExternalWorkloadDefinition def)
     {

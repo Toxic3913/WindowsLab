@@ -12,6 +12,7 @@ public sealed class ToolHubCatalogLoaderTests
         var entries = ToolHubCatalogLoader.LoadDirectory(dir!);
         Assert.Contains(entries, e => e.Id == "hub.desktop.powertoys");
         Assert.Contains(entries, e => e.Id == "hub.desktop.treesize-free");
+        Assert.Contains(entries, e => e.Id == "hub.performance.memreduct");
         Assert.Contains(entries, e => e.Id == "hub.performance.quickcpu");
         Assert.Contains(entries, e => e.Id == "hub.performance.lossless-scaling" && e.Kind == ToolHubKind.Steam);
         Assert.Contains(entries, e => e.Id == "hub.performance.scskiller");

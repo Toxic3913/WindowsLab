@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 
 namespace WindowsLab.Core;
@@ -50,6 +49,7 @@ public sealed record LiveDashboardSnapshot(
     IReadOnlyList<LiveDiskSnapshot> Disks,
     LiveDiskIoSnapshot DiskIo,
     string NetworkLine,
+    LiveNetworkSnapshot Network,
     ProcessSampleResult? Processes);
 
 public static class LiveSystemReader
@@ -96,7 +96,7 @@ public static class LiveSystemReader
         var ram = ReadRamDetailed();
         var disks = ReadFixedDisks();
         var diskIo = ReadDiskIo();
-        var net = ReadNetwork();
+        var network = NetworkTrafficSampler.Sample();
         ProcessSampleResult? procs = includeProcesses
             ? ProcessSampler.Sample(processTopN)
             : null;
@@ -110,7 +110,8 @@ public static class LiveSystemReader
             ram,
             disks,
             diskIo,
-            net,
+            network.SummaryLine,
+            network,
             procs);
     }
 
@@ -306,27 +307,6 @@ public static class LiveSystemReader
             }
 
             _diskCountersProbed = true;
-        }
-    }
-
-    private static string ReadNetwork()
-    {
-        try
-        {
-            var ips = NetworkInterface.GetAllNetworkInterfaces()
-                .Where(n => n.OperationalStatus == OperationalStatus.Up
-                            && n.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-                .SelectMany(n => n.GetIPProperties().UnicastAddresses)
-                .Where(a => a.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                .Select(a => a.Address.ToString())
-                .Distinct()
-                .Take(3)
-                .ToArray();
-            return ips.Length == 0 ? string.Empty : string.Join(", ", ips);
-        }
-        catch
-        {
-            return string.Empty;
         }
     }
 

@@ -308,3 +308,15 @@ Do not change an architectural decision without a new dated entry.
 - **Reason:** Discoverability for daily ops without a catch-all Más dump.
 - **Trade-offs:** Eight nav items need compact sidebar; D024 five-destination IA superseded for shell layout (safety model unchanged).
 
+## D032 — Games RAM tools + HW performance tabs + session stop
+
+- **Date:** 2026-11-03
+- **Context:** Operator wants real RAM relief (Mem Reduct), a selectable process/service stop list, and Performance split like Task Manager (CPU/Memory/Disk/Network) with per-adapter traffic.
+- **Chosen:**
+  - **Juegos → Aliviar RAM** opens/installs curated **Mem Reduct** (`Henry++.MemReduct`) via winget; separate button keeps curated workload stop (D028).
+  - **Juegos → Sesión ligera**: checkbox list of top processes by working set + running services; stop selected for this session only (not permanent disable). Reuses D028 hard-blocks (Defender/DiagTrack/SysMain/WSearch/critical OS).
+  - **Rendimiento**: TabControl Resumen/CPU/Memoria/Disco/Red; `NetworkTrafficSampler` for per-adapter RX/TX rates + machine totals. Page stays non-kill (D022); kill UX lives on Games.
+  - Per-app network breakdown deferred (needs ETW / extended TCP table).
+- **Reason:** Real RAM tools without inventing standby flushes in-process; keep Performance read-only; explicit opt-in kills with hard blocks.
+- **Trade-offs:** Mem Reduct needs UAC for deep clean; service stop may need elevation; first network counter tick may be ~0.
+

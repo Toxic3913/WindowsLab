@@ -17,6 +17,77 @@ public sealed class PerfProcessRow
     public string Path { get; init; } = "";
 }
 
+public sealed class PerfNetAdapterRow
+{
+    public string Name { get; init; } = "";
+    public string Description { get; init; } = "";
+    public string Ipv4 { get; init; } = "";
+    public string Status { get; init; } = "";
+    public string RecvRate { get; init; } = "";
+    public string SentRate { get; init; } = "";
+    public string RecvTotal { get; init; } = "";
+    public string SentTotal { get; init; } = "";
+}
+
+public sealed class SessionProcessRow : INotifyPropertyChanged
+{
+    private bool _isSelected;
+
+    public bool IsSelected
+    {
+        get => _isSelected;
+        set
+        {
+            if (_isSelected == value || IsBlocked)
+            {
+                return;
+            }
+
+            _isSelected = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsSelected)));
+        }
+    }
+
+    public int Id { get; init; }
+    public string Name { get; init; } = "";
+    public string WorkingSetText { get; init; } = "";
+    public string GroupLabel { get; init; } = "";
+    public string Path { get; init; } = "";
+    public bool IsBlocked { get; init; }
+    public string BlockLabel { get; init; } = "";
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+}
+
+public sealed class SessionServiceRow : INotifyPropertyChanged
+{
+    private bool _isSelected;
+
+    public bool IsSelected
+    {
+        get => _isSelected;
+        set
+        {
+            if (_isSelected == value || IsBlocked || !CanStop)
+            {
+                return;
+            }
+
+            _isSelected = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsSelected)));
+        }
+    }
+
+    public string Name { get; init; } = "";
+    public string DisplayName { get; init; } = "";
+    public string Status { get; init; } = "";
+    public bool CanStop { get; init; }
+    public bool IsBlocked { get; init; }
+    public string BlockLabel { get; init; } = "";
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+}
+
 public sealed class PresetPick
 {
     public required PresetEvaluation Eval { get; init; }

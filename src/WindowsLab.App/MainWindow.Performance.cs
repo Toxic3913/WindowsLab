@@ -1,11 +1,7 @@
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using WindowsLab.Applications;
-using WindowsLab.Backup;
 using WindowsLab.Core;
-using WindowsLab.Tweaks;
 
 namespace WindowsLab.App;
 
@@ -41,6 +37,15 @@ public partial class MainWindow
                 _ => Loc.T("perf.group.all")
             };
         }
+
+        if (PerfTabOverview is not null)
+        {
+            PerfTabOverview.Header = Loc.T("perf.tab.overview");
+            PerfTabCpu.Header = Loc.T("perf.tab.cpu");
+            PerfTabRam.Header = Loc.T("perf.tab.ram");
+            PerfTabDisk.Header = Loc.T("perf.tab.disk");
+            PerfTabNet.Header = Loc.T("perf.tab.net");
+        }
     }
 
     private void RefreshPerformanceDashboard()
@@ -75,29 +80,58 @@ public partial class MainWindow
     private void ApplyDashboardToUi(LiveDashboardSnapshot dash)
     {
         PerfCpuValue.Text = $"{dash.CpuPercent:0.0}%";
+        PerfCpuDetailValue.Text = $"{dash.CpuPercent:0.0}%";
+        PerfCpuDetailHint.Text = Loc.T("perf.cpu.hint")
+            .Replace("{0}", Environment.ProcessorCount.ToString(System.Globalization.CultureInfo.InvariantCulture), StringComparison.Ordinal);
+
         var ram = dash.Ram;
         var commit = ram.CommitPercent is null
             ? ""
-            : Loc.IsEnglish
-                ? $" · commit {ram.CommitPercent:0.0}%"
-                : $" · commit {ram.CommitPercent:0.0}%";
-        PerfRamValue.Text =
+            : $" · commit {ram.CommitPercent:0.0}%";
+        var ramText =
             $"{ram.UsedGb:0.0}/{ram.TotalGb:0.0} GB ({ram.Percent:0.0}%)" +
             $"\n{Loc.T("perf.ram.avail")}: {ram.AvailableGb:0.0} GB{commit}";
+        PerfRamValue.Text = ramText;
+        PerfRamDetailValue.Text = ramText;
+        PerfRamDetailHint.Text = Loc.T("perf.ram.hint");
 
-        PerfDiskValue.Text = dash.Disks.Count == 0
+        var diskText = dash.Disks.Count == 0
             ? "—"
             : string.Join("\n", dash.Disks.Select(d =>
                 $"{d.Root} {d.FreeGb:0.0}/{d.TotalGb:0.0} GB ({d.FreePercent:0.0}% {Loc.T("perf.disk.free")})"));
-
         var io = dash.DiskIo.PercentDiskTime is null
             ? ""
-            : $" · disk time {dash.DiskIo.PercentDiskTime:0.0}% q={dash.DiskIo.AvgQueueLength:0.00}";
+            : $"\n{Loc.T("perf.disk.io")}: {dash.DiskIo.PercentDiskTime:0.0}% · q={dash.DiskIo.AvgQueueLength:0.00}";
+        PerfDiskValue.Text = diskText;
+        PerfDiskDetailValue.Text = diskText + io;
+        PerfDiskDetailHint.Text = Loc.T("perf.disk.hint");
+
+        var net = dash.Network;
+        var netSummary =
+            $"{NetworkTrafficSampler.FormatRate(net.TotalBytesReceivedPerSec)} ↓  ·  " +
+            $"{NetworkTrafficSampler.FormatRate(net.TotalBytesSentPerSec)} ↑";
+        PerfNetValue.Text = netSummary + (string.IsNullOrWhiteSpace(dash.NetworkLine) ? "" : "\n" + dash.NetworkLine);
+        PerfNetDetailValue.Text = Loc.T("perf.net.total")
+            .Replace("{0}", NetworkTrafficSampler.FormatRate(net.TotalBytesReceivedPerSec), StringComparison.Ordinal)
+            .Replace("{1}", NetworkTrafficSampler.FormatRate(net.TotalBytesSentPerSec), StringComparison.Ordinal);
+        PerfNetDetailHint.Text = Loc.T("perf.net.hint");
+        PerfNetGrid.ItemsSource = net.Adapters.Select(a => new PerfNetAdapterRow
+        {
+            Name = a.Name,
+            Description = a.Description,
+            Ipv4 = a.Ipv4 ?? "—",
+            Status = a.IsUp ? Loc.T("perf.net.up") : Loc.T("perf.net.down"),
+            RecvRate = NetworkTrafficSampler.FormatRate(a.BytesReceivedPerSec),
+            SentRate = NetworkTrafficSampler.FormatRate(a.BytesSentPerSec),
+            RecvTotal = FormatBytes(a.BytesReceived),
+            SentTotal = FormatBytes(a.BytesSent)
+        }).ToArray();
+
         var totals = dash.Processes is null
             ? ""
             : string.Join(" · ", dash.Processes.GroupTotals.Select(g =>
                 $"{GroupLabel(g.Group)}={g.Count} ({FormatBytes(g.WorkingSetBytes)})"));
-        PerfMeta.Text = $"{dash.CapturedUtc:HH:mm:ss} · {dash.OsLine} · IP {dash.NetworkLine}{io}\n{totals}";
+        PerfMeta.Text = $"{dash.CapturedUtc:HH:mm:ss} · {dash.OsLine}\n{totals}";
 
         _perfRows = (dash.Processes?.TopByWorkingSet ?? [])
             .Select(r => new PerfProcessRow

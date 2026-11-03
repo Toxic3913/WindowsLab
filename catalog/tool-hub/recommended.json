@@ -41,6 +41,27 @@
     ]
   },
   {
+    "id": "hub.performance.memreduct",
+    "title": "Mem Reduct",
+    "group": "performance",
+    "summary": "Limpia working set y listas de standby para liberar RAM antes de jugar.",
+    "summaryEn": "Clears working set and standby lists to free RAM before gaming.",
+    "improves": "Más memoria física disponible de forma inmediata (efecto variable).",
+    "improvesEn": "More physical memory available immediately (variable effect).",
+    "kind": "winget",
+    "catalogAppId": "app.tool.memreduct",
+    "url": "https://github.com/henrypp/memreduct",
+    "evidence": "STRONG",
+    "riskNote": "Necesita elevación para limpiar a fondo. No sustituye cerrar apps pesadas.",
+    "riskNoteEn": "Needs elevation for a deep clean. Does not replace closing heavy apps.",
+    "launchExeHints": [
+      "%ProgramFiles%\\Mem Reduct\\memreduct.exe",
+      "%ProgramFiles(x86)%\\Mem Reduct\\memreduct.exe",
+      "%LOCALAPPDATA%\\Programs\\Mem Reduct\\memreduct.exe",
+      "memreduct.exe"
+    ]
+  },
+  {
     "id": "hub.performance.quickcpu",
     "title": "Quick CPU",
     "group": "performance",

@@ -50,7 +50,7 @@ public static class CliApp
 
     public const string HelpText =
         """
-        WindowsLab CLI — 1.2.10 (audit · stacks · apply · live · apps · workloads)
+        WindowsLab CLI — 1.2.11 (audit · stacks · apply · live · apps · workloads)
         Ejecutable: windowslab-cli.exe  (no confundir con WindowsLab.exe = GUI)
 
         Uso:
@@ -845,6 +845,14 @@ public static class CliApp
         }
 
         stdout.WriteLine($"network: {dash.NetworkLine}");
+        stdout.WriteLine(
+            $"networkRate: recv={NetworkTrafficSampler.FormatRate(dash.Network.TotalBytesReceivedPerSec)} sent={NetworkTrafficSampler.FormatRate(dash.Network.TotalBytesSentPerSec)}");
+        foreach (var nic in dash.Network.Adapters.Where(a => a.IsUp).Take(8))
+        {
+            stdout.WriteLine(
+                $"nic: {nic.Name} ipv4={nic.Ipv4 ?? "-"} ↓{NetworkTrafficSampler.FormatRate(nic.BytesReceivedPerSec)} ↑{NetworkTrafficSampler.FormatRate(nic.BytesSentPerSec)}");
+        }
+
         if (dash.Processes is null)
         {
             return;
