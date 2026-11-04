@@ -50,11 +50,18 @@ public sealed class SessionProcessRow : INotifyPropertyChanged
 
     public int Id { get; init; }
     public string Name { get; init; } = "";
+    public string Title { get; init; } = "";
+    public string Detail { get; init; } = "";
     public string WorkingSetText { get; init; } = "";
+    public long WorkingSetBytes { get; init; }
     public string GroupLabel { get; init; } = "";
     public string Path { get; init; } = "";
+    public string PathShort { get; init; } = "";
+    public string Initial { get; init; } = "?";
     public bool IsBlocked { get; init; }
+    public bool CanSelect => !IsBlocked;
     public string BlockLabel { get; init; } = "";
+    public string StatusKind { get; init; } = "ok"; // ok | blocked | bg
 
     public event PropertyChangedEventHandler? PropertyChanged;
 }
@@ -68,7 +75,7 @@ public sealed class SessionServiceRow : INotifyPropertyChanged
         get => _isSelected;
         set
         {
-            if (_isSelected == value || IsBlocked || !CanStop)
+            if (_isSelected == value || IsBlocked || !CanSelect)
             {
                 return;
             }
@@ -80,10 +87,17 @@ public sealed class SessionServiceRow : INotifyPropertyChanged
 
     public string Name { get; init; } = "";
     public string DisplayName { get; init; } = "";
+    public string Title { get; init; } = "";
+    public string Detail { get; init; } = "";
     public string Status { get; init; } = "";
+    public string Initial { get; init; } = "?";
+    public bool IsRunning { get; init; }
     public bool CanStop { get; init; }
+    public bool CanStart { get; init; }
     public bool IsBlocked { get; init; }
+    public bool CanSelect => !IsBlocked && (CanStop || CanStart);
     public string BlockLabel { get; init; } = "";
+    public string StatusKind { get; init; } = "ok";
 
     public event PropertyChangedEventHandler? PropertyChanged;
 }

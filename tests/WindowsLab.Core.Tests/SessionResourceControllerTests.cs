@@ -29,4 +29,24 @@ public sealed class SessionResourceControllerTests
         Assert.True(net.TotalBytesReceivedPerSec >= 0);
         Assert.True(net.TotalBytesSentPerSec >= 0);
     }
+
+    [Theory]
+    [InlineData("NordVPN", null, null, ProcessGroup.External, true)]
+    [InlineData("ollama", null, null, ProcessGroup.External, true)]
+    [InlineData("LuaTools", null, null, ProcessGroup.External, true)]
+    [InlineData("steamwebhelper", null, null, ProcessGroup.External, true)]
+    [InlineData("notepad", @"C:\Windows\System32\notepad.exe", null, ProcessGroup.Windows, false)]
+    public void Background_interest_detects_vpn_steam_ollama(
+        string name, string? path, string? title, ProcessGroup group, bool expected)
+    {
+        Assert.Equal(expected, SessionResourceController.IsBackgroundInterest(name, path, title, group));
+    }
+
+    [Fact]
+    public void ListServices_includes_running_entries()
+    {
+        var svcs = SessionResourceController.ListServices(400);
+        Assert.NotEmpty(svcs);
+        Assert.Contains(svcs, s => s.IsRunning);
+    }
 }

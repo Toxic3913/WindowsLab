@@ -536,65 +536,14 @@
           </Border>
 
           <TextBlock x:Name="GameQuickTitle" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,8" Text="Antes de jugar"/>
-          <WrapPanel Margin="0,0,0,8">
-            <Button x:Name="BtnGameFreeRam" Style="{StaticResource PrimaryButton}" Content="Aliviar RAM (Mem Reduct)"
-                    Click="GameFreeRam_OnClick" Padding="12,8" Margin="0,0,8,8"/>
-            <Button x:Name="BtnGameStopWorkloads" Content="Parar cargas" Click="GameStopWorkloads_OnClick"
-                    Padding="12,8" Margin="0,0,8,8"/>
+          <WrapPanel Margin="0,0,0,14">
             <Button x:Name="BtnGameOpenPerf" Content="Rendimiento en vivo" Click="GameOpenPerf_OnClick"
                     Padding="12,8" Margin="0,0,8,8"/>
-            <Button x:Name="BtnGameOpenWorkloads" Content="Cargas externas" Click="GameOpenWorkloads_OnClick"
+            <Button x:Name="BtnGameOpenWorkloads" Content="Cargas / procesos" Click="GameOpenWorkloads_OnClick"
                     Padding="12,8" Margin="0,0,8,8"/>
             <Button x:Name="BtnGameOpenTools" Content="Herramientas hub" Click="GameOpenTools_OnClick"
                     Padding="12,8" Margin="0,0,8,8"/>
           </WrapPanel>
-          <TextBlock x:Name="GameRamPolicyHint" TextWrapping="Wrap" Margin="0,0,0,14" FontSize="12"
-                     Foreground="{DynamicResource WarnBrush}"/>
-
-          <Border Padding="14" Margin="0,0,0,14" CornerRadius="8"
-                  Background="{DynamicResource ChipBrush}"
-                  BorderBrush="{DynamicResource BorderBrushSubtle}" BorderThickness="1">
-            <StackPanel>
-              <TextBlock x:Name="GameSessionTitle" FontWeight="SemiBold" FontSize="15"
-                         Foreground="{DynamicResource TextBrush}" Text="Sesión ligera"/>
-              <TextBlock x:Name="GameSessionHint" Margin="0,6,0,8" TextWrapping="Wrap" FontSize="12"
-                         Foreground="{DynamicResource SecondaryTextBrush}"/>
-              <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                <Button x:Name="BtnGameSessionRefresh" Content="Actualizar lista" Click="GameSessionRefresh_OnClick"
-                        Padding="10,6" Margin="0,0,8,0"/>
-                <Button x:Name="BtnGameSessionStop" Style="{StaticResource PrimaryButton}"
-                        Content="Detener seleccionados" Click="GameSessionStop_OnClick" Padding="10,6"/>
-              </StackPanel>
-              <TabControl Height="320">
-                <TabItem x:Name="GameSessionProcTab" Header="Procesos (RAM)">
-                  <DataGrid x:Name="GameSessionProcGrid" AutoGenerateColumns="False" CanUserAddRows="False"
-                            HeadersVisibility="Column" SelectionMode="Extended" Margin="0,6,0,0">
-                    <DataGrid.Columns>
-                      <DataGridCheckBoxColumn Header="" Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" Width="36"/>
-                      <DataGridTextColumn Header="Proceso" Binding="{Binding Name}" Width="140" IsReadOnly="True"/>
-                      <DataGridTextColumn Header="PID" Binding="{Binding Id}" Width="70" IsReadOnly="True"/>
-                      <DataGridTextColumn Header="Working set" Binding="{Binding WorkingSetText}" Width="100" IsReadOnly="True"/>
-                      <DataGridTextColumn Header="Grupo" Binding="{Binding GroupLabel}" Width="90" IsReadOnly="True"/>
-                      <DataGridTextColumn Header="Estado" Binding="{Binding BlockLabel}" Width="90" IsReadOnly="True"/>
-                      <DataGridTextColumn Header="Ruta" Binding="{Binding Path}" Width="*" IsReadOnly="True"/>
-                    </DataGrid.Columns>
-                  </DataGrid>
-                </TabItem>
-                <TabItem x:Name="GameSessionSvcTab" Header="Servicios">
-                  <DataGrid x:Name="GameSessionSvcGrid" AutoGenerateColumns="False" CanUserAddRows="False"
-                            HeadersVisibility="Column" SelectionMode="Extended" Margin="0,6,0,0">
-                    <DataGrid.Columns>
-                      <DataGridCheckBoxColumn Header="" Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" Width="36"/>
-                      <DataGridTextColumn Header="Servicio" Binding="{Binding DisplayName}" Width="200" IsReadOnly="True"/>
-                      <DataGridTextColumn Header="Nombre" Binding="{Binding Name}" Width="140" IsReadOnly="True"/>
-                      <DataGridTextColumn Header="Estado" Binding="{Binding Status}" Width="90" IsReadOnly="True"/>
-                      <DataGridTextColumn Header="Política" Binding="{Binding BlockLabel}" Width="*" IsReadOnly="True"/>
-                    </DataGrid.Columns>
-                  </DataGrid>
-                </TabItem>
-              </TabControl>
-            </StackPanel>
-          </Border>
 
           <Border Padding="14" Margin="0,0,0,14" CornerRadius="8"
                   Background="{DynamicResource ChipBrush}"
@@ -618,19 +567,184 @@
       </ScrollViewer>
 
       <!-- CARGAS -->
-      <ScrollViewer x:Name="PageWorkloads" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
-        <StackPanel>
-          <TextBlock x:Name="MoreWorkloadsTitle" FontWeight="SemiBold" FontSize="18" Text="Cargas externas" Margin="0,0,0,8"/>
-          <TextBlock x:Name="MoreWorkloadsHint" TextWrapping="Wrap" Margin="0,0,0,12" Foreground="{DynamicResource MutedBrush}"/>
-          <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-            <Button x:Name="BtnWorkloadRefresh" Content="Actualizar" Click="WorkloadRefresh_OnClick" Margin="0,0,8,0" Padding="10,4"/>
-            <Button x:Name="BtnWorkloadStopAll" Style="{StaticResource PrimaryButton}" Content="Detener activas"
-                    Click="WorkloadStopAllActive_OnClick" Padding="10,4"/>
-          </StackPanel>
-          <WrapPanel x:Name="WorkloadPanel" Margin="0,0,0,8"/>
-          <TextBlock x:Name="WorkloadStatusText" TextWrapping="Wrap" Margin="0,0,0,8" Foreground="{DynamicResource MutedBrush}"/>
+      <DockPanel x:Name="PageWorkloads" Visibility="Collapsed">
+        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+          <TextBlock x:Name="MoreWorkloadsTitle" FontWeight="SemiBold" FontSize="18" Text="Cargas" Margin="0,0,0,4"/>
+          <TextBlock x:Name="MoreWorkloadsHint" TextWrapping="Wrap" Margin="0,0,0,8"
+                     Foreground="{DynamicResource MutedBrush}"/>
+
+          <Expander x:Name="WorkloadCuratedExpander" IsExpanded="False" Margin="0,0,0,10">
+            <Expander.Header>
+              <TextBlock x:Name="WorkloadCuratedHeader" FontWeight="SemiBold"
+                         Text="Cargas curadas (Steam, NordVPN, Ollama…)"/>
+            </Expander.Header>
+            <StackPanel Margin="0,8,0,0">
+              <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                <Button x:Name="BtnWorkloadRefresh" Content="Actualizar" Click="WorkloadRefresh_OnClick" Margin="0,0,8,0" Padding="10,4"/>
+                <Button x:Name="BtnWorkloadStopAll" Style="{StaticResource PrimaryButton}" Content="Detener activas"
+                        Click="WorkloadStopAllActive_OnClick" Padding="10,4" Margin="0,0,8,0"/>
+                <Button x:Name="BtnWorkloadMemReduct" Content="Aliviar RAM (Mem Reduct)"
+                        Click="WorkloadMemReduct_OnClick" Padding="10,4"/>
+              </StackPanel>
+              <WrapPanel x:Name="WorkloadPanel" Margin="0,0,0,4"/>
+              <TextBlock x:Name="WorkloadStatusText" TextWrapping="Wrap"
+                         Foreground="{DynamicResource MutedBrush}"/>
+            </StackPanel>
+          </Expander>
+
+          <Border Padding="12,10" Margin="0,0,0,8" CornerRadius="8"
+                  Background="{DynamicResource PanelElevatedBrush}"
+                  BorderBrush="{DynamicResource BorderBrushSubtle}" BorderThickness="1">
+            <StackPanel>
+              <TextBlock x:Name="WorkloadProcessTitle" FontWeight="SemiBold" FontSize="15"
+                         Foreground="{DynamicResource TextBrush}" Text="Procesos y servicios"/>
+              <TextBlock x:Name="WorkloadProcessHint" TextWrapping="Wrap" FontSize="12" Margin="0,4,0,8"
+                         Foreground="{DynamicResource SecondaryTextBrush}"/>
+              <DockPanel LastChildFill="False">
+                <TextBox x:Name="WorkloadProcessSearch" Style="{StaticResource SearchBox}" Width="260"
+                         DockPanel.Dock="Left" Margin="0,0,10,0" ToolTip="Buscar"
+                         TextChanged="WorkloadProcessSearch_OnChanged"/>
+                <Button x:Name="BtnWorkloadProcessRefresh" Content="Actualizar lista" DockPanel.Dock="Left"
+                        Click="WorkloadProcessRefresh_OnClick" Padding="12,6" Margin="0,0,8,0"/>
+                <Button x:Name="BtnWorkloadProcessStop" Style="{StaticResource PrimaryButton}" DockPanel.Dock="Left"
+                        Content="Detener seleccionados" Click="WorkloadProcessStop_OnClick" Padding="12,6" Margin="0,0,8,0"/>
+                <Button x:Name="BtnWorkloadProcessStart" DockPanel.Dock="Left"
+                        Content="Iniciar seleccionados" Click="WorkloadProcessStart_OnClick" Padding="12,6"/>
+              </DockPanel>
+              <TextBlock x:Name="WorkloadProcessStatus" TextWrapping="Wrap" Margin="0,8,0,0" FontSize="12"
+                         Foreground="{DynamicResource MutedBrush}"/>
+            </StackPanel>
+          </Border>
         </StackPanel>
-      </ScrollViewer>
+
+        <TabControl x:Name="WorkloadBgTabs">
+          <TabItem x:Name="WorkloadProcTab" Header="Procesos">
+            <DataGrid x:Name="WorkloadProcessList" Margin="0,8,0,0"
+                      AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
+                      HeadersVisibility="Column" SelectionMode="Extended" IsReadOnly="True"
+                      GridLinesVisibility="Horizontal" RowHeight="36">
+              <DataGrid.Columns>
+                <DataGridTemplateColumn Width="44">
+                  <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                      <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center"
+                                IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                IsEnabled="{Binding CanSelect}"/>
+                    </DataTemplate>
+                  </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn x:Name="ColProcTitle" Header="Nombre" Binding="{Binding Title}" Width="1.4*" IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="ColProcName" Header="Proceso" Binding="{Binding Name}" Width="120" IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="ColProcPid" Header="PID" Binding="{Binding Id}" Width="70" IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="ColProcRam" Header="RAM" Binding="{Binding WorkingSetText}" Width="90" IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="ColProcGroup" Header="Grupo" Binding="{Binding GroupLabel}" Width="90" IsReadOnly="True"/>
+                <DataGridTemplateColumn x:Name="ColProcStatus" Header="Estado" Width="110">
+                  <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                      <Border CornerRadius="10" Padding="8,2" HorizontalAlignment="Left" Margin="0,4">
+                        <Border.Style>
+                          <Style TargetType="Border">
+                            <Setter Property="Background" Value="{DynamicResource ChipBrush}"/>
+                            <Style.Triggers>
+                              <DataTrigger Binding="{Binding StatusKind}" Value="blocked">
+                                <Setter Property="Background" Value="{DynamicResource AccentDeepBrush}"/>
+                              </DataTrigger>
+                              <DataTrigger Binding="{Binding StatusKind}" Value="bg">
+                                <Setter Property="Background" Value="{DynamicResource SelectionAltBrush}"/>
+                              </DataTrigger>
+                            </Style.Triggers>
+                          </Style>
+                        </Border.Style>
+                        <TextBlock Text="{Binding BlockLabel}" FontSize="11" FontWeight="SemiBold">
+                          <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                              <Setter Property="Foreground" Value="{DynamicResource OkBrush}"/>
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding StatusKind}" Value="blocked">
+                                  <Setter Property="Foreground" Value="{DynamicResource WarnBrush}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding StatusKind}" Value="bg">
+                                  <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </TextBlock.Style>
+                        </TextBlock>
+                      </Border>
+                    </DataTemplate>
+                  </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn x:Name="ColProcPath" Header="Ruta" Binding="{Binding PathShort}" Width="2*" IsReadOnly="True">
+                  <DataGridTextColumn.ElementStyle>
+                    <Style TargetType="TextBlock">
+                      <Setter Property="ToolTip" Value="{Binding Path}"/>
+                      <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                      <Setter Property="VerticalAlignment" Value="Center"/>
+                    </Style>
+                  </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+              </DataGrid.Columns>
+            </DataGrid>
+          </TabItem>
+          <TabItem x:Name="WorkloadSvcTab" Header="Servicios">
+            <DataGrid x:Name="WorkloadServiceList" Margin="0,8,0,0"
+                      AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
+                      HeadersVisibility="Column" SelectionMode="Extended" IsReadOnly="True"
+                      GridLinesVisibility="Horizontal" RowHeight="36">
+              <DataGrid.Columns>
+                <DataGridTemplateColumn Width="44">
+                  <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                      <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center"
+                                IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                IsEnabled="{Binding CanSelect}"/>
+                    </DataTemplate>
+                  </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn x:Name="ColSvcTitle" Header="Servicio" Binding="{Binding Title}" Width="1.6*" IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="ColSvcName" Header="Nombre" Binding="{Binding Name}" Width="1.2*" IsReadOnly="True"/>
+                <DataGridTextColumn x:Name="ColSvcStatus" Header="Estado SCM" Binding="{Binding Status}" Width="110" IsReadOnly="True"/>
+                <DataGridTemplateColumn x:Name="ColSvcAction" Header="Acción" Width="180">
+                  <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                      <Border CornerRadius="10" Padding="8,2" HorizontalAlignment="Left" Margin="0,4">
+                        <Border.Style>
+                          <Style TargetType="Border">
+                            <Setter Property="Background" Value="{DynamicResource ChipBrush}"/>
+                            <Style.Triggers>
+                              <DataTrigger Binding="{Binding StatusKind}" Value="blocked">
+                                <Setter Property="Background" Value="{DynamicResource AccentDeepBrush}"/>
+                              </DataTrigger>
+                              <DataTrigger Binding="{Binding StatusKind}" Value="start">
+                                <Setter Property="Background" Value="{DynamicResource SelectionAltBrush}"/>
+                              </DataTrigger>
+                            </Style.Triggers>
+                          </Style>
+                        </Border.Style>
+                        <TextBlock Text="{Binding BlockLabel}" FontSize="11" FontWeight="SemiBold">
+                          <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                              <Setter Property="Foreground" Value="{DynamicResource OkBrush}"/>
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding StatusKind}" Value="blocked">
+                                  <Setter Property="Foreground" Value="{DynamicResource WarnBrush}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding StatusKind}" Value="start">
+                                  <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </TextBlock.Style>
+                        </TextBlock>
+                      </Border>
+                    </DataTemplate>
+                  </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+              </DataGrid.Columns>
+            </DataGrid>
+          </TabItem>
+        </TabControl>
+      </DockPanel>
 
       <!-- RESPALDOS -->
       <DockPanel x:Name="PageBackups" Visibility="Collapsed">

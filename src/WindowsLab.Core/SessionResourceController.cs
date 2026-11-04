@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.ServiceProcess;
+using System.Text.RegularExpressions;
 
 namespace WindowsLab.Core;
 
@@ -9,15 +10,21 @@ public sealed record SessionProcessInfo(
     long WorkingSetBytes,
     long PrivateBytes,
     string? Path,
+    string? WindowTitle,
+    string? DisplayName,
     ProcessGroup Group,
-    bool IsBlocked);
+    bool IsBlocked,
+    bool IsBackgroundInterest);
 
 public sealed record SessionServiceInfo(
     string Name,
     string DisplayName,
     string Status,
+    bool IsRunning,
     bool CanStop,
-    bool IsBlocked);
+    bool CanStart,
+    bool IsBlocked,
+    bool IsBackgroundInterest);
 
 public sealed record SessionStopResult(
     int ProcessesStopped,
@@ -25,17 +32,34 @@ public sealed record SessionStopResult(
     int BlockedSkipped,
     IReadOnlyList<string> Messages);
 
+public sealed record SessionStartResult(
+    int ServicesStarted,
+    int BlockedSkipped,
+    IReadOnlyList<string> Messages);
+
 /// <summary>
-/// Operator-selected process/service stop for Games “sesión ligera” (D032).
+/// Operator-selected process/service control for Cargas (D032).
+/// Prefers background / third-party apps (VPN, Steam helpers, Ollama…) over a pure RAM top-N cut.
 /// Hard-blocks Defender / DiagTrack / SysMain / WSearch / critical OS processes.
-/// Stops services (runtime), does not permanently disable Start type.
 /// </summary>
-public static class SessionResourceController
+public static partial class SessionResourceController
 {
-    public static IReadOnlyList<SessionProcessInfo> ListProcesses(int topN = 80)
+    private static readonly string[] BackgroundTokens =
+    [
+        "nord", "vpn", "forti", "mullvad", "expressvpn", "proton", "warp",
+        "ollama", "docker", "steam", "lua", "epic", "ubisoft", "origin", "eadesktop",
+        "battle.net", "agent", "discord", "overwolf", "riot", "vanguard", "faceit",
+        "nvidia", "radeon", "lghub", "icue", "razor", "steelseries", "obs", "streamlabs",
+        "dropbox", "onedrive", "googledrive", "mega", "spotify", "adobe", "creative",
+        "teams", "slack", "zoom", "webex", "anydesk", "teamviewer", "parsec",
+        "vmware", "virtualbox", "vbox", "wsl", "hyper-v"
+    ];
+
+    public static IReadOnlyList<SessionProcessInfo> ListProcesses(int maxRows = 500)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(topN, 1);
-        var rows = new List<SessionProcessInfo>(256);
+        ArgumentOutOfRangeException.ThrowIfLessThan(maxRows, 1);
+        var rows = new List<SessionProcessInfo>(512);
+        var displayCache = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
         foreach (var p in Process.GetProcesses())
         {
             try
@@ -45,6 +69,16 @@ public static class SessionResourceController
                     string? path = null;
                     try { path = p.MainModule?.FileName; }
                     catch { /* AccessDenied */ }
+
+                    string? title = null;
+                    try
+                    {
+                        title = string.IsNullOrWhiteSpace(p.MainWindowTitle) ? null : p.MainWindowTitle.Trim();
+                    }
+                    catch
+                    {
+                        // ignore
+                    }
 
                     long ws;
                     long priv;
@@ -58,15 +92,28 @@ public static class SessionResourceController
                         continue;
                     }
 
-                    var name = p.ProcessName;
+                    var name = string.IsNullOrWhiteSpace(p.ProcessName) ? $"pid-{p.Id}" : p.ProcessName;
+                    var group = ProcessSampler.Classify(p.Id, name, path);
+                    var blocked = ExternalWorkloadController.IsProcessHardBlocked(name);
+                    // AccessDenied paths often mis-classify protected OS / Defender as External.
+                    if (blocked && group == ProcessGroup.External && string.IsNullOrWhiteSpace(path))
+                    {
+                        group = ProcessGroup.Windows;
+                    }
+
+                    var displayName = ResolveDisplayName(path, displayCache);
+                    var interest = IsBackgroundInterest(name, path, title, group);
                     rows.Add(new SessionProcessInfo(
                         p.Id,
                         name,
                         ws,
                         priv,
                         path,
-                        ProcessSampler.Classify(p.Id, name, path),
-                        ExternalWorkloadController.IsProcessHardBlocked(name)));
+                        title,
+                        displayName,
+                        group,
+                        blocked,
+                        interest));
                 }
             }
             catch
@@ -75,15 +122,31 @@ public static class SessionResourceController
             }
         }
 
-        return rows
+        // Always keep every background-interest / External / titled process; fill remainder by RAM.
+        var priority = rows
+            .Where(r => r.IsBackgroundInterest
+                        || r.Group == ProcessGroup.External
+                        || !string.IsNullOrWhiteSpace(r.WindowTitle))
+            .ToArray();
+        var fillerBudget = Math.Max(0, maxRows - priority.Length);
+        var filler = rows
+            .Except(priority)
             .OrderByDescending(r => r.WorkingSetBytes)
-            .Take(topN)
+            .Take(fillerBudget);
+
+        return priority
+            .Concat(filler)
+            .OrderByDescending(r => r.IsBackgroundInterest)
+            .ThenByDescending(r => r.Group == ProcessGroup.External)
+            .ThenByDescending(r => r.WorkingSetBytes)
+            .ThenBy(r => r.Name, StringComparer.OrdinalIgnoreCase)
+            .Take(maxRows)
             .ToArray();
     }
 
-    public static IReadOnlyList<SessionServiceInfo> ListRunningServices(int topN = 80)
+    public static IReadOnlyList<SessionServiceInfo> ListServices(int maxRows = 400)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(topN, 1);
+        ArgumentOutOfRangeException.ThrowIfLessThan(maxRows, 1);
         var list = new List<SessionServiceInfo>();
         ServiceController[] all;
         try
@@ -101,18 +164,42 @@ public static class SessionResourceController
             {
                 using (sc)
                 {
-                    if (sc.Status is not (ServiceControllerStatus.Running or ServiceControllerStatus.StartPending))
+                    var blocked = ExternalWorkloadController.IsServiceHardBlocked(sc.ServiceName);
+                    var running = sc.Status is ServiceControllerStatus.Running or ServiceControllerStatus.StartPending;
+                    var interest = IsBackgroundInterest(sc.ServiceName, null, sc.DisplayName, ProcessGroup.External)
+                                   || IsBackgroundInterest(sc.DisplayName, null, null, ProcessGroup.External);
+
+                    // Skip quiet Windows noise unless running and stoppable — prefer interest + running.
+                    if (!running && !interest)
                     {
                         continue;
                     }
 
-                    var blocked = ExternalWorkloadController.IsServiceHardBlocked(sc.ServiceName);
+                    if (blocked && !running)
+                    {
+                        continue;
+                    }
+
+                    var canStop = running && !blocked && sc.CanStop;
+                    var canStart = !running
+                                   && !blocked
+                                   && sc.Status is ServiceControllerStatus.Stopped
+                                   && sc.StartType is not ServiceStartMode.Disabled;
+
+                    if (!canStop && !canStart && !interest)
+                    {
+                        continue;
+                    }
+
                     list.Add(new SessionServiceInfo(
                         sc.ServiceName,
                         string.IsNullOrWhiteSpace(sc.DisplayName) ? sc.ServiceName : sc.DisplayName,
                         sc.Status.ToString(),
-                        !blocked && sc.CanStop,
-                        blocked));
+                        running,
+                        canStop,
+                        canStart,
+                        blocked,
+                        interest));
                 }
             }
             catch
@@ -122,9 +209,10 @@ public static class SessionResourceController
         }
 
         return list
-            .OrderBy(s => s.IsBlocked ? 1 : 0)
+            .OrderByDescending(s => s.IsBackgroundInterest)
+            .ThenByDescending(s => s.IsRunning)
             .ThenBy(s => s.DisplayName, StringComparer.OrdinalIgnoreCase)
-            .Take(topN)
+            .Take(maxRows)
             .ToArray();
     }
 
@@ -177,7 +265,6 @@ public static class SessionResourceController
                     continue;
                 }
 
-                // Never Kill(entireProcessTree): could hit hard-blocked children (Defender, etc.).
                 var pname = p.ProcessName;
                 if (!p.HasExited && p.CloseMainWindow())
                 {
@@ -206,4 +293,111 @@ public static class SessionResourceController
 
         return new SessionStopResult(procStopped, svcStopped, blocked, messages);
     }
+
+    public static SessionStartResult StartSelectedServices(IEnumerable<string> serviceNames)
+    {
+        var messages = new List<string>();
+        var started = 0;
+        var blocked = 0;
+
+        foreach (var name in serviceNames)
+        {
+            if (ExternalWorkloadController.IsServiceHardBlocked(name))
+            {
+                blocked++;
+                messages.Add("svc bloqueado: " + name);
+                continue;
+            }
+
+            try
+            {
+                using var sc = new ServiceController(name);
+                if (sc.StartType == ServiceStartMode.Disabled)
+                {
+                    messages.Add("svc disabled: " + name);
+                    continue;
+                }
+
+                if (sc.Status is ServiceControllerStatus.Stopped or ServiceControllerStatus.StopPending)
+                {
+                    sc.Start();
+                    sc.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(20));
+                    started++;
+                    messages.Add("svc start: " + name);
+                }
+            }
+            catch (Exception ex)
+            {
+                messages.Add($"svc {name}: {ex.Message}");
+            }
+        }
+
+        return new SessionStartResult(started, blocked, messages);
+    }
+
+    public static bool IsBackgroundInterest(string? name, string? path, string? title, ProcessGroup group)
+    {
+        if (group == ProcessGroup.External)
+        {
+            // Prefer user-space third-party always as "interest" for game/work toggles.
+            return true;
+        }
+
+        // Match name/title/file leaf only — never the full path (avoids username false positives).
+        string? leaf = null;
+        if (!string.IsNullOrWhiteSpace(path))
+        {
+            try { leaf = System.IO.Path.GetFileName(path); }
+            catch { /* ignore */ }
+        }
+
+        var hay = string.Join(' ', name ?? "", title ?? "", leaf ?? "");
+        if (string.IsNullOrWhiteSpace(hay))
+        {
+            return false;
+        }
+
+        foreach (var token in BackgroundTokens)
+        {
+            if (hay.Contains(token, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        return BackgroundRegex().IsMatch(hay);
+    }
+
+    private static string? ResolveDisplayName(string? path, Dictionary<string, string?> cache)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return null;
+        }
+
+        if (cache.TryGetValue(path, out var cached))
+        {
+            return cached;
+        }
+
+        string? display = null;
+        try
+        {
+            var vi = FileVersionInfo.GetVersionInfo(path);
+            if (!string.IsNullOrWhiteSpace(vi.FileDescription))
+            {
+                display = vi.FileDescription.Trim();
+            }
+        }
+        catch
+        {
+            // ignore
+        }
+
+        cache[path] = display;
+        return display;
+    }
+
+    [GeneratedRegex(@"\b(vpn|lua|helper|overlay|launcher|updater)\b", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    private static partial Regex BackgroundRegex();
 }

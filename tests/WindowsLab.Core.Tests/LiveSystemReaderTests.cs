@@ -53,6 +53,8 @@ public sealed class ProcessSamplerTests
     [InlineData(400, "chrome", @"C:\Program Files\Google\Chrome\Application\chrome.exe", ProcessGroup.External)]
     [InlineData(401, "steam", @"D:\Steam\steam.exe", ProcessGroup.External)]
     [InlineData(402, "mystery", null, ProcessGroup.External)]
+    [InlineData(403, "MsMpEng", null, ProcessGroup.Windows)]
+    [InlineData(404, "Memory Compression", null, ProcessGroup.Windows)]
     public void Classify_path_heuristics(int pid, string name, string? path, ProcessGroup expected)
     {
         Assert.Equal(expected, ProcessSampler.Classify(pid, name, path));

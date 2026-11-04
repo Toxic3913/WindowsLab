@@ -110,15 +110,17 @@ public static class ExternalWorkloadController
     private static readonly HashSet<string> HardBlockedServices = new(StringComparer.OrdinalIgnoreCase)
     {
         "DiagTrack", "dmwappushservice", "SysMain", "WSearch",
-        "WinDefend", "Sense", "WdNisSvc", "WdFilter", "WdBoot"
+        "WinDefend", "Sense", "WdNisSvc", "WdFilter", "WdBoot", "WdNisDrv", "MDCoreSvc",
+        "webthreatdefsvc", "webthreatdefusersvc", "wscsvc"
     };
 
     private static readonly HashSet<string> HardBlockedProcesses = new(StringComparer.OrdinalIgnoreCase)
     {
-        "System", "Idle", "csrss", "smss", "wininit", "services", "lsass", "svchost",
-        "winlogon", "fontdrvhost", "dwm", "explorer", "MsMpEng", "SecurityHealthService",
+        "System", "Idle", "Registry", "Secure System", "csrss", "smss", "wininit", "services", "lsass",
+        "lsaiso", "svchost", "winlogon", "fontdrvhost", "dwm", "explorer",
+        "MsMpEng", "MsMpEngCP", "MpDefenderCoreService", "SecurityHealthService", "SecurityHealthSystray",
         "MsSense", "NisSrv", "SenseNdr", "WdNisSvc",
-        "SearchHost", "SearchIndexer", "Memory Compression"
+        "SearchHost", "SearchIndexer", "SearchApp", "Memory Compression"
     };
 
     public static bool IsProcessHardBlocked(string? processName) =>

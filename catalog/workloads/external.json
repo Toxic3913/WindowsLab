@@ -4,8 +4,32 @@
     "title": "Steam",
     "description": "Cliente Steam y Steam Client Service. Detener cuando no juegues libera RAM/CPU (steamwebhelper suele pesar mucho).",
     "risk": "LOW",
-    "processNames": ["steam", "steamwebhelper", "steamservice", "GameOverlayUI"],
+    "processNames": ["steam", "steamwebhelper", "steamservice", "GameOverlayUI", "LuaTools", "steamerrorreporter"],
     "serviceNames": ["Steam Client Service"]
+  },
+  {
+    "id": "workload.nordvpn",
+    "title": "NordVPN",
+    "description": "Cliente y servicios NordVPN / NordSec. Útil parar en modo juego si no necesitas la VPN.",
+    "risk": "LOW",
+    "processNames": ["NordVPN", "nordvpn-service", "NordUpdateService", "nordsec-threatprotection-service"],
+    "serviceNames": ["nordvpn-service", "NordUpdaterService", "nordsec-threatprotection-service"]
+  },
+  {
+    "id": "workload.ollama",
+    "title": "Ollama",
+    "description": "Servidor local de modelos LLM. Consume RAM/VRAM en segundo plano; para en modo juego, inicia en modo trabajo/dev.",
+    "risk": "LOW",
+    "processNames": ["ollama", "ollama app"],
+    "serviceNames": ["Ollama"]
+  },
+  {
+    "id": "workload.fortivpn",
+    "title": "FortiVPN",
+    "description": "Cliente Fortinet SSL VPN en segundo plano.",
+    "risk": "LOW",
+    "processNames": ["FortiVPN", "FortiSSLVPNdaemon"],
+    "serviceNames": []
   },
   {
     "id": "workload.riot",

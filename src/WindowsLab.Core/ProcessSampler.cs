@@ -42,7 +42,11 @@ public static class ProcessSampler
     private static readonly HashSet<string> KnownSystemNames = new(StringComparer.OrdinalIgnoreCase)
     {
         "System", "Idle", "Registry", "smss", "csrss", "wininit", "services", "lsass",
-        "svchost", "fontdrvhost", "dwm", "winlogon", "Memory Compression"
+        "svchost", "fontdrvhost", "dwm", "winlogon", "Memory Compression",
+        // Protected / often AccessDenied path — never label as "Externas"
+        "MsMpEng", "MsMpEngCP", "MpDefenderCoreService", "SecurityHealthService", "SecurityHealthSystray",
+        "MsSense", "NisSrv", "SenseNdr", "SearchHost", "SearchIndexer", "SearchApp",
+        "Registry", "Secure System", "lsaiso"
     };
 
     public static ProcessSampleResult Sample(int topN = 25)

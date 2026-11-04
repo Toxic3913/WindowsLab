@@ -55,17 +55,13 @@ public partial class MainWindow
 
         if (tag == "game")
         {
-            RefreshGameSessionLists();
-        }
-
-        if (tag == "game")
-        {
             RefreshGamePage();
         }
 
         if (tag == "workloads")
         {
             RenderWorkloads();
+            RefreshWorkloadProcessListAsync();
         }
 
         if (tag == "backups")
