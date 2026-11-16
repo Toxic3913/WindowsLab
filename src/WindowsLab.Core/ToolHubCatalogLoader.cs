@@ -40,7 +40,8 @@ public static class ToolHubCatalogLoader
         "desktop" => 0,
         "performance" => 1,
         "network" => 2,
-        "accessibility" => 3,
+        "explore" => 3,
+        "accessibility" => 4,
         _ => 9
     };
 

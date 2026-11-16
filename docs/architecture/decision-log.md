@@ -331,3 +331,14 @@ Do not change an architectural decision without a new dated entry.
 - **Reason:** Shader/driver caches are reclaimable disk, separate from Mem Reduct RAM; rebuild cost is a one-time stutter.
 - **Trade-offs:** In-use cache files may remain until apps/drivers release them; next game launch recompiles shaders.
 
+## D034 — God's Eye View as curated tool-hub launcher
+
+- **Date:** 2026-11-16
+- **Context:** Operator wants [bilawalsidhu/gods-eye-view](https://github.com/bilawalsidhu/gods-eye-view) (3D OSINT globe) reachable from WindowsLab Herramientas without re-implementing Cesium layers.
+- **Chosen:**
+  - Tool-hub card `hub.explore.gods-eye-view` (group explore): open `http://127.0.0.1:4173/` when the local GEV server is up; else Pinokio app / official download guide.
+  - `GodsEyeViewLauncher` detects TCP :4173 and Pinokio.exe paths; docs open the official guide/repo.
+  - GEV MCP remains in Cursor/Claude (out of process); WindowsLab does not embed the globe or broker third-party API keys.
+- **Reason:** Fast operator entry to an MIT-licensed external app while keeping WindowsLab scope (Windows configure + curated launches).
+- **Trade-offs:** Full GEV features require Node/Pinokio install and optional provider keys; third-party datasets keep their own licenses.
+

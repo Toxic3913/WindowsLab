@@ -167,6 +167,26 @@
     "launchExeHints": []
   },
   {
+    "id": "hub.explore.gods-eye-view",
+    "title": "God's Eye View",
+    "group": "explore",
+    "summary": "Globo 3D OSINT en el navegador: vuelos, barcos, satélites, cámaras públicas, clima y voz (MIT).",
+    "summaryEn": "3D OSINT globe in the browser: flights, ships, satellites, public cameras, weather, and voice (MIT).",
+    "improves": "Vista situacional del planeta con datos públicos en vivo. No cambia Windows.",
+    "improvesEn": "Situational view of the planet with live public data. Does not change Windows.",
+    "kind": "externalUrl",
+    "url": "https://godseyeview.ai/download/",
+    "evidence": "STRONG",
+    "riskNote": "App web local (Node/Pinokio). Datos de terceros tienen sus propias licencias. WindowsLab abre el servidor local :4173 si está activo; si no, Pinokio o la guía oficial. MCP de GEV es aparte (Cursor/Claude).",
+    "riskNoteEn": "Local web app (Node/Pinokio). Third-party data has its own licenses. WindowsLab opens local :4173 if running; otherwise Pinokio or the official guide. GEV MCP is separate (Cursor/Claude).",
+    "launchExeHints": [
+      "%LOCALAPPDATA%\\Programs\\Pinokio\\Pinokio.exe",
+      "%LOCALAPPDATA%\\Pinokio\\Pinokio.exe",
+      "%ProgramFiles%\\Pinokio\\Pinokio.exe",
+      "Pinokio.exe"
+    ]
+  },
+  {
     "id": "hub.accessibility.filter-keys",
     "title": "Filter Keys",
     "group": "accessibility",

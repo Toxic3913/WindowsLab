@@ -59,6 +59,7 @@ public partial class MainWindow
         "desktop" => Loc.T("tools.hub.group.desktop"),
         "performance" => Loc.T("tools.hub.group.performance"),
         "network" => Loc.T("tools.hub.group.network"),
+        "explore" => Loc.T("tools.hub.group.explore"),
         "accessibility" => Loc.T("tools.hub.group.accessibility"),
         _ => key
     };
@@ -70,6 +71,11 @@ public partial class MainWindow
     {
         var entry = row.Entry;
         var present = ToolHubService.IsPresent(entry, apps, facts);
+        if (string.Equals(entry.Id, GodsEyeViewLauncher.HubId, StringComparison.OrdinalIgnoreCase))
+        {
+            present = present || GodsEyeViewLauncher.IsLocalServerReachable();
+        }
+
         row.IsPresent = present;
 
         switch (entry.Kind)
@@ -91,6 +97,21 @@ public partial class MainWindow
                 row.ActionText = Loc.T("tools.hub.action.settings");
                 break;
             case ToolHubKind.ExternalUrl:
+                if (string.Equals(entry.Id, GodsEyeViewLauncher.HubId, StringComparison.OrdinalIgnoreCase))
+                {
+                    row.StatusText = Loc.T(GodsEyeViewLauncher.IsLocalServerReachable()
+                        ? "tools.hub.gev.local"
+                        : present
+                            ? "tools.hub.gev.pinokio"
+                            : "tools.hub.gev.setup");
+                    row.ActionText = Loc.T(GodsEyeViewLauncher.IsLocalServerReachable()
+                        ? "tools.hub.gev.openLocal"
+                        : present
+                            ? "tools.hub.gev.openPinokio"
+                            : "tools.hub.gev.setupAction");
+                    break;
+                }
+
                 row.StatusText = Loc.T(present
                     ? "tools.hub.status.installed"
                     : "tools.hub.status.external");
@@ -115,6 +136,20 @@ public partial class MainWindow
 
     private void OnToolHubDocs(ToolHubRow row)
     {
+        if (string.Equals(row.Entry.Id, GodsEyeViewLauncher.HubId, StringComparison.OrdinalIgnoreCase))
+        {
+            if (!GodsEyeViewLauncher.TryOpenDocs())
+            {
+                SetQuickStatus(Loc.T("tools.hub.openFail"));
+            }
+            else
+            {
+                SetQuickStatus(Loc.T("tools.hub.docs") + ": " + row.Title);
+            }
+
+            return;
+        }
+
         if (!ToolHubService.TryOpenUrl(row.Entry.Url))
         {
             SetQuickStatus(Loc.T("tools.hub.openFail"));
@@ -180,6 +215,19 @@ public partial class MainWindow
                 return;
 
             case ToolHubKind.ExternalUrl:
+                if (string.Equals(entry.Id, GodsEyeViewLauncher.HubId, StringComparison.OrdinalIgnoreCase))
+                {
+                    var target = GodsEyeViewLauncher.TryOpenBest();
+                    SetQuickStatus(target switch
+                    {
+                        GodsEyeViewLauncher.OpenTarget.LocalServer => Loc.T("tools.hub.gev.openedLocal"),
+                        GodsEyeViewLauncher.OpenTarget.Pinokio => Loc.T("tools.hub.gev.openedPinokio"),
+                        GodsEyeViewLauncher.OpenTarget.DownloadPage => Loc.T("tools.hub.gev.openedDownload"),
+                        _ => Loc.T("tools.hub.openFail")
+                    });
+                    return;
+                }
+
                 if (row.IsPresent && ToolHubService.TryLaunch(entry))
                 {
                     SetQuickStatus(Loc.T("tools.hub.action.open") + ": " + entry.Title);
