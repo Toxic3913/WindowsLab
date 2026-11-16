@@ -50,7 +50,7 @@ public static class CliApp
 
     public const string HelpText =
         """
-        WindowsLab CLI — 1.2.12 (audit · stacks · apply · live · apps · workloads)
+        WindowsLab CLI — 1.2.13 (audit · stacks · apply · live · apps · workloads · gpu-cache)
         Ejecutable: windowslab-cli.exe  (no confundir con WindowsLab.exe = GUI)
 
         Uso:
@@ -61,6 +61,8 @@ public static class CliApp
           windowslab-cli live [--output json]
           windowslab-cli workload list [--output json]
           windowslab-cli workload stop <id> --yes
+          windowslab-cli gpu-cache list [--output json]
+          windowslab-cli gpu-cache clean --yes
           windowslab-cli tweak list|detect|simulate <id>
           windowslab-cli tweak apply <id> --lab-apply [--dry-run]
           windowslab-cli tweak apply <id> --apply [--yes] [--i-am-on-lab-vm] [--i-accept-security-impact] [--dry-run]
@@ -79,6 +81,7 @@ public static class CliApp
         Security-affecting tweaks (D021) also need --i-accept-security-impact.
         live = one-shot CPU/RAM/disk + top processes (D022).
         workload stop = curated Steam/Riot/Overwolf/… runtime stop (D028); never Defender/Search/SysMain.
+        gpu-cache = detect gaming GPU vendors and clean allowlisted driver/shader caches (D033).
 
         Código: D:\WindowsLab    Programa: C:\Program Files\WindowsLab
         """;
@@ -169,6 +172,11 @@ public static class CliApp
         if (EqualsCmd(args, 0, "workload"))
         {
             return RunWorkload(args, stdout, stderr, json);
+        }
+
+        if (EqualsCmd(args, 0, "gpu-cache"))
+        {
+            return RunGpuCache(args, stdout, stderr, json, services);
         }
 
         if (EqualsCmd(args, 0, "tweak") && EqualsCmd(args, 1, "apply"))
@@ -815,6 +823,77 @@ public static class CliApp
         }
 
         stderr.WriteLine("Usage: windowslab-cli workload list|stop <id> --yes");
+        return ExitCodes.Generic;
+    }
+
+    private static int RunGpuCache(
+        IReadOnlyList<string> args,
+        TextWriter stdout,
+        TextWriter stderr,
+        bool json,
+        CliServices services)
+    {
+        IReadOnlyList<GpuInventory> gpus;
+        try
+        {
+            gpus = services.Audit().Gpus;
+        }
+        catch
+        {
+            gpus = [];
+        }
+
+        if (EqualsCmd(args, 1, "list") || args.Count == 1)
+        {
+            var scan = GpuCacheCleaner.Scan(gpus);
+            if (json)
+            {
+                WriteJson(stdout, "gpu-cache list", ExitCodes.Ok, scan);
+            }
+            else
+            {
+                foreach (var a in scan.Adapters.Where(x => x.IsLikelyGaming))
+                {
+                    stdout.WriteLine($"gpu\t{a.Vendor}\t{a.Name}");
+                }
+
+                stdout.WriteLine($"total\t{GpuCacheCleaner.FormatBytes(scan.TotalBytes)}\t{scan.Targets.Count} folders");
+                foreach (var t in scan.Targets)
+                {
+                    stdout.WriteLine($"{t.Id}\t{GpuCacheCleaner.FormatBytes(t.Bytes)}\t{t.Path}");
+                }
+            }
+
+            return ExitCodes.Ok;
+        }
+
+        if (EqualsCmd(args, 1, "clean"))
+        {
+            if (!HasFlag(args, "--yes"))
+            {
+                stderr.WriteLine("gpu-cache clean requires --yes");
+                return ExitCodes.PolicyBlocked;
+            }
+
+            var result = GpuCacheCleaner.CleanAllPresent(gpus);
+            if (json)
+            {
+                WriteJson(stdout, "gpu-cache clean", ExitCodes.Ok, result);
+            }
+            else
+            {
+                stdout.WriteLine(
+                    $"freed\t{GpuCacheCleaner.FormatBytes(result.BytesFreed)}\tfolders={result.TargetsCleaned}\tfiles={result.FilesDeleted}\terrors={result.Errors}");
+                foreach (var m in result.Messages)
+                {
+                    stdout.WriteLine("  " + m);
+                }
+            }
+
+            return ExitCodes.Ok;
+        }
+
+        stderr.WriteLine("Usage: windowslab-cli gpu-cache list|clean --yes");
         return ExitCodes.Generic;
     }
 

@@ -320,3 +320,14 @@ Do not change an architectural decision without a new dated entry.
 - **Reason:** Real RAM tools without inventing standby flushes in-process; keep Performance read-only; explicit opt-in kills with hard blocks.
 - **Trade-offs:** Mem Reduct needs UAC for deep clean; service stop may need elevation; first network counter tick may be ~0.
 
+## D033 — GPU/driver shader cache clean (vendor-detected)
+
+- **Date:** 2026-11-16
+- **Context:** Operator wants reclaim of large NVIDIA/AMD/Intel driver caches (e.g. `%AppData%\NVIDIA\ComputeCache`, Local `DXCache`, `D3DSCache`) after detecting which GPU drives games — without deleting whole vendor trees or inventing host-specific GPU model constants.
+- **Chosen:**
+  - `GpuCacheCleaner` in Core: resolve gaming adapters from audit `GpuInventory` (DXGI facts) + present vendor cache roots; allowlisted folders only (NVIDIA DX/GL/Compute/NV_Cache, AMD Dx/GL/Vk/DX9, Intel Shader/DX, DirectX `D3DSCache`).
+  - UI on **Cargas** (scan + clean + Mem Reduct) and **Juegos** quick action; confirm before delete; report bytes freed; locked files counted as errors and skipped.
+  - Never hardcode RTX/RX model; never wipe `%LOCALAPPDATA%\NVIDIA` wholesale.
+- **Reason:** Shader/driver caches are reclaimable disk, separate from Mem Reduct RAM; rebuild cost is a one-time stutter.
+- **Trade-offs:** In-use cache files may remain until apps/drivers release them; next game launch recompiles shaders.
+

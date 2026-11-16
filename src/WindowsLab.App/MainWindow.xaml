@@ -541,6 +541,8 @@
                     Padding="12,8" Margin="0,0,8,8"/>
             <Button x:Name="BtnGameOpenWorkloads" Content="Cargas / procesos" Click="GameOpenWorkloads_OnClick"
                     Padding="12,8" Margin="0,0,8,8"/>
+            <Button x:Name="BtnGameGpuCache" Content="Limpiar caché GPU" Click="GameGpuCache_OnClick"
+                    Padding="12,8" Margin="0,0,8,8"/>
             <Button x:Name="BtnGameOpenTools" Content="Herramientas hub" Click="GameOpenTools_OnClick"
                     Padding="12,8" Margin="0,0,8,8"/>
           </WrapPanel>
@@ -573,6 +575,29 @@
           <TextBlock x:Name="MoreWorkloadsHint" TextWrapping="Wrap" Margin="0,0,0,8"
                      Foreground="{DynamicResource MutedBrush}"/>
 
+          <Border Padding="12,10" Margin="0,0,0,10" CornerRadius="8"
+                  Background="{DynamicResource PanelElevatedBrush}"
+                  BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1">
+            <StackPanel>
+              <TextBlock x:Name="GpuCacheTitle" FontWeight="SemiBold" FontSize="15"
+                         Foreground="{DynamicResource TextBrush}" Text="Caché GPU / shaders"/>
+              <TextBlock x:Name="GpuCacheHint" TextWrapping="Wrap" FontSize="12" Margin="0,4,0,8"
+                         Foreground="{DynamicResource SecondaryTextBrush}"/>
+              <TextBlock x:Name="GpuCacheAdapters" TextWrapping="Wrap" FontSize="12" Margin="0,0,0,8"
+                         Foreground="{DynamicResource TextBrush}"/>
+              <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                <Button x:Name="BtnGpuCacheScan" Content="Analizar cachés" Click="GpuCacheScan_OnClick"
+                        Padding="12,6" Margin="0,0,8,0"/>
+                <Button x:Name="BtnGpuCacheClean" Style="{StaticResource PrimaryButton}"
+                        Content="Limpiar cachés GPU" Click="GpuCacheClean_OnClick" Padding="12,6" Margin="0,0,8,0"/>
+                <Button x:Name="BtnWorkloadMemReduct" Content="Aliviar RAM (Mem Reduct)"
+                        Click="WorkloadMemReduct_OnClick" Padding="12,6"/>
+              </StackPanel>
+              <TextBlock x:Name="GpuCacheStatus" TextWrapping="Wrap" FontSize="12"
+                         Foreground="{DynamicResource MutedBrush}"/>
+            </StackPanel>
+          </Border>
+
           <Expander x:Name="WorkloadCuratedExpander" IsExpanded="False" Margin="0,0,0,10">
             <Expander.Header>
               <TextBlock x:Name="WorkloadCuratedHeader" FontWeight="SemiBold"
@@ -582,9 +607,7 @@
               <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                 <Button x:Name="BtnWorkloadRefresh" Content="Actualizar" Click="WorkloadRefresh_OnClick" Margin="0,0,8,0" Padding="10,4"/>
                 <Button x:Name="BtnWorkloadStopAll" Style="{StaticResource PrimaryButton}" Content="Detener activas"
-                        Click="WorkloadStopAllActive_OnClick" Padding="10,4" Margin="0,0,8,0"/>
-                <Button x:Name="BtnWorkloadMemReduct" Content="Aliviar RAM (Mem Reduct)"
-                        Click="WorkloadMemReduct_OnClick" Padding="10,4"/>
+                        Click="WorkloadStopAllActive_OnClick" Padding="10,4"/>
               </StackPanel>
               <WrapPanel x:Name="WorkloadPanel" Margin="0,0,0,4"/>
               <TextBlock x:Name="WorkloadStatusText" TextWrapping="Wrap"

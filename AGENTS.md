@@ -1,6 +1,6 @@
 # AGENTS.md
 
-WindowsLab is **1.2.12** (audit + configure + apply with backup + live Performance + external workloads). Source lives in `D:\WindowsLab`. Runtime data: `%ProgramData%\WindowsLab`, `%LocalAppData%\WindowsLab`.
+WindowsLab is **1.2.13** (audit + configure + apply with backup + live Performance + external workloads + GPU cache clean). Source lives in `D:\WindowsLab`. Runtime data: `%ProgramData%\WindowsLab`, `%LocalAppData%\WindowsLab`.
 
 Before coding:
 

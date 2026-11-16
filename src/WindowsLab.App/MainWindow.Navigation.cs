@@ -62,6 +62,7 @@ public partial class MainWindow
         {
             RenderWorkloads();
             RefreshWorkloadProcessListAsync();
+            RefreshGpuCacheCard(forceScan: _gpuCacheScan is null);
         }
 
         if (tag == "backups")

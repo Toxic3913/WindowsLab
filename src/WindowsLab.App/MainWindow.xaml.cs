@@ -255,6 +255,11 @@ public partial class MainWindow : Window
         BtnWorkloadProcessStop.Content = Loc.T("game.session.stop");
         BtnWorkloadProcessStart.Content = Loc.T("workload.svc.start");
         BtnWorkloadMemReduct.Content = Loc.T("game.ram.button");
+        GpuCacheTitle.Text = Loc.T("gpu.cache.title");
+        GpuCacheHint.Text = Loc.T("gpu.cache.hint");
+        BtnGpuCacheScan.Content = Loc.T("gpu.cache.scan");
+        BtnGpuCacheClean.Content = Loc.T("gpu.cache.clean");
+        BtnGameGpuCache.Content = Loc.T("gpu.cache.gameButton");
         WorkloadProcTab.Header = Loc.T("workload.proc.tab");
         WorkloadSvcTab.Header = Loc.T("workload.svc.tab");
         WorkloadProcessSearch.ToolTip = Loc.T("workload.search");
